@@ -26,6 +26,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     default:
         return DefWindowProc(hWnd, msg, wParam, lParam);
     }
+
+    return NULL;
 }
 
 bool Window::IsRun()

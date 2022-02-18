@@ -1,6 +1,9 @@
 #include "GraphicsEngine.h"
-#include "SwapChain.h"
-#include "DeviceContext.h"
+#include "PinelineStruct.h"
+
+#include "d3dcompiler.h"
+
+#pragma comment(lib, "D3DCompiler.lib")
 
 GraphicsEngine::GraphicsEngine() : featureLevel(D3D_FEATURE_LEVEL_11_0), pDevice(nullptr), pContext(nullptr)
 {
@@ -21,10 +24,10 @@ bool GraphicsEngine::Init()
 	};
 
 	HRESULT res = 0;
-	ID3D11DeviceContext* pDx11DeviceContext = nullptr;
+	//ID3D11DeviceContext* pDx11DeviceContext = nullptr;
 	for (auto& driver : deviceType)
 	{
-		res = D3D11CreateDevice(NULL, driver, NULL, NULL, featureLevels, ARRAYSIZE(featureLevels), D3D11_SDK_VERSION, &pDevice, &featureLevel, &pDx11DeviceContext);
+		res = D3D11CreateDevice(NULL, driver, NULL, NULL, featureLevels, ARRAYSIZE(featureLevels), D3D11_SDK_VERSION, &pDevice, &featureLevel, &pContext);
 
 		if (SUCCEEDED(res))
 			break;
@@ -36,7 +39,7 @@ bool GraphicsEngine::Init()
 	}
 
 
-	pDeviceContext = new DeviceContext(pDx11DeviceContext);
+	pDeviceContext = new DeviceContext(pContext);
 
 	pDevice->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&pDXGIDevice));
 	pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), reinterpret_cast<void**>(&pDXGIAdapter));
@@ -74,9 +77,37 @@ DeviceContext* GraphicsEngine::GetDeviceContext()
 	return this->pDeviceContext;
 }
 
+VertexBuffer* GraphicsEngine::CreateVertexBuffer()
+{
+	return new VertexBuffer();
+}
+
 GraphicsEngine* GraphicsEngine::GetInstance()
 {
 	static GraphicsEngine engine;
 
 	return &engine;
+}
+
+bool GraphicsEngine::CreateShaders()
+{
+	ID3DBlob* errblob = nullptr;
+	D3DCompileFromFile(L"shader.fx", nullptr, nullptr, "vsmain", "vs_5_0", NULL, NULL, &pVSBlob, &errblob);
+	D3DCompileFromFile(L"shader.fx", nullptr, nullptr, "psmain", "ps_5_0", NULL, NULL, &pPSBlob, &errblob);
+	pDevice->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &pVs);
+	pDevice->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &pPs);
+	return true;
+}
+
+bool GraphicsEngine::SetShaders()
+{
+	pContext->VSSetShader(pVs, nullptr, 0);
+	pContext->PSSetShader(pPs, nullptr, 0);
+	return true;
+}
+
+void GraphicsEngine::GetShaderBufferAndSize(void** bytecode, UINT* size)
+{
+	*bytecode = this->pVSBlob->GetBufferPointer();
+	*size = (UINT)this->pVSBlob->GetBufferSize();
 }

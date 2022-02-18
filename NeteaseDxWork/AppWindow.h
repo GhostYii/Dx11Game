@@ -1,6 +1,6 @@
 #pragma once
 #include "Window.h"
-#include "SwapChain.h"
+#include "PinelineStruct.h"
 
 class AppWindow : public Window
 {
@@ -14,5 +14,8 @@ public:
 
 private:
 	SwapChain* pSwapChain = nullptr;
+
+private:
+	VertexBuffer* pTmpVB = nullptr;
 };
 
