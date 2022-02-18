@@ -22,6 +22,18 @@ bool SwapChain::Init(HWND hWnd, UINT width, UINT height)
     if (FAILED(res))
         return false;
 
+    ID3D11Texture2D* buffer = nullptr;
+    res = pSwapChain->GetBuffer(0u, __uuidof(ID3D11Texture2D), (void**)&buffer);
+
+    if (FAILED(res))
+        return false;
+
+    res= GraphicsEngine::GetInstance()->pDevice->CreateRenderTargetView(buffer, NULL, &pTargetView);
+    buffer->Release();
+
+    if (FAILED(res))
+        return false;
+
     return true;
 }
 
@@ -29,5 +41,11 @@ bool SwapChain::Release()
 {
     pSwapChain->Release();
     delete this;
+    return true;
+}
+
+bool SwapChain::Present(bool vSync)
+{
+    pSwapChain->Present(vSync, NULL);
     return true;
 }

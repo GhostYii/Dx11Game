@@ -70,6 +70,8 @@ bool Window::Init()
 
 bool Window::Broadcast()
 {
+    pWindow->OnUpdate();
+
     MSG msg;
     while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) > 0)
     {
@@ -77,16 +79,14 @@ bool Window::Broadcast()
         DispatchMessage(&msg);
     }
 
-    pWindow->OnUpdate();
-
-    Sleep(0);
+    //Sleep(0);
 
     return true;
 }
 
 bool Window::Release()
 {
-    if (hWnd && DestroyWindow(hWnd))
+    if (hWnd && !DestroyWindow(hWnd))
         return false;
 
     return true;

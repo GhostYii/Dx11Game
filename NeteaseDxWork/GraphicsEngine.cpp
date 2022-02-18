@@ -1,4 +1,6 @@
 #include "GraphicsEngine.h"
+#include "SwapChain.h"
+#include "DeviceContext.h"
 
 GraphicsEngine::GraphicsEngine() : featureLevel(D3D_FEATURE_LEVEL_11_0), pDevice(nullptr), pContext(nullptr)
 {
@@ -19,9 +21,10 @@ bool GraphicsEngine::Init()
 	};
 
 	HRESULT res = 0;
+	ID3D11DeviceContext* pDx11DeviceContext = nullptr;
 	for (auto& driver : deviceType)
 	{
-		res = D3D11CreateDevice(NULL, driver, NULL, NULL, featureLevels, ARRAYSIZE(featureLevels), D3D11_SDK_VERSION, &pDevice, &featureLevel, &pContext);
+		res = D3D11CreateDevice(NULL, driver, NULL, NULL, featureLevels, ARRAYSIZE(featureLevels), D3D11_SDK_VERSION, &pDevice, &featureLevel, &pDx11DeviceContext);
 
 		if (SUCCEEDED(res))
 			break;
@@ -31,7 +34,10 @@ bool GraphicsEngine::Init()
 	{
 		return false;
 	}
-	
+
+
+	pDeviceContext = new DeviceContext(pDx11DeviceContext);
+
 	pDevice->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&pDXGIDevice));
 	pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), reinterpret_cast<void**>(&pDXGIAdapter));
 	pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&pDXGIFactory));
@@ -41,18 +47,31 @@ bool GraphicsEngine::Init()
 
 bool GraphicsEngine::Release()
 {
-	pDXGIAdapter->Release();	
-	pDXGIDevice->Release();
-	pDXGIFactory->Release();
+	if (pDXGIAdapter)
+		pDXGIAdapter->Release();
+	if (pDXGIDevice)
+		pDXGIDevice->Release();
+	if (pDXGIFactory)
+		pDXGIFactory->Release();
 
-	pContext->Release();
-	pDevice->Release();
-	return false;
+	if (pDeviceContext)
+		pDeviceContext->Release();
+	if (pContext)
+		pContext->Release();
+	if (pDevice)
+		pDevice->Release();
+
+	return true;
 }
 
 SwapChain* GraphicsEngine::CreateSwapChain()
 {
 	return new SwapChain();
+}
+
+DeviceContext* GraphicsEngine::GetDeviceContext()
+{
+	return this->pDeviceContext;
 }
 
 GraphicsEngine* GraphicsEngine::GetInstance()

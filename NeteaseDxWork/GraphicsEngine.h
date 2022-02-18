@@ -1,6 +1,8 @@
 #pragma once
 #include <d3d11.h>
-#include "SwapChain.h"
+
+class SwapChain;
+class DeviceContext;
 
 class GraphicsEngine
 {
@@ -14,8 +16,12 @@ public:
 	bool Release();
 
 	SwapChain* CreateSwapChain();
+	DeviceContext* GetDeviceContext();
 
 	static GraphicsEngine* GetInstance();
+
+private:
+	DeviceContext* pDeviceContext = nullptr;
 
 private:
 	ID3D11Device* pDevice = nullptr;

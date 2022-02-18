@@ -1,5 +1,6 @@
 #include "AppWindow.h"
 #include "GraphicsEngine.h"
+#include "DeviceContext.h"
 
 AppWindow::AppWindow()
 {
@@ -15,10 +16,13 @@ void AppWindow::OnCreate()
 
 void AppWindow::OnUpdate()
 {
+	GraphicsEngine::GetInstance()->GetDeviceContext()->ClearRenderTargetColor(this->pSwapChain, 1, 0, 0, 1);
+	pSwapChain->Present(false);
 }
 
 void AppWindow::OnDestroy()
 {
 	Window::OnDestroy();
+	pSwapChain->Release();
 	GraphicsEngine::GetInstance()->Release();
 }
