@@ -12,6 +12,7 @@ struct Vector3
 struct Vertex
 {
 	Vector3 position;
+	Vector3 color;
 };
 
 AppWindow::AppWindow()
@@ -27,9 +28,10 @@ void AppWindow::OnCreate()
 
 	Vertex vertices[] =
 	{
-		{-.5f, -.5f, 0},
-		{0, .5f, 0},
-		{0.5, -.5f, 0}
+		// x, y, z, r, g, b
+		{-.5f, -.5f, 0, 1.f, 0,   0,},
+		{ 0,    .5f, 0, 0,   1.f, 0},
+		{ .5,  -.5f, 0, 0,   0,   1.f}
 	};
 
 	pTmpVB = GraphicsEngine::GetInstance()->CreateVertexBuffer();
@@ -41,23 +43,21 @@ void AppWindow::OnCreate()
 	UINT shaderSize = 0;
 	GraphicsEngine::GetInstance()->CompileVertexShader(L"VertexShader.hlsl", "main", &shaderByteCode, &shaderSize);
 	pTmpVS = GraphicsEngine::GetInstance()->CreateVertexShader(shaderByteCode, shaderSize);
-	
+
 	pTmpVB->Load(vertices, sizeof(Vertex), vertexSize, shaderByteCode, shaderSize);
 
 	GraphicsEngine::GetInstance()->CompilePixelShader(L"PixelShader.hlsl", "main", &shaderByteCode, &shaderSize);
 	pTmpPS = GraphicsEngine::GetInstance()->CreatePixelShader(shaderByteCode, shaderSize);
-	//pTmpPS->
 
-	GraphicsEngine::GetInstance()->ReleaseCompiledShader();	
+	GraphicsEngine::GetInstance()->ReleaseCompiledShader();
 }
 
 void AppWindow::OnUpdate()
 {
-	GraphicsEngine::GetInstance()->GetDeviceContext()->ClearRenderTargetColor(this->pSwapChain, 1, 0, 0, 1);
+	GraphicsEngine::GetInstance()->GetDeviceContext()->ClearRenderTargetColor(this->pSwapChain, 0, 0, 0, 1);
 
 	RECT rect = this->GetClientWindowRect();
 	GraphicsEngine::GetInstance()->GetDeviceContext()->SetViewportSize(rect.right - rect.left, rect.bottom - rect.top);
-	//GraphicsEngine::GetInstance()->SetShaders();
 
 	GraphicsEngine::GetInstance()->GetDeviceContext()->SetVertexShader(pTmpVS);
 	GraphicsEngine::GetInstance()->GetDeviceContext()->SetPixelShader(pTmpPS);
