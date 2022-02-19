@@ -38,6 +38,30 @@ public:
 		value[2][2] = scale.z;
 	}
 
+	void SetRotationX(float x)
+	{
+		value[1][1] = cos(x);
+		value[1][2] = sin(x);
+		value[2][1] = -sin(x);
+		value[2][2] = cos(x);
+	}
+
+	void SetRotationY(float y)
+	{
+		value[0][0] = cos(y);
+		value[0][2] = -sin(y);
+		value[2][0] = sin(y);
+		value[2][2] = cos(y);
+	}
+
+	void SetRotationZ(float z)
+	{
+		value[0][0] = cos(z);
+		value[0][1] = sin(z);
+		value[1][0] = -sin(z);
+		value[1][1] = cos(z);
+	}
+
 	void operator *=(const Matrix4x4& matrix)
 	{
 		Matrix4x4 out;
@@ -61,6 +85,8 @@ public:
 		value[2][2] = 1.0f / (farPlane - nearPlane);
 		value[3][2] = -(nearPlane / (farPlane - nearPlane));
 	}
+
+
 
 public:
 	float value[4][4] = { 0 };

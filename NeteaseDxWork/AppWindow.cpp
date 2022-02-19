@@ -9,7 +9,6 @@
 struct Vertex
 {
 	Vector3 position;
-	Vector3 position1;
 	Vector3 color;
 	Vector3 color1;
 };
@@ -32,14 +31,49 @@ void AppWindow::OnCreate()
 
 	Vertex vertices[] =
 	{
-		// x, y, z, c0, c1, c2,  r, g, b
-		{ Vector3(-.5f, -.5f, 0), Vector3(-0.32f, -0.11f, 0.0f), Vector3(1.f, 0, 0), Vector3(0, 1, 0) },
-		{ Vector3(0, .5f, 0), Vector3(0.41f, 0.78f, 0.0f), Vector3(0, 1.f, 0), Vector3(0, 0, 1) },
-		{ Vector3(.5,  -.5f, 0), Vector3(0.75f, -0.73f, 0.0f), Vector3(0, 0, 1.f), Vector3(1, 0, 0) }
+		//X - Y - Z
+		//FRONT FACE
+		{Vector3(-0.5f,-0.5f,-0.5f), Vector3(1,0,0), Vector3(0.2f,0,0) },
+		{Vector3(-0.5f,0.5f,-0.5f),  Vector3(1,1,0), Vector3(0.2f,0.2f,0) },
+		{ Vector3(0.5f,0.5f,-0.5f),  Vector3(1,1,0), Vector3(0.2f,0.2f,0) },
+		{ Vector3(0.5f,-0.5f,-0.5f), Vector3(1,0,0), Vector3(0.2f,0,0) },
+
+		//BACK FACE
+		{ Vector3(0.5f,-0.5f,0.5f),  Vector3(0,1,0), Vector3(0,0.2f,0) },
+		{ Vector3(0.5f,0.5f,0.5f),   Vector3(0,1,1), Vector3(0,0.2f,0.2f) },
+		{ Vector3(-0.5f,0.5f,0.5f),  Vector3(0,1,1), Vector3(0,0.2f,0.2f) },
+		{ Vector3(-0.5f,-0.5f,0.5f), Vector3(0,1,0), Vector3(0,0.2f,0) }
 	};
 
 	pTmpVB = GraphicsEngine::GetInstance()->CreateVertexBuffer();
 	UINT vertexSize = ARRAYSIZE(vertices);
+
+	unsigned int indexList[] =
+	{
+		//FRONT SIDE
+		0,1,2,  //FIRST TRIANGLE
+		2,3,0,  //SECOND TRIANGLE
+		//BACK SIDE
+		4,5,6,
+		6,7,4,
+		//TOP SIDE
+		1,6,5,
+		5,2,1,
+		//BOTTOM SIDE
+		7,0,3,
+		3,4,7,
+		//RIGHT SIDE
+		3,2,5,
+		5,4,3,
+		//LEFT SIDE
+		7,6,1,
+		1,0,7
+	};
+
+	pTmpIndexBuff = GraphicsEngine::GetInstance()->CreatIndexBuffer();
+	UINT indexListSize = ARRAYSIZE(indexList);
+
+	pTmpIndexBuff->Load(indexList, indexListSize);
 
 	void* shaderByteCode = nullptr;
 	UINT shaderSize = 0;
@@ -75,7 +109,8 @@ void AppWindow::OnUpdate()
 	GraphicsEngine::GetInstance()->GetDeviceContext()->SetPixelShader(pTmpPS);
 
 	GraphicsEngine::GetInstance()->GetDeviceContext()->SetVertexBuffer(pTmpVB);
-	GraphicsEngine::GetInstance()->GetDeviceContext()->DrawTriangleList(pTmpVB->GetvertexSize(), 0);
+	GraphicsEngine::GetInstance()->GetDeviceContext()->SetIndexBuffer(pTmpIndexBuff);
+	GraphicsEngine::GetInstance()->GetDeviceContext()->DrawIndexedTriangleList(pTmpIndexBuff->GetIndexListSize(), 0, 0);
 
 	pSwapChain->Present(false);
 
@@ -90,6 +125,7 @@ void AppWindow::OnDestroy()
 	pTmpVB->Release();
 	pSwapChain->Release();
 
+	pTmpIndexBuff->Release();
 	pTmpVS->Release();
 	pTmpPS->Release();
 
@@ -109,11 +145,25 @@ void AppWindow::UpdatePosition()
 
 	Matrix4x4 tmpMat;
 
-	tmpDelta += deltaTime / .15f;	
+	tmpDelta += deltaTime / .5f;	
 
-	c.world.SetScale(Vector3::Lerp(Vector3(0, 0, 0), Vector3(1, 1, 0), (sin(tmpDelta) + 1.f) / 2.f));
-	tmpMat.SetTranslate(Vector3::Lerp(Vector3(-1.5f, -1.5f, 0), Vector3(1.5f, 1.5f, 0), tmpPos));
+	//c.world.SetScale(Vector3::Lerp(Vector3(0, 0, 0), Vector3(1, 1, 0), (sin(tmpDelta) + 1.f) / 2.f));
+	//tmpMat.SetTranslate(Vector3::Lerp(Vector3(-1.5f, -1.5f, 0), Vector3(1.5f, 1.5f, 0), tmpPos));
 
+	//c.world *= tmpMat;
+
+	c.world.SetScale(Vector3(1, 1, 1));
+
+	tmpMat.SetIdentity();
+	tmpMat.SetRotationZ(tmpDelta);
+	c.world *= tmpMat;
+
+	tmpMat.SetIdentity();
+	tmpMat.SetRotationY(tmpDelta);
+	c.world *= tmpMat;
+
+	tmpMat.SetIdentity();
+	tmpMat.SetRotationX(tmpDelta);
 	c.world *= tmpMat;
 
 	c.view.SetIdentity();

@@ -12,28 +12,37 @@ bool DeviceContext::Release()
 	return true;
 }
 
-bool DeviceContext::ClearRenderTargetColor(SwapChain* swapChain, float r, float g, float b, float a)
+void DeviceContext::ClearRenderTargetColor(SwapChain* swapChain, float r, float g, float b, float a)
 {
 	const float color[] = { r,g,b,a };
 	pDeviceContext->ClearRenderTargetView(swapChain->pTargetView, color);
 	pDeviceContext->OMSetRenderTargets(1, &swapChain->pTargetView, NULL);
-	return true;
 }
 
-bool DeviceContext::SetVertexBuffer(VertexBuffer* pBuffer)
+void DeviceContext::SetVertexBuffer(VertexBuffer* pBuffer)
 {
 	UINT stride = pBuffer->vertexSize;
 	UINT offset = 0;
 	pDeviceContext->IASetVertexBuffers(0, 1, &pBuffer->pBuffer, &stride, &offset);
 
 	pDeviceContext->IASetInputLayout(pBuffer->pInputLayout);
-	return true;
+}
+
+void DeviceContext::SetIndexBuffer(IndexBuffer* pBuffer)
+{
+	pDeviceContext->IASetIndexBuffer(pBuffer->pBuffer, DXGI_FORMAT_R32_UINT, 0);
 }
 
 void DeviceContext::DrawTriangleList(UINT vertexSize, UINT startIndex)
 {
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	pDeviceContext->Draw(vertexSize, startIndex);
+}
+
+void DeviceContext::DrawIndexedTriangleList(UINT indexCount, UINT startVertexIndex, UINT startIndexLocation)
+{
+	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	pDeviceContext->DrawIndexed(indexCount, startIndexLocation, startVertexIndex);
 }
 
 void DeviceContext::SetViewportSize(UINT width, UINT height)

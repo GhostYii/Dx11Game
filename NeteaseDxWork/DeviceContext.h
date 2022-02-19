@@ -4,6 +4,7 @@
 class SwapChain;
 class VertexBuffer;
 class ConstantBuffer;
+class IndexBuffer;
 class VertexShader;
 class PixelShader;
 
@@ -16,10 +17,12 @@ public:
 
 public:
 	bool Release();
-	bool ClearRenderTargetColor(SwapChain* swapChain, float r, float g, float b, float a);
-	bool SetVertexBuffer(VertexBuffer* pBuffer);
+	void ClearRenderTargetColor(SwapChain* swapChain, float r, float g, float b, float a);
+	void SetVertexBuffer(VertexBuffer* pBuffer);
+	void SetIndexBuffer(IndexBuffer* pBuffer);
 
 	void DrawTriangleList(UINT vertexSize, UINT startIndex);
+	void DrawIndexedTriangleList(UINT indexCount, UINT startVertexIndex, UINT startIndexLocation);
 	void SetViewportSize(UINT width, UINT height);
 
 	void SetVertexShader(VertexShader* shader);

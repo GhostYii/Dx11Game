@@ -23,6 +23,7 @@ private:
 	VertexShader* pTmpVS = nullptr;
 	PixelShader* pTmpPS = nullptr;
 	ConstantBuffer* pTmpCBuff = nullptr;
+	IndexBuffer* pTmpIndexBuff = nullptr;
 
 	unsigned long prevTime = 0;
 	float prevDeltaTime = 0;
