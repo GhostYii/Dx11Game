@@ -56,3 +56,13 @@ void DeviceContext::SetPixelShader(PixelShader* shader)
 {
 	pDeviceContext->PSSetShader(shader->pPixelShader, nullptr, 0);
 }
+
+void DeviceContext::VSSetConstantBuffer(/*VertexShader* shader,*/ ConstantBuffer* cBuffer)
+{
+	pDeviceContext->VSSetConstantBuffers(0, 1, &cBuffer->pBuffer);
+}
+
+void DeviceContext::PSSetConstantBuffer(/*PixelShader* shader,*/ ConstantBuffer* cBuffer)
+{
+	pDeviceContext->PSSetConstantBuffers(0, 1, &cBuffer->pBuffer);
+}

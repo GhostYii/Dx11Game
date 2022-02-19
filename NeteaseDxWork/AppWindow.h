@@ -19,5 +19,10 @@ private:
 	VertexBuffer* pTmpVB = nullptr;
 	VertexShader* pTmpVS = nullptr;
 	PixelShader* pTmpPS = nullptr;
+	ConstantBuffer* pTmpCBuff = nullptr;
+
+	unsigned long m_old_time = 0;
+	float m_delta_time = 0;
+	float m_angle = 0;
 };
 
