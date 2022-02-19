@@ -188,17 +188,17 @@ void AppWindow::OnMouseKeyDown(int mouseKey)
 	{
 	case 0: 
 	{
-		tmpScale = Vector3(0.5f, 1, 1);
+		tmpScale = Vector3(0.6f, 1, 1);
 		break;
 	}
 	case 1:
 	{
-		tmpScale = Vector3(1, 0.5f, 1);
+		tmpScale = Vector3(1, 0.6f, 1);
 		break;
 	}
 	case 2:
 	{
-		tmpScale = Vector3(1, 1, 0.5f);
+		tmpScale = Vector3(1, 1, 0.6f);
 		break;
 	}
 	default:
