@@ -1,15 +1,10 @@
 #include "AppWindow.h"
 #include "GraphicsEngine.h"
 #include "DeviceContext.h"
+#include "Math.h"
 
 #include<Windows.h>
 
-struct Vector3
-{
-	float x;
-	float y;
-	float z;
-};
 
 struct Vertex
 {
@@ -22,12 +17,11 @@ struct Vertex
 __declspec(align(16))
 struct Constant
 {
-	float angle;
+	Matrix4x4 world;
+	Matrix4x4 view;
+	Matrix4x4 projection;
+	UINT time;
 };
-
-AppWindow::AppWindow()
-{
-}
 
 void AppWindow::OnCreate()
 {
@@ -39,9 +33,9 @@ void AppWindow::OnCreate()
 	Vertex vertices[] =
 	{
 		// x, y, z, c0, c1, c2,  r, g, b
-		{-.5f, -.5f, 0,    -0.32f,-0.11f,0.0f,    1.f, 0, 0, 0,1,0},
-		{ 0,    .5f, 0,    0.41f,0.78f,0.0f,    0, 1.f, 0, 0,0,1},
-		{ .5,  -.5f, 0,    0.75f,-0.73f,0.0f,    0, 0, 1.f, 1,0,0}
+		{ Vector3(-.5f, -.5f, 0), Vector3(-0.32f, -0.11f, 0.0f), Vector3(1.f, 0, 0), Vector3(0, 1, 0) },
+		{ Vector3(0, .5f, 0), Vector3(0.41f, 0.78f, 0.0f), Vector3(0, 1.f, 0), Vector3(0, 0, 1) },
+		{ Vector3(.5,  -.5f, 0), Vector3(0.75f, -0.73f, 0.0f), Vector3(0, 0, 1.f), Vector3(1, 0, 0) }
 	};
 
 	pTmpVB = GraphicsEngine::GetInstance()->CreateVertexBuffer();
@@ -72,17 +66,7 @@ void AppWindow::OnUpdate()
 	RECT rect = this->GetClientWindowRect();
 	GraphicsEngine::GetInstance()->GetDeviceContext()->SetViewportSize(rect.right - rect.left, rect.bottom - rect.top);
 
-	unsigned long new_time = 0;
-	if (m_old_time)
-		new_time = ::GetTickCount() - m_old_time;
-	m_delta_time = new_time / 1000.0f;
-	m_old_time = ::GetTickCount();
-
-	m_angle += 1.57f * m_delta_time;
-	Constant cc;
-	cc.angle = m_angle;
-
-	pTmpCBuff->Update(GraphicsEngine::GetInstance()->GetDeviceContext(), &cc);
+	UpdatePosition();
 
 	GraphicsEngine::GetInstance()->GetDeviceContext()->VSSetConstantBuffer(pTmpCBuff);
 	GraphicsEngine::GetInstance()->GetDeviceContext()->PSSetConstantBuffer(pTmpCBuff);
@@ -94,6 +78,10 @@ void AppWindow::OnUpdate()
 	GraphicsEngine::GetInstance()->GetDeviceContext()->DrawTriangleList(pTmpVB->GetvertexSize(), 0);
 
 	pSwapChain->Present(false);
+
+	prevDeltaTime = newDeltaTime;
+	newDeltaTime = GetTickCount64();
+	deltaTime = prevDeltaTime ? (newDeltaTime - prevDeltaTime) / 1000.f : 0;
 }
 
 void AppWindow::OnDestroy()
@@ -106,4 +94,23 @@ void AppWindow::OnDestroy()
 	pTmpPS->Release();
 
 	GraphicsEngine::GetInstance()->Release();
+}
+
+void AppWindow::UpdatePosition()
+{
+	Constant c = {};
+	c.time = GetTickCount();
+
+	deltaPos += deltaTime / .5f;
+
+	c.world.SetScale(Vector3::Lerp(Vector3(0, 0, 0), Vector3(1, 1, 0), (sin(deltaPos)+1.f)/2.f));
+	c.view.SetIdentity();
+	c.projection.SetOrthoLH
+	(
+		(GetClientWindowRect().right - GetClientWindowRect().left) / 400.f,
+		(GetClientWindowRect().bottom - GetClientWindowRect().top) / 400.f,
+		-4.f, 4.f
+	);
+
+	pTmpCBuff->Update(GraphicsEngine::GetInstance()->GetDeviceContext(), &c);
 }

@@ -5,12 +5,15 @@
 class AppWindow : public Window
 {
 public:
-	AppWindow();
+	AppWindow() = default;
 	virtual ~AppWindow() = default;
 
 	virtual void OnCreate() override;
 	virtual void OnUpdate() override;
 	virtual void OnDestroy() override;
+
+public:
+	void UpdatePosition();
 
 private:
 	SwapChain* pSwapChain = nullptr;
@@ -21,8 +24,12 @@ private:
 	PixelShader* pTmpPS = nullptr;
 	ConstantBuffer* pTmpCBuff = nullptr;
 
-	unsigned long m_old_time = 0;
-	float m_delta_time = 0;
-	float m_angle = 0;
+	unsigned long prevTime = 0;
+	float prevDeltaTime = 0;
+	float newDeltaTime = 0;
+	float deltaTime = 0;
+	//float angle = 0;
+
+	float deltaPos = 0;
 };
 

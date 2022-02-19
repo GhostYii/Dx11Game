@@ -24,6 +24,9 @@
     <Filter Include="Shader">
       <UniqueIdentifier>{ab228914-762e-4190-b50c-022ac44dafdf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameEngine\Math">
+      <UniqueIdentifier>{262e40b4-d044-46be-9446-494503b42b74}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AppWindow.cpp">
@@ -87,6 +90,15 @@
     </ClInclude>
     <ClInclude Include="ConstantBuffer.h">
       <Filter>GameEngine\GraphicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>GameEngine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix4x4.h">
+      <Filter>GameEngine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math.h">
+      <Filter>GameEngine\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
