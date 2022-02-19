@@ -17,6 +17,7 @@ public:
 	// Inherited via InputLisenter
 	virtual void OnKeyDown(int keycode) override;
 	virtual void OnKeyUp(int keycode) override;
+	virtual void OnMouseMove(const Point& mousePosition) override;
 
 public:
 	void UpdatePosition();
@@ -40,6 +41,5 @@ private:
 	float tmpDelta = 0;
 
 	float tmpRotX = 0.f, tmpRotY = 0.f;
-
 };
 

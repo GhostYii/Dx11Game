@@ -26,6 +26,28 @@ void InputSystem::RemoveListener(InputLisenter* listener)
 
 void InputSystem::Update()
 {
+    POINT currentMousePosition = {};
+    GetCursorPos(&currentMousePosition);
+
+    if (isFirstTimeMoveMouse)
+    {
+        prevMousePos = Point(currentMousePosition.x, currentMousePosition.y);
+        isFirstTimeMoveMouse = false;
+    }
+
+    if (prevMousePos != currentMousePosition)
+    {
+        std::map<InputLisenter*, InputLisenter*>::iterator iter = listenerMap.begin();
+
+        while (iter != listenerMap.end())
+        {
+            iter->second->OnMouseMove(Point(currentMousePosition.x - prevMousePos.x, currentMousePosition.y - prevMousePos.y));
+            ++iter;
+        }
+    }
+
+    prevMousePos = Point(currentMousePosition.x, currentMousePosition.y);
+
     if (GetKeyboardState(keyStates))
     {
         for (unsigned int i = 0; i < 256; i++)

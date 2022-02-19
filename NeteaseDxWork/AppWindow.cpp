@@ -182,6 +182,10 @@ void AppWindow::UpdatePosition()
 	pTmpCBuff->Update(GraphicsEngine::GetInstance()->GetDeviceContext(), &c);
 }
 
+void AppWindow::OnMouseMove(const Point& mousePosition)
+{
+}
+
 void AppWindow::OnKeyDown(int keycode)
 {
 	if (keycode == 'W')
