@@ -36,5 +36,5 @@ constexpr T to_rad(T deg)
 template<typename T>
 constexpr T to_deg(T rad)
 {
-	return rad * 180.0 / PI;
+	return rad * (T)180.0 / PI;
 }
