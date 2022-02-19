@@ -1,7 +1,7 @@
 #include "AppWindow.h"
 #include "GraphicsEngine.h"
 #include "DeviceContext.h"
-#include "Math.h"
+
 #include "InputSystem.h"
 
 #include<Windows.h>
@@ -120,8 +120,8 @@ void AppWindow::OnUpdate()
 	pSwapChain->Present(false);
 
 	prevDeltaTime = newDeltaTime;
-	newDeltaTime = GetTickCount64();
-	deltaTime = prevDeltaTime ? (newDeltaTime - prevDeltaTime) / 1000.f : 0;
+	newDeltaTime = GetTickCount();
+	deltaTime = prevDeltaTime ? (newDeltaTime - prevDeltaTime) / 1000.f : 0;	
 }
 
 void AppWindow::OnDestroy()
@@ -157,7 +157,7 @@ void AppWindow::UpdatePosition()
 
 	//c.world *= tmpMat;
 
-	c.world.SetScale(Vector3(1, 1, 1));
+	c.world.SetScale(tmpScale);
 
 	tmpMat.SetIdentity();
 	tmpMat.SetRotationZ(0);
@@ -174,16 +174,51 @@ void AppWindow::UpdatePosition()
 	c.view.SetIdentity();
 	c.projection.SetOrthoLH
 	(
-		(GetClientWindowRect().right - GetClientWindowRect().left) / 400.f,
-		(GetClientWindowRect().bottom - GetClientWindowRect().top) / 400.f,
+		(GetClientWindowRect().right - GetClientWindowRect().left) / 300.f,
+		(GetClientWindowRect().bottom - GetClientWindowRect().top) / 300.f,
 		-4.f, 4.f
 	);
 
 	pTmpCBuff->Update(GraphicsEngine::GetInstance()->GetDeviceContext(), &c);
 }
 
-void AppWindow::OnMouseMove(const Point& mousePosition)
+void AppWindow::OnMouseKeyDown(int mouseKey)
 {
+	switch (mouseKey)
+	{
+	case 0: 
+	{
+		tmpScale = Vector3(0.5f, 1, 1);
+		break;
+	}
+	case 1:
+	{
+		tmpScale = Vector3(1, 0.5f, 1);
+		break;
+	}
+	case 2:
+	{
+		tmpScale = Vector3(1, 1, 0.5f);
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+void AppWindow::OnMouseKeyUp(int mouseKey)
+{
+	tmpScale = Vector3(1, 1, 1);
+}
+
+void AppWindow::OnMouseMove(const Point& delta)
+{
+	//if (!deltaTime)
+	//	MessageBox(hWnd, "WTF", "WTF", MB_OK);
+
+	tmpRotX -= delta.y * .03f;
+	tmpRotY -= delta.x * .03f;
+
 }
 
 void AppWindow::OnKeyDown(int keycode)

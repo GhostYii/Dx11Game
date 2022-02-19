@@ -118,6 +118,12 @@
     <ClInclude Include="InputListener.h">
       <Filter>GameEngine\Input</Filter>
     </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>GameEngine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Point.h">
+      <Filter>GameEngine\Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader.fx">

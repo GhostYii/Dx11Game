@@ -1,5 +1,4 @@
 #pragma once
-#include <windef.h>
 
 class Point
 {
@@ -17,10 +16,6 @@ public:
 	}
 
 	bool operator!=(const Point& other)
-	{
-		return x != other.x || y != other.y;
-	}
-	bool operator!=(const POINT& other)
 	{
 		return x != other.x || y != other.y;
 	}

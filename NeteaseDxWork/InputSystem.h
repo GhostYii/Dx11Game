@@ -1,7 +1,7 @@
 #pragma once
 #include "InputListener.h"
 #include "Point.h"
-#include <map>
+#include <unordered_set>
 
 class InputSystem
 {
@@ -12,12 +12,12 @@ public:
 public:
 	static InputSystem* GetInstance();
 
-	void AddListener(InputLisenter* listener);
-	void RemoveListener(InputLisenter* listener);
+	void AddListener(InputListener* listener);
+	void RemoveListener(InputListener* listener);
 
 	void Update();
 private:
-	std::map<InputLisenter*, InputLisenter*> listenerMap;
+	std::unordered_set<InputListener*> listenerMap;
 
 	unsigned char keyStates[256] = {};
 	unsigned char prevKeyStates[256] = {};

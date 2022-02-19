@@ -166,7 +166,9 @@
     <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="PinelineStruct.h" />
     <ClInclude Include="PixelShader.h" />
+    <ClInclude Include="Point.h" />
     <ClInclude Include="SwapChain.h" />
+    <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexShader.h" />

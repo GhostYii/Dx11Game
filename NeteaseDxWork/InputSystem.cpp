@@ -3,82 +3,106 @@
 
 InputSystem* InputSystem::GetInstance()
 {
-    static InputSystem instance;
-    return &instance;
+	static InputSystem instance;
+	return &instance;
 }
 
-void InputSystem::AddListener(InputLisenter* listener)
+void InputSystem::AddListener(InputListener* listener)
 {
-    listenerMap.insert(std::make_pair<InputLisenter*, InputLisenter*>
-    (
-        std::forward<InputLisenter*>(listener), 
-        std::forward<InputLisenter*>(listener))
-    );
+	listenerMap.insert(listener);
 }
 
-void InputSystem::RemoveListener(InputLisenter* listener)
+void InputSystem::RemoveListener(InputListener* listener)
 {
-    std::map<InputLisenter*, InputLisenter*>::iterator iter = listenerMap.find(listener);
-
-    if (iter != listenerMap.end())
-        listenerMap.erase(iter);
+	listenerMap.erase(listener);
 }
 
 void InputSystem::Update()
 {
-    POINT currentMousePosition = {};
-    GetCursorPos(&currentMousePosition);
+	POINT currentMousePosition = {};
+	GetCursorPos(&currentMousePosition);
 
-    if (isFirstTimeMoveMouse)
-    {
-        prevMousePos = Point(currentMousePosition.x, currentMousePosition.y);
-        isFirstTimeMoveMouse = false;
-    }
+	if (isFirstTimeMoveMouse)
+	{
+		prevMousePos = Point(currentMousePosition.x, currentMousePosition.y);
+		isFirstTimeMoveMouse = false;
+	}
 
-    if (prevMousePos != currentMousePosition)
-    {
-        std::map<InputLisenter*, InputLisenter*>::iterator iter = listenerMap.begin();
+	if (currentMousePosition.x != prevMousePos.x || currentMousePosition.y != prevMousePos.y)
+	{
+		std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
 
-        while (iter != listenerMap.end())
-        {
-            iter->second->OnMouseMove(Point(currentMousePosition.x - prevMousePos.x, currentMousePosition.y - prevMousePos.y));
-            ++iter;
-        }
-    }
+		while (iter != listenerMap.end())
+		{
+			(*iter)->OnMouseMove(Point(currentMousePosition.x - prevMousePos.x, currentMousePosition.y - prevMousePos.y));
+			++iter;
+		}
+	}
 
-    prevMousePos = Point(currentMousePosition.x, currentMousePosition.y);
+	prevMousePos = Point(currentMousePosition.x, currentMousePosition.y);
 
-    if (GetKeyboardState(keyStates))
-    {
-        for (unsigned int i = 0; i < 256; i++)
-        {
-            // key down
-            if (keyStates[i] & 0x80)
-            {
-                std::map<InputLisenter*, InputLisenter*>::iterator iter = listenerMap.begin();
+	if (GetKeyboardState(keyStates))
+	{
+		for (unsigned int i = 0; i < 256; i++)
+		{
+			// key down
+			if (keyStates[i] & 0x80)
+			{
+				std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
 
-                while (iter != listenerMap.end())
-                {
-                    iter->second->OnKeyDown(i);
-                    ++iter;
-                }
-            }
-            // key up
-            else
-            {
-                if (keyStates[i] != prevKeyStates[i])
-                {
-                    std::map<InputLisenter*, InputLisenter*>::iterator iter = listenerMap.begin();
+				while (iter != listenerMap.end())
+				{
+					if (i == VK_LBUTTON)
+					{
+						if (keyStates[i] != prevKeyStates[i])
+						{
+							(*iter)->OnMouseKeyDown(0);
+						}
+					}
+					else if (i == VK_RBUTTON)
+					{
+						if (keyStates[i] != prevKeyStates[i])
+						{
+							(*iter)->OnMouseKeyDown(1);
+						}
+					}
+					else if (i == VK_MBUTTON)
+					{
+						if (keyStates[i] != prevKeyStates[i])
+						{
+							(*iter)->OnMouseKeyDown(2);
+						}
+					}
+					else
+						(*iter)->OnKeyDown(i);
+					
+					++iter;
+				}
+			}
+			// key up
+			else
+			{
+				if (keyStates[i] != prevKeyStates[i])
+				{
+					std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
 
-                    while (iter != listenerMap.end())
-                    {
-                        iter->second->OnKeyUp(i);
-                        ++iter;
-                    }
-                }
-            }
-        }
-                
-        memcpy(prevKeyStates, keyStates, sizeof(unsigned char) * 256);
-    }
+					while (iter != listenerMap.end())
+					{
+						if (i == VK_LBUTTON)						
+							(*iter)->OnMouseKeyUp(0);						
+						else if (i == VK_RBUTTON)						
+							(*iter)->OnMouseKeyUp(1);						
+						else if (i == VK_MBUTTON)						
+							(*iter)->OnMouseKeyUp(2);						
+						else
+							(*iter)->OnKeyUp(i);
+						
+						++iter;
+					}
+				}
+			}
+		}
+
+		memcpy(prevKeyStates, keyStates, sizeof(unsigned char) * 256);
+	}
 }

@@ -3,7 +3,9 @@
 #include "PinelineStruct.h"
 #include "InputListener.h"
 
-class AppWindow : public Window, public InputLisenter
+#include "Math.h"
+
+class AppWindow : public Window, public InputListener
 {
 public:
 	AppWindow() = default;
@@ -18,6 +20,8 @@ public:
 	virtual void OnKeyDown(int keycode) override;
 	virtual void OnKeyUp(int keycode) override;
 	virtual void OnMouseMove(const Point& mousePosition) override;
+	virtual void OnMouseKeyDown(int mouseKey) override;
+	virtual void OnMouseKeyUp(int mouseKey) override;
 
 public:
 	void UpdatePosition();
@@ -41,5 +45,6 @@ private:
 	float tmpDelta = 0;
 
 	float tmpRotX = 0.f, tmpRotY = 0.f;
+	Vector3 tmpScale = { 1,1,1 };
 };
 
