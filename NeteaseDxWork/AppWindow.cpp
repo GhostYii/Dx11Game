@@ -98,12 +98,24 @@ void AppWindow::OnDestroy()
 
 void AppWindow::UpdatePosition()
 {
+	// Scale - Rotation - Translate
+
 	Constant c = {};
 	c.time = GetTickCount();
 
-	deltaPos += deltaTime / .5f;
+	tmpPos += deltaTime / 10.f;
+	if (tmpPos > 1.f)
+		tmpPos = 0;
 
-	c.world.SetScale(Vector3::Lerp(Vector3(0, 0, 0), Vector3(1, 1, 0), (sin(deltaPos)+1.f)/2.f));
+	Matrix4x4 tmpMat;
+
+	tmpDelta += deltaTime / .15f;	
+
+	c.world.SetScale(Vector3::Lerp(Vector3(0, 0, 0), Vector3(1, 1, 0), (sin(tmpDelta) + 1.f) / 2.f));
+	tmpMat.SetTranslate(Vector3::Lerp(Vector3(-1.5f, -1.5f, 0), Vector3(1.5f, 1.5f, 0), tmpPos));
+
+	c.world *= tmpMat;
+
 	c.view.SetIdentity();
 	c.projection.SetOrthoLH
 	(

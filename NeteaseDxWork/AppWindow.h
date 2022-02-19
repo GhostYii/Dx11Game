@@ -28,8 +28,8 @@ private:
 	float prevDeltaTime = 0;
 	float newDeltaTime = 0;
 	float deltaTime = 0;
-	//float angle = 0;
-
-	float deltaPos = 0;
+	
+	float tmpPos = 0;
+	float tmpDelta = 0;
 };
 
