@@ -160,15 +160,15 @@ void AppWindow::UpdatePosition()
 	c.world.SetScale(Vector3(1, 1, 1));
 
 	tmpMat.SetIdentity();
-	tmpMat.SetRotationZ(tmpDelta);
+	tmpMat.SetRotationZ(0);
 	c.world *= tmpMat;
 
 	tmpMat.SetIdentity();
-	tmpMat.SetRotationY(tmpDelta);
+	tmpMat.SetRotationY(tmpRotY);
 	c.world *= tmpMat;
 
 	tmpMat.SetIdentity();
-	tmpMat.SetRotationX(tmpDelta);
+	tmpMat.SetRotationX(tmpRotX);
 	c.world *= tmpMat;
 
 	c.view.SetIdentity();
@@ -184,6 +184,23 @@ void AppWindow::UpdatePosition()
 
 void AppWindow::OnKeyDown(int keycode)
 {
+	if (keycode == 'W')
+	{
+		tmpRotX += deltaTime;
+	}
+	else if (keycode == 'S')
+	{
+		tmpRotX -= deltaTime;
+	}
+	else if (keycode == 'A')
+	{
+		tmpRotY += deltaTime;
+	}
+	else if (keycode == 'D')
+	{
+		tmpRotY -= deltaTime;
+	}
+
 }
 
 void AppWindow::OnKeyUp(int keycode)

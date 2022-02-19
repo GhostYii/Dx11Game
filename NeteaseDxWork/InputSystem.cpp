@@ -3,8 +3,8 @@
 
 InputSystem* InputSystem::GetInstance()
 {
-    static InputSystem* instance;
-    return instance;
+    static InputSystem instance;
+    return &instance;
 }
 
 void InputSystem::AddListener(InputLisenter* listener)

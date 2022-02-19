@@ -39,6 +39,7 @@ private:
 	float tmpPos = 0;
 	float tmpDelta = 0;
 
+	float tmpRotX = 0.f, tmpRotY = 0.f;
 
 };
 
