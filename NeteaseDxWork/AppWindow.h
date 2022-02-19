@@ -1,16 +1,22 @@
 #pragma once
 #include "Window.h"
 #include "PinelineStruct.h"
+#include "InputListener.h"
 
-class AppWindow : public Window
+class AppWindow : public Window, public InputLisenter
 {
 public:
 	AppWindow() = default;
 	virtual ~AppWindow() = default;
 
+	// Inherited via Window
 	virtual void OnCreate() override;
 	virtual void OnUpdate() override;
 	virtual void OnDestroy() override;
+
+	// Inherited via InputLisenter
+	virtual void OnKeyDown(int keycode) override;
+	virtual void OnKeyUp(int keycode) override;
 
 public:
 	void UpdatePosition();
@@ -32,5 +38,7 @@ private:
 	
 	float tmpPos = 0;
 	float tmpDelta = 0;
+
+
 };
 

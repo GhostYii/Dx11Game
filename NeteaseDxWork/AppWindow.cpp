@@ -2,6 +2,7 @@
 #include "GraphicsEngine.h"
 #include "DeviceContext.h"
 #include "Math.h"
+#include "InputSystem.h"
 
 #include<Windows.h>
 
@@ -24,6 +25,8 @@ struct Constant
 
 void AppWindow::OnCreate()
 {
+	InputSystem::GetInstance()->AddListener(this);
+
 	GraphicsEngine::GetInstance()->Init();
 	pSwapChain = GraphicsEngine::GetInstance()->CreateSwapChain();
 	RECT rect = this->GetClientWindowRect();
@@ -95,6 +98,8 @@ void AppWindow::OnCreate()
 
 void AppWindow::OnUpdate()
 {
+	InputSystem::GetInstance()->Update();
+
 	GraphicsEngine::GetInstance()->GetDeviceContext()->ClearRenderTargetColor(this->pSwapChain, 0, 0, 0, 1);
 
 	RECT rect = this->GetClientWindowRect();
@@ -175,4 +180,12 @@ void AppWindow::UpdatePosition()
 	);
 
 	pTmpCBuff->Update(GraphicsEngine::GetInstance()->GetDeviceContext(), &c);
+}
+
+void AppWindow::OnKeyDown(int keycode)
+{
+}
+
+void AppWindow::OnKeyUp(int keycode)
+{
 }
