@@ -35,14 +35,20 @@ void AppWindow::OnCreate()
 	pTmpVB = GraphicsEngine::GetInstance()->CreateVertexBuffer();
 	UINT vertexSize = ARRAYSIZE(vertices);
 
-	GraphicsEngine::GetInstance()->CreateShaders();
+	//GraphicsEngine::GetInstance()->CreateShaders();
 
 	void* shaderByteCode = nullptr;
 	UINT shaderSize = 0;
-	GraphicsEngine::GetInstance()->GetShaderBufferAndSize(&shaderByteCode, &shaderSize);
-
-	pTmpVB->Load(vertices, sizeof(Vertex), vertexSize, shaderByteCode, shaderSize);
+	GraphicsEngine::GetInstance()->CompileVertexShader(L"VertexShader.hlsl", "main", &shaderByteCode, &shaderSize);
+	pTmpVS = GraphicsEngine::GetInstance()->CreateVertexShader(shaderByteCode, shaderSize);
 	
+	pTmpVB->Load(vertices, sizeof(Vertex), vertexSize, shaderByteCode, shaderSize);
+
+	GraphicsEngine::GetInstance()->CompilePixelShader(L"PixelShader.hlsl", "main", &shaderByteCode, &shaderSize);
+	pTmpPS = GraphicsEngine::GetInstance()->CreatePixelShader(shaderByteCode, shaderSize);
+	//pTmpPS->
+
+	GraphicsEngine::GetInstance()->ReleaseCompiledShader();	
 }
 
 void AppWindow::OnUpdate()
@@ -51,7 +57,10 @@ void AppWindow::OnUpdate()
 
 	RECT rect = this->GetClientWindowRect();
 	GraphicsEngine::GetInstance()->GetDeviceContext()->SetViewportSize(rect.right - rect.left, rect.bottom - rect.top);
-	GraphicsEngine::GetInstance()->SetShaders();
+	//GraphicsEngine::GetInstance()->SetShaders();
+
+	GraphicsEngine::GetInstance()->GetDeviceContext()->SetVertexShader(pTmpVS);
+	GraphicsEngine::GetInstance()->GetDeviceContext()->SetPixelShader(pTmpPS);
 
 	GraphicsEngine::GetInstance()->GetDeviceContext()->SetVertexBuffer(pTmpVB);
 	GraphicsEngine::GetInstance()->GetDeviceContext()->DrawTriangleList(pTmpVB->GetvertexSize(), 0);
@@ -64,5 +73,9 @@ void AppWindow::OnDestroy()
 	Window::OnDestroy();
 	pTmpVB->Release();
 	pSwapChain->Release();
+
+	pTmpVS->Release();
+	pTmpPS->Release();
+
 	GraphicsEngine::GetInstance()->Release();
 }

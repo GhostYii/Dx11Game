@@ -1,6 +1,5 @@
 #include "DeviceContext.h"
-#include "SwapChain.h"
-#include "VertexBuffer.h"
+#include "PinelineStruct.h"
 
 DeviceContext::DeviceContext(ID3D11DeviceContext* pDeviceContext) :pDeviceContext(pDeviceContext)
 {
@@ -46,4 +45,14 @@ void DeviceContext::SetViewportSize(UINT width, UINT height)
 	vp.MaxDepth = 1;
 
 	pDeviceContext->RSSetViewports(1, &vp);
+}
+
+void DeviceContext::SetVertexShader(VertexShader* shader)
+{
+	pDeviceContext->VSSetShader(shader->pVertexShader, nullptr, 0);
+}
+
+void DeviceContext::SetPixelShader(PixelShader* shader)
+{
+	pDeviceContext->PSSetShader(shader->pPixelShader, nullptr, 0);
 }

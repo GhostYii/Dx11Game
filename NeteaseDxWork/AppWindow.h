@@ -17,5 +17,7 @@ private:
 
 private:
 	VertexBuffer* pTmpVB = nullptr;
+	VertexShader* pTmpVS = nullptr;
+	PixelShader* pTmpPS = nullptr;
 };
 

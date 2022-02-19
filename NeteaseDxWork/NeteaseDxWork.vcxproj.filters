@@ -47,6 +47,12 @@
     <ClCompile Include="VertexBuffer.cpp">
       <Filter>GameEngine\GraphicsEngine</Filter>
     </ClCompile>
+    <ClCompile Include="VertexShader.cpp">
+      <Filter>GameEngine\GraphicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="PixelShader.cpp">
+      <Filter>GameEngine\GraphicsEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppWindow.h">
@@ -70,9 +76,21 @@
     <ClInclude Include="PinelineStruct.h">
       <Filter>GameEngine\GraphicsEngine</Filter>
     </ClInclude>
+    <ClInclude Include="PixelShader.h">
+      <Filter>GameEngine\GraphicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>GameEngine\GraphicsEngine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="VertexShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="PixelShader.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>

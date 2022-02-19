@@ -3,6 +3,8 @@
 
 class SwapChain;
 class VertexBuffer;
+class VertexShader;
+class PixelShader;
 
 class DeviceContext
 {
@@ -17,6 +19,9 @@ public:
 
 	void DrawTriangleList(UINT vertexSize, UINT startIndex);
 	void SetViewportSize(UINT width, UINT height);
+
+	void SetVertexShader(VertexShader* shader);
+	void SetPixelShader(PixelShader* shader);
 
 private:
 	ID3D11DeviceContext* pDeviceContext = nullptr;

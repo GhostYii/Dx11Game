@@ -4,11 +4,11 @@
 class SwapChain;
 class DeviceContext;
 class VertexBuffer;
+class VertexShader;
+class PixelShader;
 
 class GraphicsEngine
 {
-	
-
 public:
 	GraphicsEngine();
 	~GraphicsEngine() = default;
@@ -20,13 +20,15 @@ public:
 	SwapChain* CreateSwapChain();
 	DeviceContext* GetDeviceContext();
 	VertexBuffer* CreateVertexBuffer();
+	VertexShader* CreateVertexShader(const void* shaderByteCode, size_t byteCodeSize);
+	PixelShader* CreatePixelShader(const void* shaderByteCode, size_t byteCodeSize);
 
 	static GraphicsEngine* GetInstance();
 
 public:
-	bool CreateShaders();
-	bool SetShaders();
-	void GetShaderBufferAndSize(void** bytecode, UINT* size);
+	bool CompileVertexShader(const wchar_t* fileName, const char* entryPointName, void** shaderByteCode, size_t* byteCodeSize);
+	bool CompilePixelShader(const wchar_t* fileName, const char* entryPointName, void** shaderByteCode, size_t* byteCodeSize);
+	void ReleaseCompiledShader();
 
 private:
 	DeviceContext* pDeviceContext = nullptr;
@@ -49,5 +51,7 @@ private:
 private:
 	friend class SwapChain;
 	friend class VertexBuffer;
+	friend class VertexShader;
+	friend class PixelShader;
 };
 
