@@ -9,7 +9,7 @@ public:
 	~Vector2() = default;
 
 public:
-	Vector2& operator+(const Vector2& other)
+	Vector2 operator+(const Vector2& other)
 	{
 		Vector2 v;
 		v.x = x + other.x;
@@ -17,7 +17,7 @@ public:
 		return v;
 	}
 
-	Vector2& operator-(const Vector2& other)
+	Vector2 operator-(const Vector2& other)
 	{
 		Vector2 v;
 		v.x = x - other.x;

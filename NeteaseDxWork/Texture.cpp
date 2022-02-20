@@ -12,6 +12,14 @@ Texture::Texture(const wchar_t* fullPath) : Resource(fullPath)
 	{
 		res = DirectX::CreateTexture(GraphicsEngine::GetInstance()->GetRenderSystem()->pDevice, imageData.GetImages(), imageData.GetImageCount(), imageData.GetMetadata(), pTexture.GetAddressOf());
 		
+		D3D11_SHADER_RESOURCE_VIEW_DESC desc = {};
+		desc.Format = imageData.GetMetadata().format;
+		desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		desc.Texture2D.MipLevels = imageData.GetMetadata().mipLevels;
+		desc.Texture2D.MostDetailedMip = 0;
+
+		GraphicsEngine::GetInstance()->GetRenderSystem()->pDevice->CreateShaderResourceView(pTexture.Get(), &desc, pShaderResourceView.GetAddressOf());
+
 		if (FAILED(res))
 			throw std::exception("Create Texture failed!");
 	}

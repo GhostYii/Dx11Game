@@ -37,6 +37,7 @@ private:
 	PixelShaderPtr pTmpPS = nullptr;
 	ConstantBufferPtr pTmpCBuff = nullptr;
 	IndexBufferPtr pTmpIndexBuff = nullptr;
+	TexturePtr pTmpTexture = nullptr;
 
 	unsigned long prevTime = 0;
 	float prevDeltaTime = 0;

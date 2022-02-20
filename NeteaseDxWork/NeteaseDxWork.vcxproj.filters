@@ -169,6 +169,9 @@
     <ClInclude Include="Texture.h">
       <Filter>GameEngine\Resource\Texture</Filter>
     </ClInclude>
+    <ClInclude Include="ResourceStruct.h">
+      <Filter>GameEngine\Resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader.fx">

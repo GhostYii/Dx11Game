@@ -1,6 +1,8 @@
 #include "DeviceContext.h"
 #include "PinelineStruct.h"
 
+#include "Texture.h"
+
 DeviceContext::DeviceContext(ID3D11DeviceContext* pDeviceContext, RenderSystem* rs) 
 	: pDeviceContext(pDeviceContext), pRenderSystem(rs)
 {
@@ -73,4 +75,14 @@ void DeviceContext::VSSetConstantBuffer(ConstantBufferPtr cBuffer)
 void DeviceContext::PSSetConstantBuffer(ConstantBufferPtr cBuffer)
 {
 	pDeviceContext->PSSetConstantBuffers(0, 1, cBuffer->pBuffer.GetAddressOf());
+}
+
+void DeviceContext::VSSetTexture(TexturePtr texture)
+{
+	pDeviceContext->VSSetShaderResources(0, 1, texture->pShaderResourceView.GetAddressOf());
+}
+
+void DeviceContext::PSSetTexture(TexturePtr texture)
+{
+	pDeviceContext->PSSetShaderResources(0, 1, texture->pShaderResourceView.GetAddressOf());
 }

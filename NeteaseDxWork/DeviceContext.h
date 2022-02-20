@@ -2,6 +2,7 @@
 #include <d3d11.h>
 #include <wrl.h>
 #include "GraphicsClasses.h"
+#include "ResourceClasses.h"
 
 class DeviceContext
 {
@@ -24,6 +25,9 @@ public:
 
 	void VSSetConstantBuffer(ConstantBufferPtr cBuffer);
 	void PSSetConstantBuffer(ConstantBufferPtr cBuffer);
+
+	void VSSetTexture(TexturePtr texture);
+	void PSSetTexture(TexturePtr texture);
 private:
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pDeviceContext = nullptr;
 	RenderSystem* pRenderSystem = nullptr;

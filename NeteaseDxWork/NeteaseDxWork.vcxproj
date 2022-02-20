@@ -184,6 +184,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceClasses.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="ResourceStruct.h" />
     <ClInclude Include="SwapChain.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Texture.h" />

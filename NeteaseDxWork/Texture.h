@@ -7,11 +7,13 @@
 
 class Texture : public Resource
 {
+	friend class DeviceContext;
 public:
 	Texture(const wchar_t* fullPath);
 	~Texture() = default;
-
+	
 private:
 	Microsoft::WRL::ComPtr<ID3D11Resource> pTexture = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pShaderResourceView = nullptr;
 };
 

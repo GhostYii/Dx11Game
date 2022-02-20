@@ -82,8 +82,8 @@ public:
 		float yScale = 1.f / tan(fov / 2.f);
 		float xScale = yScale / aspect;		
 
-		value[0][0] = 2.0f / xScale;
-		value[1][1] = 2.0f / yScale;
+		value[0][0] = xScale;
+		value[1][1] = yScale;
 		value[2][2] = zFar / (zFar - zNear);
 		value[2][3] = 1.f;
 		value[3][2] = (-zNear * zFar) / (zFar - zNear);

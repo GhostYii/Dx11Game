@@ -10,8 +10,7 @@
 struct Vertex
 {
 	Vector3 position;
-	Vector3 color;
-	Vector3 color1;
+	Vector2 texcoord;
 };
 
 __declspec(align(16))
@@ -28,41 +27,71 @@ void AppWindow::OnCreate()
 	InputSystem::GetInstance()->AddListener(this);
 
 	//InputSystem::GetInstance()->SetCursorVisiable(false);
-	TexturePtr tex = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\wood.jpg");
+	pTmpTexture = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\wood.jpg");
 
 	RECT rect = this->GetClientWindowRect();
 	pSwapChain = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateSwapChain(this->hWnd, rect.right - rect.left, rect.bottom - rect.top);
-	
+
 	worldCamMat.SetTranslate(Vector3(0, 0, -2.f));
+
+	Vector3 vertics[] =
+	{
+		//		X - Y - Z
+		//FRONT FACE
+		{ -0.5f,-0.5f,-0.5f },
+		{ -0.5f,0.5f,-0.5f },
+		{ 0.5f,0.5f,-0.5f },
+		{ 0.5f,-0.5f,-0.5f },
+
+		//BACK FACE
+		{ 0.5f,-0.5f,0.5f },
+		{ 0.5f,0.5f,0.5f },
+		{ -0.5f,0.5f,0.5f },
+		{ -0.5f,-0.5f,0.5f }
+	};
+
+	Vector2 texcoords[] =
+	{
+		{ 0, 0 },
+		{ 0, 1.f },
+		{ 1.f, 0 },
+		{ 1.f, 1.f }
+	};
 
 	Vertex vertices[] =
 	{
-		//X - Y - Z
-		////FRONT FACE
-		//{ Vector3(-0.5f,-0.5f,-0.5f), Vector3(1,0,0), Vector3(0,1,0) },
-		//{ Vector3(-0.5f,0.5f,-0.5f),  Vector3(0,1,0), Vector3(0,0,1) },
-		//{ Vector3(0.5f,0.5f,-0.5f),  Vector3(0,0,1), Vector3(1,0,0) },
-		//{ Vector3(0.5f,-0.5f,-0.5f), Vector3(1,0,0), Vector3(0,1,0) },
+		{ vertics[0], texcoords[1] },
+		{ vertics[1], texcoords[0] },
+		{ vertics[2], texcoords[2] },
+		{ vertics[3], texcoords[3] },
 
-		////BACK FACE
-		//{ Vector3(0.5f,-0.5f,0.5f),  Vector3(0,1,0), Vector3(1,0,0) },
-		//{ Vector3(0.5f,0.5f,0.5f),   Vector3(1,0,0), Vector3(0,1,0) },
-		//{ Vector3(-0.5f,0.5f,0.5f),  Vector3(0,1,0), Vector3(0,0,1) },
-		//{ Vector3(-0.5f,-0.5f,0.5f), Vector3(0,0,1), Vector3(1,0,0) }
-		//FRONT FACE
-		{ Vector3(-0.5f,-1.f,-0.5f), Vector3(1,0,0), Vector3(1,1,1) },
-		{ Vector3(-0.5f,1.f,-0.5f),  Vector3(1,0,0), Vector3(1,1,1) },
-		{ Vector3(0.5f,1.f,-0.5f),  Vector3(1,0,0), Vector3(1,1,1) },
-		{ Vector3(0.5f,-1.f,-0.5f), Vector3(1,0,0), Vector3(1,1,1) },
+		{ vertics[4], texcoords[1] },
+		{ vertics[5], texcoords[0] },
+		{ vertics[6], texcoords[2] },
+		{ vertics[7], texcoords[3] },
 
-		//BACK FACE
-		{ Vector3(0.5f,-1.f,0.5f),  Vector3(1,0,0), Vector3(0,0,0) },
-		{ Vector3(0.5f,1.f,0.5f),   Vector3(1,0,0), Vector3(0,0,0) },
-		{ Vector3(-0.5f,1.f,0.5f),  Vector3(1,0,0), Vector3(0,0,0) },
-		{ Vector3(-0.5f,-1.f,0.5f), Vector3(1,0,0), Vector3(0,0,0) }
+		{ vertics[1], texcoords[1] },
+		{ vertics[6], texcoords[0] },
+		{ vertics[5], texcoords[2] },
+		{ vertics[2], texcoords[3] },
+
+		{ vertics[7], texcoords[1] },
+		{ vertics[0], texcoords[0] },
+		{ vertics[3], texcoords[2] },
+		{ vertics[4], texcoords[3] },
+
+		{ vertics[3], texcoords[1] },
+		{ vertics[2], texcoords[0] },
+		{ vertics[5], texcoords[2] },
+		{ vertics[4], texcoords[3] },
+
+		{ vertics[7], texcoords[1] },
+		{ vertics[6], texcoords[0] },
+		{ vertics[1], texcoords[2] },
+		{ vertics[0], texcoords[3] },
 	};
 
-	
+
 	UINT vertexSize = ARRAYSIZE(vertices);
 
 	unsigned int indexList[] =
@@ -74,21 +103,21 @@ void AppWindow::OnCreate()
 		4,5,6,
 		6,7,4,
 		//TOP SIDE
-		1,6,5,
-		5,2,1,
+		8,9,10,
+		10,11,8,
 		//BOTTOM SIDE
-		7,0,3,
-		3,4,7,
+		12,13,14,
+		14,15,12,
 		//RIGHT SIDE
-		3,2,5,
-		5,4,3,
+		16,17,18,
+		18,19,16,
 		//LEFT SIDE
-		7,6,1,
-		1,0,7
+		20,21,22,
+		22,23,20
 	};
 
 	UINT indexListSize = ARRAYSIZE(indexList);
-	pTmpIndexBuff = GraphicsEngine::GetInstance()->GetRenderSystem()->CreatIndexBuffer(indexList, indexListSize);	
+	pTmpIndexBuff = GraphicsEngine::GetInstance()->GetRenderSystem()->CreatIndexBuffer(indexList, indexListSize);
 
 	void* shaderByteCode = nullptr;
 	UINT shaderSize = 0;
@@ -97,7 +126,7 @@ void AppWindow::OnCreate()
 
 	pTmpVB = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateVertexBuffer(vertices, sizeof(Vertex), vertexSize, shaderByteCode, shaderSize);
 
-	GraphicsEngine::GetInstance()->GetRenderSystem()->CompilePixelShader(L"PixelShader.hlsl", "main", &shaderByteCode, &shaderSize);
+	bool isBuild = GraphicsEngine::GetInstance()->GetRenderSystem()->CompilePixelShader(L"PixelShader.hlsl", "main", &shaderByteCode, &shaderSize);
 	pTmpPS = GraphicsEngine::GetInstance()->GetRenderSystem()->CreatePixelShader(shaderByteCode, shaderSize);
 
 	GraphicsEngine::GetInstance()->GetRenderSystem()->ReleaseCompiledShader();
@@ -124,6 +153,9 @@ void AppWindow::OnUpdate()
 	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetVertexShader(pTmpVS);
 	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetPixelShader(pTmpPS);
 
+	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->VSSetTexture(pTmpTexture);
+	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->PSSetTexture(pTmpTexture);
+
 	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetVertexBuffer(pTmpVB);
 	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetIndexBuffer(pTmpIndexBuff);
 	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->DrawIndexedTriangleList(pTmpIndexBuff->GetIndexListSize(), 0, 0);
@@ -132,14 +164,14 @@ void AppWindow::OnUpdate()
 
 	prevDeltaTime = newDeltaTime;
 	newDeltaTime = GetTickCount();
-	deltaTime = prevDeltaTime ? (newDeltaTime - prevDeltaTime) / 1000.f : 0;	
+	deltaTime = prevDeltaTime ? (newDeltaTime - prevDeltaTime) / 1000.f : 0;
 }
 
 void AppWindow::OnDestroy()
 {
 	InputSystem::GetInstance()->SetCursorVisiable(true);
 
-	Window::OnDestroy();	
+	Window::OnDestroy();
 }
 
 void AppWindow::UpdatePosition()
@@ -155,7 +187,7 @@ void AppWindow::UpdatePosition()
 
 	Matrix4x4 tmpMat;
 
-	tmpDelta += deltaTime / .5f;	
+	tmpDelta += deltaTime / .5f;
 
 	//c.world.SetScale(Vector3::Lerp(Vector3(0, 0, 0), Vector3(1, 1, 0), (sin(tmpDelta) + 1.f) / 2.f));
 	//tmpMat.SetTranslate(Vector3::Lerp(Vector3(-1.5f, -1.5f, 0), Vector3(1.5f, 1.5f, 0), tmpPos));
@@ -177,8 +209,8 @@ void AppWindow::UpdatePosition()
 	//c.world *= tmpMat;
 
 	Matrix4x4 tmpWorldCamMat;
-	
-	
+
+
 	tmpWorldCamMat.SetIdentity();
 
 	tmpMat.SetIdentity();
@@ -236,7 +268,7 @@ void AppWindow::OnMouseKeyDown(int mouseKey)
 {
 	switch (mouseKey)
 	{
-	case 0: 
+	case 0:
 	{
 		tmpScale = Vector3(0.6f, 1, 1);
 		break;
@@ -270,8 +302,8 @@ void AppWindow::OnMouseMove(const Point& mousePosition)
 
 	tmpRotX += InputSystem::GetInstance()->GetMouseDelta().y * .003f;
 	tmpRotY += InputSystem::GetInstance()->GetMouseDelta().x * .003f;
-	
-	
+
+
 	//InputSystem::GetInstance()->SetCursorPosition(Point(width / 2.f, height / 2.f));
 
 }
