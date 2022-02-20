@@ -10,6 +10,16 @@ public:
 	~Vector3() = default;
 
 public:
+	Vector3 operator+(const Vector3& other)
+	{
+		return Vector3(x + other.x, y + other.y, z + other.z);
+	}
+	Vector3 operator*(float num)
+	{
+		return Vector3(x * num, y * num, z * num);
+	}
+
+public:
 	static Vector3 Lerp(const Vector3& start, const Vector3& end, float delta)
 	{
 		Vector3 v;

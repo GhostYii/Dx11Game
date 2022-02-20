@@ -25,6 +25,7 @@ public:
 
 public:
 	void UpdatePosition();
+	//void UpdateCamera();
 
 private:
 	SwapChain* pSwapChain = nullptr;
@@ -46,5 +47,10 @@ private:
 
 	float tmpRotX = 0.f, tmpRotY = 0.f;
 	Vector3 tmpScale = { 1,1,1 };
+
+	float tmpForward = 0.f;
+	float tmpRight = 0.f;
+
+	Matrix4x4 worldCamMat;
 };
 

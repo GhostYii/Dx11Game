@@ -5,7 +5,7 @@ struct PS_IUTPUT
     float3 color1 : COLOR1;
 };
 
-cbuffer MVP
+cbuffer MVP : register(b0)
 {
     row_major float4x4 world;
     row_major float4x4 view;

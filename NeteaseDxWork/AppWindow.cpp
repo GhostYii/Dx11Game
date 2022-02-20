@@ -32,14 +32,16 @@ void AppWindow::OnCreate()
 	RECT rect = this->GetClientWindowRect();
 	pSwapChain->Init(this->hWnd, rect.right - rect.left, rect.bottom - rect.top);
 
+	worldCamMat.SetTranslate(Vector3(0, 0, -2.f));
+
 	Vertex vertices[] =
 	{
 		//X - Y - Z
 		//FRONT FACE
-		{Vector3(-0.5f,-0.5f,-0.5f), Vector3(1,0,0), Vector3(0.2f,0,0) },
-		{Vector3(-0.5f,0.5f,-0.5f),  Vector3(1,1,0), Vector3(0.2f,0.2f,0) },
-		{ Vector3(0.5f,0.5f,-0.5f),  Vector3(1,1,0), Vector3(0.2f,0.2f,0) },
-		{ Vector3(0.5f,-0.5f,-0.5f), Vector3(1,0,0), Vector3(0.2f,0,0) },
+		{ Vector3(-0.5f,-0.5f,-0.5f), Vector3(1,1,0), Vector3(0,1,1) },
+		{ Vector3(-0.5f,0.5f,-0.5f),  Vector3(0,1,1), Vector3(1,0,1) },
+		{ Vector3(0.5f,0.5f,-0.5f),  Vector3(1,0,1), Vector3(1,1,0) },
+		{ Vector3(0.5f,-0.5f,-0.5f), Vector3(1,1,0), Vector3(0,1,1) },
 
 		//BACK FACE
 		{ Vector3(0.5f,-0.5f,0.5f),  Vector3(0,1,0), Vector3(0,0.2f,0) },
@@ -156,31 +158,76 @@ void AppWindow::UpdatePosition()
 	//tmpMat.SetTranslate(Vector3::Lerp(Vector3(-1.5f, -1.5f, 0), Vector3(1.5f, 1.5f, 0), tmpPos));
 
 	//c.world *= tmpMat;
-
+	c.world.SetIdentity();
 	c.world.SetScale(tmpScale);
 
-	tmpMat.SetIdentity();
-	tmpMat.SetRotationZ(0);
-	c.world *= tmpMat;
+	//tmpMat.SetIdentity();
+	//tmpMat.SetRotationZ(0);
+	//c.world *= tmpMat;
 
-	tmpMat.SetIdentity();
-	tmpMat.SetRotationY(tmpRotY);
-	c.world *= tmpMat;
+	//tmpMat.SetIdentity();
+	//tmpMat.SetRotationY(tmpRotY);
+	//c.world *= tmpMat;
+
+	//tmpMat.SetIdentity();
+	//tmpMat.SetRotationX(tmpRotX);
+	//c.world *= tmpMat;
+
+	Matrix4x4 tmpWorldCamMat;
+	
+	
+	tmpWorldCamMat.SetIdentity();
 
 	tmpMat.SetIdentity();
 	tmpMat.SetRotationX(tmpRotX);
-	c.world *= tmpMat;
+	tmpWorldCamMat *= tmpMat;
 
-	c.view.SetIdentity();
-	c.projection.SetOrthoLH
-	(
-		(GetClientWindowRect().right - GetClientWindowRect().left) / 300.f,
-		(GetClientWindowRect().bottom - GetClientWindowRect().top) / 300.f,
-		-4.f, 4.f
-	);
+	tmpMat.SetIdentity();
+	tmpMat.SetRotationY(tmpRotY);
+	tmpWorldCamMat *= tmpMat;
+
+	Vector3 newPos = worldCamMat.GetTranslation() + tmpWorldCamMat.GetDirectionZ() * tmpForward * .0003f;
+	newPos = newPos + tmpWorldCamMat.GetDirectionX() * tmpRight * .0003f;
+
+	tmpWorldCamMat.SetTranslate(newPos);
+	worldCamMat = tmpWorldCamMat;
+
+	tmpWorldCamMat.Inverse();
+
+	//c.view.SetIdentity();
+	c.view = tmpWorldCamMat;
+
+	//c.projection.SetOrthoLH
+	//(
+	//	(GetClientWindowRect().right - GetClientWindowRect().left) / 300.f,
+	//	(GetClientWindowRect().bottom - GetClientWindowRect().top) / 300.f,
+	//	-4.f, 4.f
+	//);
+
+	int width = GetClientWindowRect().right - GetClientWindowRect().left;
+	int height = GetClientWindowRect().bottom - GetClientWindowRect().top;
+	c.projection.SetPerpectiveFovLH(1.57f, ((float)width / (float)height), 0.1f, 100.f);
 
 	pTmpCBuff->Update(GraphicsEngine::GetInstance()->GetDeviceContext(), &c);
 }
+
+//void AppWindow::UpdateCamera()
+//{
+//	Matrix4x4 worldCamMat, tmp;
+//
+//	tmp.SetIdentity();
+//	tmp.SetRotationX(tmpRotX);
+//	worldCamMat *= tmp;
+//
+//	tmp.SetIdentity();
+//	tmp.SetRotationY(tmpRotY);
+//	worldCamMat *= tmp;
+//
+//	worldCamMat.Inverse();
+//
+//
+//
+//}
 
 void AppWindow::OnMouseKeyDown(int mouseKey)
 {
@@ -216,8 +263,8 @@ void AppWindow::OnMouseMove(const Point& delta)
 	//if (!deltaTime)
 	//	MessageBox(hWnd, "WTF", "WTF", MB_OK);
 
-	tmpRotX -= delta.y * .03f;
-	tmpRotY -= delta.x * .03f;
+	tmpRotX += delta.y * .003f;
+	tmpRotY += delta.x * .003f;
 
 }
 
@@ -225,23 +272,29 @@ void AppWindow::OnKeyDown(int keycode)
 {
 	if (keycode == 'W')
 	{
-		tmpRotX += deltaTime;
+		//tmpRotX += deltaTime;
+		tmpForward = 1.f;
 	}
 	else if (keycode == 'S')
 	{
-		tmpRotX -= deltaTime;
+		//tmpRotX -= deltaTime;
+		tmpForward = -1.f;
 	}
 	else if (keycode == 'A')
 	{
-		tmpRotY += deltaTime;
+		//tmpRotY += deltaTime;
+		tmpRight = -1.f;
 	}
 	else if (keycode == 'D')
 	{
-		tmpRotY -= deltaTime;
+		//tmpRotY -= deltaTime;
+		tmpRight = 1.f;
 	}
 
 }
 
 void AppWindow::OnKeyUp(int keycode)
 {
+	tmpForward = 0;
+	tmpRight = 0;
 }
