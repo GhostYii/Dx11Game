@@ -27,6 +27,8 @@ void AppWindow::OnCreate()
 {
 	InputSystem::GetInstance()->AddListener(this);
 
+	InputSystem::GetInstance()->SetCursorVisiable(false);
+
 	GraphicsEngine::GetInstance()->Init();
 	pSwapChain = GraphicsEngine::GetInstance()->CreateSwapChain();
 	RECT rect = this->GetClientWindowRect();
@@ -38,16 +40,16 @@ void AppWindow::OnCreate()
 	{
 		//X - Y - Z
 		//FRONT FACE
-		{ Vector3(-0.5f,-0.5f,-0.5f), Vector3(1,1,0), Vector3(0,1,1) },
-		{ Vector3(-0.5f,0.5f,-0.5f),  Vector3(0,1,1), Vector3(1,0,1) },
-		{ Vector3(0.5f,0.5f,-0.5f),  Vector3(1,0,1), Vector3(1,1,0) },
-		{ Vector3(0.5f,-0.5f,-0.5f), Vector3(1,1,0), Vector3(0,1,1) },
+		{ Vector3(-0.5f,-0.5f,-0.5f), Vector3(1,0,0), Vector3(0,1,0) },
+		{ Vector3(-0.5f,0.5f,-0.5f),  Vector3(0,1,0), Vector3(0,0,1) },
+		{ Vector3(0.5f,0.5f,-0.5f),  Vector3(0,0,1), Vector3(1,0,0) },
+		{ Vector3(0.5f,-0.5f,-0.5f), Vector3(1,0,0), Vector3(0,1,0) },
 
 		//BACK FACE
-		{ Vector3(0.5f,-0.5f,0.5f),  Vector3(0,1,0), Vector3(0,0.2f,0) },
-		{ Vector3(0.5f,0.5f,0.5f),   Vector3(0,1,1), Vector3(0,0.2f,0.2f) },
-		{ Vector3(-0.5f,0.5f,0.5f),  Vector3(0,1,1), Vector3(0,0.2f,0.2f) },
-		{ Vector3(-0.5f,-0.5f,0.5f), Vector3(0,1,0), Vector3(0,0.2f,0) }
+		{ Vector3(0.5f,-0.5f,0.5f),  Vector3(0,1,0), Vector3(1,0,0) },
+		{ Vector3(0.5f,0.5f,0.5f),   Vector3(1,0,0), Vector3(0,1,0) },
+		{ Vector3(-0.5f,0.5f,0.5f),  Vector3(0,1,0), Vector3(0,0,1) },
+		{ Vector3(-0.5f,-0.5f,0.5f), Vector3(0,0,1), Vector3(1,0,0) }
 	};
 
 	pTmpVB = GraphicsEngine::GetInstance()->CreateVertexBuffer();
@@ -128,6 +130,8 @@ void AppWindow::OnUpdate()
 
 void AppWindow::OnDestroy()
 {
+	InputSystem::GetInstance()->SetCursorVisiable(true);
+
 	Window::OnDestroy();
 	pTmpVB->Release();
 	pSwapChain->Release();
@@ -258,13 +262,18 @@ void AppWindow::OnMouseKeyUp(int mouseKey)
 	tmpScale = Vector3(1, 1, 1);
 }
 
-void AppWindow::OnMouseMove(const Point& delta)
+void AppWindow::OnMouseMove(const Point& mousePosition)
 {
 	//if (!deltaTime)
 	//	MessageBox(hWnd, "WTF", "WTF", MB_OK);
+	int width = GetClientWindowRect().right - GetClientWindowRect().left;
+	int height = GetClientWindowRect().bottom - GetClientWindowRect().top;
 
-	tmpRotX += delta.y * .003f;
-	tmpRotY += delta.x * .003f;
+	tmpRotX += (mousePosition.y - (height / 2.f)) * .003f;
+	tmpRotY += (mousePosition.x - (width / 2.f)) * .003f;
+	
+	
+	InputSystem::GetInstance()->SetCursorPosition(Point(width / 2.f, height / 2.f));
 
 }
 

@@ -16,6 +16,11 @@ public:
 	void RemoveListener(InputListener* listener);
 
 	void Update();
+
+	void SetCursorPosition(const Point& position);
+	void SetCursorVisiable(bool visiable);
+
+	Point GetMouseDelta();
 private:
 	std::unordered_set<InputListener*> listenerMap;
 

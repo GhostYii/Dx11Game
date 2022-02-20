@@ -34,7 +34,7 @@ void InputSystem::Update()
 
 		while (iter != listenerMap.end())
 		{
-			(*iter)->OnMouseMove(Point(currentMousePosition.x - prevMousePos.x, currentMousePosition.y - prevMousePos.y));
+			(*iter)->OnMouseMove(Point(currentMousePosition.x, currentMousePosition.y));
 			++iter;
 		}
 	}
@@ -105,4 +105,21 @@ void InputSystem::Update()
 
 		memcpy(prevKeyStates, keyStates, sizeof(unsigned char) * 256);
 	}
+}
+
+void InputSystem::SetCursorPosition(const Point& position)
+{
+	SetCursorPos(position.x, position.y);
+}
+
+void InputSystem::SetCursorVisiable(bool visiable)
+{
+	ShowCursor(visiable);
+}
+
+Point InputSystem::GetMouseDelta()
+{
+	POINT curPos;
+	GetCursorPos(&curPos);
+	return Point(curPos.x - prevMousePos.x, curPos.y - prevMousePos.y);
 }
