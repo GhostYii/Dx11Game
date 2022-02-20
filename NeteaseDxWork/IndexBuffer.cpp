@@ -1,5 +1,5 @@
 #include "IndexBuffer.h"
-#include "GraphicsEngine.h"
+#include "RenderSystem.h"
 
 bool IndexBuffer::Load(void* indices, UINT indicesSize)
 {
@@ -18,7 +18,7 @@ bool IndexBuffer::Load(void* indices, UINT indicesSize)
 
 	indexListSize = indicesSize;
 
-	HRESULT res = GraphicsEngine::GetInstance()->pDevice->CreateBuffer(&bd, &data, &pBuffer);
+	HRESULT res = pRenderSystem->pDevice->CreateBuffer(&bd, &data, &pBuffer);
 
 	if (FAILED(res))
 		return false;

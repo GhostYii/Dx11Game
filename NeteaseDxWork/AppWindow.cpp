@@ -27,10 +27,10 @@ void AppWindow::OnCreate()
 {
 	InputSystem::GetInstance()->AddListener(this);
 
-	InputSystem::GetInstance()->SetCursorVisiable(false);
+	//InputSystem::GetInstance()->SetCursorVisiable(false);
 
 	GraphicsEngine::GetInstance()->Init();
-	pSwapChain = GraphicsEngine::GetInstance()->CreateSwapChain();
+	pSwapChain = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateSwapChain();
 	RECT rect = this->GetClientWindowRect();
 	pSwapChain->Init(this->hWnd, rect.right - rect.left, rect.bottom - rect.top);
 
@@ -52,7 +52,7 @@ void AppWindow::OnCreate()
 		{ Vector3(-0.5f,-0.5f,0.5f), Vector3(0,0,1), Vector3(1,0,0) }
 	};
 
-	pTmpVB = GraphicsEngine::GetInstance()->CreateVertexBuffer();
+	pTmpVB = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateVertexBuffer();
 	UINT vertexSize = ARRAYSIZE(vertices);
 
 	unsigned int indexList[] =
@@ -77,26 +77,26 @@ void AppWindow::OnCreate()
 		1,0,7
 	};
 
-	pTmpIndexBuff = GraphicsEngine::GetInstance()->CreatIndexBuffer();
+	pTmpIndexBuff = GraphicsEngine::GetInstance()->GetRenderSystem()->CreatIndexBuffer();
 	UINT indexListSize = ARRAYSIZE(indexList);
 
 	pTmpIndexBuff->Load(indexList, indexListSize);
 
 	void* shaderByteCode = nullptr;
 	UINT shaderSize = 0;
-	GraphicsEngine::GetInstance()->CompileVertexShader(L"VertexShader.hlsl", "main", &shaderByteCode, &shaderSize);
-	pTmpVS = GraphicsEngine::GetInstance()->CreateVertexShader(shaderByteCode, shaderSize);
+	GraphicsEngine::GetInstance()->GetRenderSystem()->CompileVertexShader(L"VertexShader.hlsl", "main", &shaderByteCode, &shaderSize);
+	pTmpVS = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateVertexShader(shaderByteCode, shaderSize);
 
 	pTmpVB->Load(vertices, sizeof(Vertex), vertexSize, shaderByteCode, shaderSize);
 
-	GraphicsEngine::GetInstance()->CompilePixelShader(L"PixelShader.hlsl", "main", &shaderByteCode, &shaderSize);
-	pTmpPS = GraphicsEngine::GetInstance()->CreatePixelShader(shaderByteCode, shaderSize);
+	GraphicsEngine::GetInstance()->GetRenderSystem()->CompilePixelShader(L"PixelShader.hlsl", "main", &shaderByteCode, &shaderSize);
+	pTmpPS = GraphicsEngine::GetInstance()->GetRenderSystem()->CreatePixelShader(shaderByteCode, shaderSize);
 
-	GraphicsEngine::GetInstance()->ReleaseCompiledShader();
+	GraphicsEngine::GetInstance()->GetRenderSystem()->ReleaseCompiledShader();
 
 	Constant cBuffer = { 0 };
 
-	pTmpCBuff = GraphicsEngine::GetInstance()->CreateConstantBuffer();
+	pTmpCBuff = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateConstantBuffer();
 	pTmpCBuff->Load(&cBuffer, sizeof(Constant));
 }
 
@@ -104,22 +104,22 @@ void AppWindow::OnUpdate()
 {
 	InputSystem::GetInstance()->Update();
 
-	GraphicsEngine::GetInstance()->GetDeviceContext()->ClearRenderTargetColor(this->pSwapChain, 0, 0, 0, 1);
+	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->ClearRenderTargetColor(this->pSwapChain, 0, 0, 0, 1);
 
 	RECT rect = this->GetClientWindowRect();
-	GraphicsEngine::GetInstance()->GetDeviceContext()->SetViewportSize(rect.right - rect.left, rect.bottom - rect.top);
+	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetViewportSize(rect.right - rect.left, rect.bottom - rect.top);
 
 	UpdatePosition();
 
-	GraphicsEngine::GetInstance()->GetDeviceContext()->VSSetConstantBuffer(pTmpCBuff);
-	GraphicsEngine::GetInstance()->GetDeviceContext()->PSSetConstantBuffer(pTmpCBuff);
+	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->VSSetConstantBuffer(pTmpCBuff);
+	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->PSSetConstantBuffer(pTmpCBuff);
 
-	GraphicsEngine::GetInstance()->GetDeviceContext()->SetVertexShader(pTmpVS);
-	GraphicsEngine::GetInstance()->GetDeviceContext()->SetPixelShader(pTmpPS);
+	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetVertexShader(pTmpVS);
+	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetPixelShader(pTmpPS);
 
-	GraphicsEngine::GetInstance()->GetDeviceContext()->SetVertexBuffer(pTmpVB);
-	GraphicsEngine::GetInstance()->GetDeviceContext()->SetIndexBuffer(pTmpIndexBuff);
-	GraphicsEngine::GetInstance()->GetDeviceContext()->DrawIndexedTriangleList(pTmpIndexBuff->GetIndexListSize(), 0, 0);
+	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetVertexBuffer(pTmpVB);
+	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetIndexBuffer(pTmpIndexBuff);
+	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->DrawIndexedTriangleList(pTmpIndexBuff->GetIndexListSize(), 0, 0);
 
 	pSwapChain->Present(false);
 
@@ -212,7 +212,7 @@ void AppWindow::UpdatePosition()
 	int height = GetClientWindowRect().bottom - GetClientWindowRect().top;
 	c.projection.SetPerpectiveFovLH(1.57f, ((float)width / (float)height), 0.1f, 100.f);
 
-	pTmpCBuff->Update(GraphicsEngine::GetInstance()->GetDeviceContext(), &c);
+	pTmpCBuff->Update(GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext(), &c);
 }
 
 //void AppWindow::UpdateCamera()
@@ -269,11 +269,11 @@ void AppWindow::OnMouseMove(const Point& mousePosition)
 	int width = GetClientWindowRect().right - GetClientWindowRect().left;
 	int height = GetClientWindowRect().bottom - GetClientWindowRect().top;
 
-	tmpRotX += (mousePosition.y - (height / 2.f)) * .003f;
-	tmpRotY += (mousePosition.x - (width / 2.f)) * .003f;
+	tmpRotX += InputSystem::GetInstance()->GetMouseDelta().y * .003f;
+	tmpRotY += InputSystem::GetInstance()->GetMouseDelta().x * .003f;
 	
 	
-	InputSystem::GetInstance()->SetCursorPosition(Point(width / 2.f, height / 2.f));
+	//InputSystem::GetInstance()->SetCursorPosition(Point(width / 2.f, height / 2.f));
 
 }
 

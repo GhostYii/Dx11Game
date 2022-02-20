@@ -1,14 +1,14 @@
 #pragma once
 #include <d3d11.h>
 
-class DeviceContext;
+#include "GraphicsClasses.h"
 
 class ConstantBuffer
 {
 	friend class DeviceContext;
 
 public:
-	ConstantBuffer() = default;
+	ConstantBuffer(RenderSystem* rs) : pRenderSystem(rs) {}
 	~ConstantBuffer() = default;
 
 public:
@@ -18,5 +18,6 @@ public:
 
 private:
 	ID3D11Buffer* pBuffer = nullptr;
+	RenderSystem* pRenderSystem = nullptr;
 };
 

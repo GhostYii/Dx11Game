@@ -1,5 +1,5 @@
 #include "SwapChain.h"
-#include "GraphicsEngine.h"
+#include "RenderSystem.h"
 
 bool SwapChain::Init(HWND hWnd, UINT width, UINT height)
 {
@@ -17,7 +17,7 @@ bool SwapChain::Init(HWND hWnd, UINT width, UINT height)
 	scd.SampleDesc.Quality = 0;
 	scd.Windowed = TRUE;
 
-	HRESULT res = GraphicsEngine::GetInstance()->pDXGIFactory->CreateSwapChain(GraphicsEngine::GetInstance()->pDevice, &scd, &pSwapChain);
+	HRESULT res = pRenderSystem->pDXGIFactory->CreateSwapChain(pRenderSystem->pDevice, &scd, &pSwapChain);
 
 	if (FAILED(res))
 		return false;
@@ -28,7 +28,7 @@ bool SwapChain::Init(HWND hWnd, UINT width, UINT height)
 	if (FAILED(res))
 		return false;
 
-	res = GraphicsEngine::GetInstance()->pDevice->CreateRenderTargetView(buffer, NULL, &pTargetView);
+	res = pRenderSystem->pDevice->CreateRenderTargetView(buffer, NULL, &pTargetView);
 	buffer->Release();
 
 	if (FAILED(res))

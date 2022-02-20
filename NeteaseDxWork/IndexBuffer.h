@@ -1,13 +1,13 @@
 #pragma once
 #include <d3d11.h>
 
-class ContextDevice;
+#include "GraphicsClasses.h"
 
 class IndexBuffer
 {
 	friend class DeviceContext;
 public:
-	IndexBuffer() = default;
+	IndexBuffer(RenderSystem* rs) : pRenderSystem(rs) {}
 	~IndexBuffer() = default;
 
 public:
@@ -22,5 +22,7 @@ private:
 
 	ID3D11Buffer* pBuffer = nullptr;
 	ID3D11InputLayout* pInputLayout = nullptr;
+
+	RenderSystem* pRenderSystem = nullptr;
 };
 

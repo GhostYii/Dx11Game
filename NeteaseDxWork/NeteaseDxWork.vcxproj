@@ -148,6 +148,7 @@
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InputSystem.cpp" />
     <ClCompile Include="PixelShader.cpp" />
+    <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="SwapChain.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexShader.cpp" />
@@ -158,8 +159,10 @@
     <ClInclude Include="AppWindow.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="DeviceContext.h" />
+    <ClInclude Include="GraphicsClasses.h" />
     <ClInclude Include="GraphicsEngine.h" />
     <ClInclude Include="IndexBuffer.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="InputListener.h" />
     <ClInclude Include="InputSystem.h" />
     <ClInclude Include="Math.h" />
@@ -167,6 +170,7 @@
     <ClInclude Include="PinelineStruct.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Point.h" />
+    <ClInclude Include="RenderSystem.h" />
     <ClInclude Include="SwapChain.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />

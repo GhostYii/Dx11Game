@@ -1,5 +1,5 @@
 #include "VertexBuffer.h"
-#include "GraphicsEngine.h"
+#include "RenderSystem.h"
 
 bool VertexBuffer::Load(void* vertices, UINT size, UINT sizes, void* shaderByteCode, UINT shaderSizeByte)
 {
@@ -21,7 +21,7 @@ bool VertexBuffer::Load(void* vertices, UINT size, UINT sizes, void* shaderByteC
 	vertexSize = size;
 	this->sizes = sizes;
 
-	HRESULT res = GraphicsEngine::GetInstance()->pDevice->CreateBuffer(&bd, &data, &pBuffer);
+	HRESULT res = pRenderSystem->pDevice->CreateBuffer(&bd, &data, &pBuffer);
 	if (FAILED(res))
 		return false;
 
@@ -34,7 +34,7 @@ bool VertexBuffer::Load(void* vertices, UINT size, UINT sizes, void* shaderByteC
 	};
 	UINT layoutSize = ARRAYSIZE(layout);
 
-	res = GraphicsEngine::GetInstance()->pDevice->CreateInputLayout(layout, layoutSize, shaderByteCode, shaderSizeByte, &pInputLayout);
+	res = pRenderSystem->pDevice->CreateInputLayout(layout, layoutSize, shaderByteCode, shaderSizeByte, &pInputLayout);
 	if (FAILED(res))
 		return false;
 

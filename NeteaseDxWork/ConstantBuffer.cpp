@@ -1,5 +1,5 @@
 #include "ConstantBuffer.h"
-#include "GraphicsEngine.h"
+#include "RenderSystem.h"
 #include "DeviceContext.h"
 
 
@@ -18,7 +18,7 @@ bool ConstantBuffer::Load(const void* buffer, UINT bufferSize)
 	D3D11_SUBRESOURCE_DATA data = {};
 	data.pSysMem = buffer;
 
-	HRESULT res = GraphicsEngine::GetInstance()->pDevice->CreateBuffer(&bd, &data, &pBuffer);
+	HRESULT res = pRenderSystem->pDevice->CreateBuffer(&bd, &data, &pBuffer);
 	if (FAILED(res))
 		return false;
 	

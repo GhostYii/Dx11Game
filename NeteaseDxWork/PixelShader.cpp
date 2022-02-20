@@ -1,5 +1,5 @@
 #include "PixelShader.h"
-#include "GraphicsEngine.h"
+#include "RenderSystem.h"
 
 void PixelShader::Release()
 {
@@ -10,7 +10,7 @@ void PixelShader::Release()
 
 bool PixelShader::Init(const void* shaderByteCode, size_t byteCodeSize)
 {
-	HRESULT res = GraphicsEngine::GetInstance()->pDevice->CreatePixelShader(shaderByteCode, byteCodeSize, nullptr, &pPixelShader);
+	HRESULT res = pRenderSystem->pDevice->CreatePixelShader(shaderByteCode, byteCodeSize, nullptr, &pPixelShader);
 
 	if (FAILED(res))
 		return false;

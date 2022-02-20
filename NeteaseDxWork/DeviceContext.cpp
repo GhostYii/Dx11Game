@@ -1,7 +1,8 @@
 #include "DeviceContext.h"
 #include "PinelineStruct.h"
 
-DeviceContext::DeviceContext(ID3D11DeviceContext* pDeviceContext) :pDeviceContext(pDeviceContext)
+DeviceContext::DeviceContext(ID3D11DeviceContext* pDeviceContext, RenderSystem* rs) 
+	: pDeviceContext(pDeviceContext), pRenderSystem(rs)
 {
 }
 

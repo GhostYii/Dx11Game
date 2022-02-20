@@ -1,5 +1,5 @@
 #include "VertexShader.h"
-#include "GraphicsEngine.h"
+#include "RenderSystem.h"
 
 void VertexShader::Release()
 {
@@ -9,7 +9,7 @@ void VertexShader::Release()
 
 bool VertexShader::Init(const void* shaderByteCode, size_t byteCodeSize)
 {
-	HRESULT res = GraphicsEngine::GetInstance()->pDevice->CreateVertexShader(shaderByteCode, byteCodeSize, nullptr, &pVertexShader);
+	HRESULT res = pRenderSystem->pDevice->CreateVertexShader(shaderByteCode, byteCodeSize, nullptr, &pVertexShader);
 	if (FAILED(res))
 		return false;
 
