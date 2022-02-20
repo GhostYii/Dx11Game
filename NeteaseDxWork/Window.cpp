@@ -1,6 +1,7 @@
 #include "Window.h"
 
-Window* pWindow = nullptr;
+#include <exception>
+
 const int QUIT_CODE = 0;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -9,10 +10,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_CREATE:
 	{
-		Window* window = (Window*)((LPCREATESTRUCT)lParam)->lpCreateParams;
-		SetWindowLongPtr(hWnd, GWL_USERDATA, (LONG_PTR)window);
-		window->SetHWND(hWnd);
-		window->OnCreate();
+		//Window* window = (Window*)((LPCREATESTRUCT)lParam)->lpCreateParams;
+		//SetWindowLongPtr(hWnd, GWL_USERDATA, (LONG_PTR)window);
+		//window->SetHWND(hWnd);
+		//window->OnCreate();
 		break;
 	}
 	case WM_DESTROY:
@@ -30,12 +31,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return NULL;
 }
 
+Window::~Window()
+{
+	if (hWnd)
+		DestroyWindow(hWnd);
+}
+
 bool Window::IsRun()
 {
+	if (isRun)
+		Update();
+
 	return isRun;
 }
 
-bool Window::Init()
+void Window::Init()
 {
 	WNDCLASSEX wc;
 	wc.cbClsExtra = NULL;
@@ -52,27 +62,29 @@ bool Window::Init()
 	wc.lpfnWndProc = WndProc;
 
 	if (!RegisterClassEx(&wc))
-		return false;
+		throw std::exception("Register window class failed!");
 
-	if (!pWindow)
-		pWindow = this;
-
-	hWnd = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, "Window", "DirectX Application", WS_CAPTION | WS_SYSMENU, CW_USEDEFAULT, CW_USEDEFAULT, 1024, 768, NULL, NULL, NULL, this);
+	hWnd = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, "Window", "DirectX Application", WS_CAPTION | WS_SYSMENU, CW_USEDEFAULT, CW_USEDEFAULT, 1024, 768, NULL, NULL, NULL, NULL);
 
 	if (!hWnd)
-		return false;
+		throw std::exception("Create window failed!");
 
 	ShowWindow(hWnd, SW_SHOW);
 	UpdateWindow(hWnd);
 
 	isRun = true;
-
-	return true;
 }
 
-bool Window::Broadcast()
+bool Window::Update()
 {
-	pWindow->OnUpdate();
+	if (!this->isInited)
+	{
+		SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)this);
+		this->OnCreate();
+		this->isInited = true;
+	}
+
+	this->OnUpdate();
 
 	MSG msg;
 	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) > 0)
@@ -86,12 +98,10 @@ bool Window::Broadcast()
 	return true;
 }
 
-bool Window::Release()
+void Window::Release()
 {
 	if (hWnd && !DestroyWindow(hWnd))
-		return false;
-
-	return true;
+		throw std::exception("Release window failed!");
 }
 
 RECT Window::GetClientWindowRect()
@@ -101,10 +111,10 @@ RECT Window::GetClientWindowRect()
 	return rect;
 }
 
-void Window::SetHWND(HWND hWnd)
-{
-	this->hWnd = hWnd;
-}
+//void Window::SetHWND(HWND hWnd)
+//{
+//	this->hWnd = hWnd;
+//}
 
 void Window::OnDestroy()
 {
@@ -113,5 +123,6 @@ void Window::OnDestroy()
 
 Window::Window() : hWnd(NULL), isRun(false)
 {
+	Init();
 }
 

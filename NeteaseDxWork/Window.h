@@ -8,16 +8,12 @@ public:
 	Window(const Window&) = default;
 	Window& operator=(const Window&) = delete;
 	
-	virtual ~Window() = default;
+	virtual ~Window();
 public:
 	bool IsRun();
 
-	bool Init();
-	bool Broadcast();
-	bool Release();
-
 	RECT GetClientWindowRect();
-	void SetHWND(HWND hWnd);
+	//void SetHWND(HWND hWnd);
 
 	virtual void OnCreate() = 0;
 	virtual void OnUpdate() = 0;
@@ -26,5 +22,12 @@ public:
 protected:
 	HWND hWnd;
 	bool isRun;
+
+	bool isInited;
+
+private:
+	void Init();
+	void Release();
+	bool Update();
 };
 

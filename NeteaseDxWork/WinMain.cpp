@@ -5,21 +5,23 @@ int main()
 	try
 	{
 		InputSystem::CreateInstance();
-		GraphicsEngine::CreateInstance();		
+		GraphicsEngine::CreateInstance();
 	}
 	catch (...)
 	{
 		return -1;
 	}
 
-	AppWindow app;
-
-	if (app.Init())
+	try
 	{
-		while (app.IsRun())
-		{
-			app.Broadcast();
-		}
+		AppWindow app;
+		while (app.IsRun());
+	}
+	catch (...)
+	{
+		GraphicsEngine::ReleaseInstance();
+		InputSystem::ReleaseInstance();
+		return -1;
 	}
 
 	GraphicsEngine::ReleaseInstance();
