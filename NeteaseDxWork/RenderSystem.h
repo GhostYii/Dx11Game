@@ -12,6 +12,8 @@ class RenderSystem
 
 	friend class VertexShader;
 	friend class PixelShader;
+
+	friend class Texture;
 public:
 	RenderSystem();
 	~RenderSystem();

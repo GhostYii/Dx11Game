@@ -24,11 +24,22 @@ void GraphicsEngine::Init()
 	{ 
 		pRenderSystem = nullptr;
 	}
+
+	try
+	{
+		pTextureManager = new TextureManager();
+	}
+	catch (...)
+	{
+		pTextureManager = nullptr;
+	}
 }
 
 void GraphicsEngine::Release()
 {
+	GraphicsEngine::instance = nullptr;
 	delete pRenderSystem;
+	delete pTextureManager;
 }
 
 void GraphicsEngine::CreateInstance()
@@ -50,6 +61,11 @@ void GraphicsEngine::ReleaseInstance()
 RenderSystem* GraphicsEngine::GetRenderSystem()
 {
 	return pRenderSystem;
+}
+
+TextureManager* GraphicsEngine::GetTextureManger()
+{
+	return pTextureManager;
 }
 
 GraphicsEngine* GraphicsEngine::GetInstance()

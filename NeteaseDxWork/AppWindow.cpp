@@ -28,6 +28,7 @@ void AppWindow::OnCreate()
 	InputSystem::GetInstance()->AddListener(this);
 
 	//InputSystem::GetInstance()->SetCursorVisiable(false);
+	TexturePtr tex = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\wood.jpg");
 
 	RECT rect = this->GetClientWindowRect();
 	pSwapChain = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateSwapChain(this->hWnd, rect.right - rect.left, rect.bottom - rect.top);
@@ -37,17 +38,28 @@ void AppWindow::OnCreate()
 	Vertex vertices[] =
 	{
 		//X - Y - Z
+		////FRONT FACE
+		//{ Vector3(-0.5f,-0.5f,-0.5f), Vector3(1,0,0), Vector3(0,1,0) },
+		//{ Vector3(-0.5f,0.5f,-0.5f),  Vector3(0,1,0), Vector3(0,0,1) },
+		//{ Vector3(0.5f,0.5f,-0.5f),  Vector3(0,0,1), Vector3(1,0,0) },
+		//{ Vector3(0.5f,-0.5f,-0.5f), Vector3(1,0,0), Vector3(0,1,0) },
+
+		////BACK FACE
+		//{ Vector3(0.5f,-0.5f,0.5f),  Vector3(0,1,0), Vector3(1,0,0) },
+		//{ Vector3(0.5f,0.5f,0.5f),   Vector3(1,0,0), Vector3(0,1,0) },
+		//{ Vector3(-0.5f,0.5f,0.5f),  Vector3(0,1,0), Vector3(0,0,1) },
+		//{ Vector3(-0.5f,-0.5f,0.5f), Vector3(0,0,1), Vector3(1,0,0) }
 		//FRONT FACE
-		{ Vector3(-0.5f,-0.5f,-0.5f), Vector3(1,0,0), Vector3(0,1,0) },
-		{ Vector3(-0.5f,0.5f,-0.5f),  Vector3(0,1,0), Vector3(0,0,1) },
-		{ Vector3(0.5f,0.5f,-0.5f),  Vector3(0,0,1), Vector3(1,0,0) },
-		{ Vector3(0.5f,-0.5f,-0.5f), Vector3(1,0,0), Vector3(0,1,0) },
+		{ Vector3(-0.5f,-1.f,-0.5f), Vector3(1,0,0), Vector3(1,1,1) },
+		{ Vector3(-0.5f,1.f,-0.5f),  Vector3(1,0,0), Vector3(1,1,1) },
+		{ Vector3(0.5f,1.f,-0.5f),  Vector3(1,0,0), Vector3(1,1,1) },
+		{ Vector3(0.5f,-1.f,-0.5f), Vector3(1,0,0), Vector3(1,1,1) },
 
 		//BACK FACE
-		{ Vector3(0.5f,-0.5f,0.5f),  Vector3(0,1,0), Vector3(1,0,0) },
-		{ Vector3(0.5f,0.5f,0.5f),   Vector3(1,0,0), Vector3(0,1,0) },
-		{ Vector3(-0.5f,0.5f,0.5f),  Vector3(0,1,0), Vector3(0,0,1) },
-		{ Vector3(-0.5f,-0.5f,0.5f), Vector3(0,0,1), Vector3(1,0,0) }
+		{ Vector3(0.5f,-1.f,0.5f),  Vector3(1,0,0), Vector3(0,0,0) },
+		{ Vector3(0.5f,1.f,0.5f),   Vector3(1,0,0), Vector3(0,0,0) },
+		{ Vector3(-0.5f,1.f,0.5f),  Vector3(1,0,0), Vector3(0,0,0) },
+		{ Vector3(-0.5f,-1.f,0.5f), Vector3(1,0,0), Vector3(0,0,0) }
 	};
 
 	
