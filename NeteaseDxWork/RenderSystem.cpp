@@ -69,7 +69,14 @@ bool RenderSystem::Release()
 
 SwapChain* RenderSystem::CreateSwapChain(HWND hWnd, UINT width, UINT height)
 {
-	return new SwapChain(hWnd, width, height, this);
+	SwapChain* ptr = nullptr;
+	try
+	{
+		ptr = new SwapChain(hWnd, width, height, this);
+	}
+	catch(...) {}
+
+	return ptr;
 }
 
 DeviceContext* RenderSystem::GetDeviceContext()
@@ -79,29 +86,62 @@ DeviceContext* RenderSystem::GetDeviceContext()
 
 VertexBuffer* RenderSystem::CreateVertexBuffer(void* vertices, UINT size, UINT sizes, void* shaderByteCode, UINT shaderSizeByte)
 {
-	return new VertexBuffer(vertices, size, sizes, shaderByteCode, shaderSizeByte, this);
+	VertexBuffer* ptr = nullptr;
+	try
+	{
+		ptr = new VertexBuffer(vertices, size, sizes, shaderByteCode, shaderSizeByte, this);
+	}
+	catch (...) {}
+
+	return ptr;
 }
 
 ConstantBuffer* RenderSystem::CreateConstantBuffer(const void* buffer, UINT bufferSize)
 {
-	return new ConstantBuffer(buffer, bufferSize, this);
+	ConstantBuffer* ptr = nullptr;
+	try
+	{
+		ptr = new ConstantBuffer(buffer, bufferSize, this);
+	}
+	catch (...) {}
+
+	return ptr;
 }
 
 IndexBuffer* RenderSystem::CreatIndexBuffer(void* indices, UINT indicesSize)
 {
-	return new IndexBuffer(indices, indicesSize, this);
+	IndexBuffer* ptr = nullptr;
+	try
+	{
+		ptr = new IndexBuffer(indices, indicesSize, this);	
+	}
+	catch (...) {}
+
+	return ptr;
 }
 
 VertexShader* RenderSystem::CreateVertexShader(const void* shaderByteCode, size_t byteCodeSize)
 {
-	VertexShader* vs = new VertexShader(shaderByteCode, byteCodeSize, this);
-	return vs;
+	VertexShader* ptr = nullptr;
+	try
+	{
+		ptr = new VertexShader(shaderByteCode, byteCodeSize, this);
+	}
+	catch (...) {}
+
+	return ptr;
 }
 
 PixelShader* RenderSystem::CreatePixelShader(const void* shaderByteCode, size_t byteCodeSize)
 {
-	PixelShader* ps = new PixelShader(shaderByteCode, byteCodeSize, this);
-	return ps;
+	PixelShader* ptr = nullptr;
+	try
+	{
+		ptr = new PixelShader(shaderByteCode, byteCodeSize, this);
+	}
+	catch (...) {}
+
+	return ptr;
 }
 
 bool RenderSystem::CompileVertexShader(const wchar_t* fileName, const char* entryPointName, void** shaderByteCode, size_t* byteCodeSize)
