@@ -30,7 +30,7 @@ void ConstantBuffer::Load(const void* buffer, UINT bufferSize)
 	D3D11_SUBRESOURCE_DATA data = {};
 	data.pSysMem = buffer;
 
-	HRESULT res = pRenderSystem->pDevice->CreateBuffer(&bd, &data, &pBuffer);
+	HRESULT res = pRenderSystem->pDevice->CreateBuffer(&bd, &data, pBuffer.GetAddressOf());
 	if (FAILED(res))
 	{
 		throw std::exception("Create ConstantBuffer failed!");
@@ -39,7 +39,7 @@ void ConstantBuffer::Load(const void* buffer, UINT bufferSize)
 
 void ConstantBuffer::Update(DeviceContextPtr context, const void* buffer)
 {
-	context->pDeviceContext->UpdateSubresource(this->pBuffer, NULL, NULL, buffer, NULL, NULL);
+	context->pDeviceContext->UpdateSubresource(pBuffer.Get(), NULL, NULL, buffer, NULL, NULL);
 }
 
 void ConstantBuffer::Release()

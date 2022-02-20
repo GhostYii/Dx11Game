@@ -21,7 +21,7 @@ void PixelShader::Release()
 
 void PixelShader::Init(const void* shaderByteCode, size_t byteCodeSize)
 {
-	HRESULT res = pRenderSystem->pDevice->CreatePixelShader(shaderByteCode, byteCodeSize, nullptr, &pPixelShader);
+	HRESULT res = pRenderSystem->pDevice->CreatePixelShader(shaderByteCode, byteCodeSize, nullptr, pPixelShader.GetAddressOf());
 
 	if (FAILED(res))
 		throw std::exception("Create PixelShader failed!");

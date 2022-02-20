@@ -1,6 +1,6 @@
 #pragma once
 #include <d3d11.h>
-
+#include <wrl.h>
 #include "GraphicsClasses.h"
 
 class PixelShader
@@ -17,7 +17,7 @@ private:
 	void Release();
 
 private:
-	ID3D11PixelShader* pPixelShader = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> pPixelShader = nullptr;
 	RenderSystem* pRenderSystem = nullptr;
 
 };

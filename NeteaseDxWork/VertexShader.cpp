@@ -20,7 +20,7 @@ VertexShader::~VertexShader()
 
 void VertexShader::Init(const void* shaderByteCode, size_t byteCodeSize)
 {
-	HRESULT res = pRenderSystem->pDevice->CreateVertexShader(shaderByteCode, byteCodeSize, nullptr, &pVertexShader);
+	HRESULT res = pRenderSystem->pDevice->CreateVertexShader(shaderByteCode, byteCodeSize, nullptr, pVertexShader.GetAddressOf());
 	if (FAILED(res))
 		throw std::exception("Create VertexShader failed!");
 }

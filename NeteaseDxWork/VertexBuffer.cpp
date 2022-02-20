@@ -34,7 +34,7 @@ void VertexBuffer::Load(void* vertices, UINT size, UINT sizes, void* shaderByteC
 	vertexSize = size;
 	this->sizes = sizes;
 
-	HRESULT res = pRenderSystem->pDevice->CreateBuffer(&bd, &data, &pBuffer);
+	HRESULT res = pRenderSystem->pDevice->CreateBuffer(&bd, &data, pBuffer.GetAddressOf());
 	if (FAILED(res))
 		throw std::exception("Create VertexBuffer failed!");
 
@@ -47,7 +47,7 @@ void VertexBuffer::Load(void* vertices, UINT size, UINT sizes, void* shaderByteC
 	};
 	UINT layoutSize = ARRAYSIZE(layout);
 
-	res = pRenderSystem->pDevice->CreateInputLayout(layout, layoutSize, shaderByteCode, shaderSizeByte, &pInputLayout);
+	res = pRenderSystem->pDevice->CreateInputLayout(layout, layoutSize, shaderByteCode, shaderSizeByte, pInputLayout.GetAddressOf());
 	if (FAILED(res))
 		throw std::exception("VertexBuffer create input layout failed!");
 }

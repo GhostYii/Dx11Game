@@ -1,6 +1,6 @@
 #pragma once
 #include <d3d11.h>
-
+#include <wrl.h>
 #include "GraphicsClasses.h"
 
 class VertexShader
@@ -16,7 +16,7 @@ private:
 	void Release();
 
 private:
-	ID3D11VertexShader* pVertexShader = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> pVertexShader = nullptr;
 	RenderSystem* pRenderSystem = nullptr;
 };
 

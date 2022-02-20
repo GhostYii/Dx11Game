@@ -1,6 +1,6 @@
 #pragma once
 #include <d3d11.h>
-
+#include <wrl.h>
 #include "GraphicsClasses.h"
 
 class SwapChain
@@ -14,8 +14,8 @@ public:
 	bool Present(bool vSync);
 
 private:
-	IDXGISwapChain* pSwapChain = nullptr;
-	ID3D11RenderTargetView* pTargetView = nullptr;
+	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwapChain = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pTargetView = nullptr;
 	RenderSystem* pRenderSystem = nullptr;
 
 private:

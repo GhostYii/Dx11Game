@@ -1,5 +1,6 @@
 #pragma once
 #include <d3d11.h>
+#include <wrl.h>
 #include "GraphicsClasses.h"
 
 class DeviceContext
@@ -24,7 +25,7 @@ public:
 	void VSSetConstantBuffer(ConstantBufferPtr cBuffer);
 	void PSSetConstantBuffer(ConstantBufferPtr cBuffer);
 private:
-	ID3D11DeviceContext* pDeviceContext = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pDeviceContext = nullptr;
 	RenderSystem* pRenderSystem = nullptr;
 };
 

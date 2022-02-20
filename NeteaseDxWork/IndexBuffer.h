@@ -1,6 +1,6 @@
 #pragma once
 #include <d3d11.h>
-
+#include <wrl.h>
 #include "GraphicsClasses.h"
 
 class IndexBuffer
@@ -17,8 +17,8 @@ public:
 private:
 	UINT indexListSize = 0;
 
-	ID3D11Buffer* pBuffer = nullptr;
-	ID3D11InputLayout* pInputLayout = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> pBuffer = nullptr;
+	//Microsoft::WRL::ComPtr<ID3D11InputLayout> pInputLayout = nullptr;
 
 	RenderSystem* pRenderSystem = nullptr;
 

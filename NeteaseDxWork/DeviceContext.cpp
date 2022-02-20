@@ -14,22 +14,22 @@ DeviceContext::~DeviceContext()
 void DeviceContext::ClearRenderTargetColor(SwapChainPtr swapChain, float r, float g, float b, float a)
 {
 	const float color[] = { r,g,b,a };
-	pDeviceContext->ClearRenderTargetView(swapChain->pTargetView, color);
-	pDeviceContext->OMSetRenderTargets(1, &swapChain->pTargetView, NULL);
+	pDeviceContext->ClearRenderTargetView(swapChain->pTargetView.Get(), color);
+	pDeviceContext->OMSetRenderTargets(1, swapChain->pTargetView.GetAddressOf(), NULL);
 }
 
 void DeviceContext::SetVertexBuffer(VertexBufferPtr pBuffer)
 {
 	UINT stride = pBuffer->vertexSize;
 	UINT offset = 0;
-	pDeviceContext->IASetVertexBuffers(0, 1, &pBuffer->pBuffer, &stride, &offset);
+	pDeviceContext->IASetVertexBuffers(0, 1, pBuffer->pBuffer.GetAddressOf(), &stride, &offset);
 
-	pDeviceContext->IASetInputLayout(pBuffer->pInputLayout);
+	pDeviceContext->IASetInputLayout(pBuffer->pInputLayout.Get());
 }
 
 void DeviceContext::SetIndexBuffer(IndexBufferPtr pBuffer)
 {
-	pDeviceContext->IASetIndexBuffer(pBuffer->pBuffer, DXGI_FORMAT_R32_UINT, 0);
+	pDeviceContext->IASetIndexBuffer(pBuffer->pBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 }
 
 void DeviceContext::DrawTriangleList(UINT vertexSize, UINT startIndex)
@@ -57,20 +57,20 @@ void DeviceContext::SetViewportSize(UINT width, UINT height)
 
 void DeviceContext::SetVertexShader(VertexShaderPtr shader)
 {
-	pDeviceContext->VSSetShader(shader->pVertexShader, nullptr, 0);
+	pDeviceContext->VSSetShader(shader->pVertexShader.Get(), nullptr, 0);
 }
 
 void DeviceContext::SetPixelShader(PixelShaderPtr shader)
 {
-	pDeviceContext->PSSetShader(shader->pPixelShader, nullptr, 0);
+	pDeviceContext->PSSetShader(shader->pPixelShader.Get(), nullptr, 0);
 }
 
 void DeviceContext::VSSetConstantBuffer(ConstantBufferPtr cBuffer)
 {
-	pDeviceContext->VSSetConstantBuffers(0, 1, &cBuffer->pBuffer);
+	pDeviceContext->VSSetConstantBuffers(0, 1, cBuffer->pBuffer.GetAddressOf());
 }
 
 void DeviceContext::PSSetConstantBuffer(ConstantBufferPtr cBuffer)
 {
-	pDeviceContext->PSSetConstantBuffers(0, 1, &cBuffer->pBuffer);
+	pDeviceContext->PSSetConstantBuffers(0, 1, cBuffer->pBuffer.GetAddressOf());
 }

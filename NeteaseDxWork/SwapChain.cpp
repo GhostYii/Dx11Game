@@ -19,7 +19,7 @@ void SwapChain::Init(HWND hWnd, UINT width, UINT height)
 	scd.SampleDesc.Quality = 0;
 	scd.Windowed = TRUE;
 
-	HRESULT res = pRenderSystem->pDXGIFactory->CreateSwapChain(pRenderSystem->pDevice, &scd, &pSwapChain);
+	HRESULT res = pRenderSystem->pDXGIFactory->CreateSwapChain(pRenderSystem->pDevice, &scd, pSwapChain.GetAddressOf());
 
 	if (FAILED(res))
 		throw std::exception("Create SwapChain failed!");
@@ -30,7 +30,7 @@ void SwapChain::Init(HWND hWnd, UINT width, UINT height)
 	if (FAILED(res))
 		throw std::exception("SwapChain get buffer failed!");
 
-	res = pRenderSystem->pDevice->CreateRenderTargetView(buffer, NULL, &pTargetView);
+	res = pRenderSystem->pDevice->CreateRenderTargetView(buffer, NULL, pTargetView.GetAddressOf());
 	buffer->Release();
 
 	if (FAILED(res))

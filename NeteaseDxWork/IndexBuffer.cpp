@@ -29,7 +29,7 @@ void IndexBuffer::Load(void* indices, UINT indicesSize)
 
 	indexListSize = indicesSize;
 
-	HRESULT res = pRenderSystem->pDevice->CreateBuffer(&bd, &data, &pBuffer);
+	HRESULT res = pRenderSystem->pDevice->CreateBuffer(&bd, &data, pBuffer.GetAddressOf());
 
 	if (FAILED(res))
 		throw std::exception("Create IndexBuffer failed!");
