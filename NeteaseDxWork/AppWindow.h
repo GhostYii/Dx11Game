@@ -1,7 +1,8 @@
 #pragma once
 #include "Window.h"
 #include "PinelineStruct.h"
-#include "InputListener.h"
+#include "GraphicsEngine.h"
+#include "InputSystem.h"
 
 #include "Math.h"
 
@@ -28,14 +29,14 @@ public:
 	//void UpdateCamera();
 
 private:
-	SwapChain* pSwapChain = nullptr;
+	SwapChainPtr pSwapChain = nullptr;
 
 private:
-	VertexBuffer* pTmpVB = nullptr;
-	VertexShader* pTmpVS = nullptr;
-	PixelShader* pTmpPS = nullptr;
-	ConstantBuffer* pTmpCBuff = nullptr;
-	IndexBuffer* pTmpIndexBuff = nullptr;
+	VertexBufferPtr pTmpVB = nullptr;
+	VertexShaderPtr pTmpVS = nullptr;
+	PixelShaderPtr pTmpPS = nullptr;
+	ConstantBufferPtr pTmpCBuff = nullptr;
+	IndexBufferPtr pTmpIndexBuff = nullptr;
 
 	unsigned long prevTime = 0;
 	float prevDeltaTime = 0;

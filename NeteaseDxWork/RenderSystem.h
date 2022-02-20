@@ -4,23 +4,28 @@
 
 class RenderSystem
 {
+	friend class SwapChain;
+
+	friend class VertexBuffer;
+	friend class ConstantBuffer;
+	friend class IndexBuffer;
+
+	friend class VertexShader;
+	friend class PixelShader;
 public:
 	RenderSystem();
-	~RenderSystem() = default;
+	~RenderSystem();
 
 public:
-	bool Init();
-	bool Release();
+	SwapChainPtr CreateSwapChain(HWND hWnd, UINT width, UINT height);
+	DeviceContextPtr GetDeviceContext();
 
-	SwapChain* CreateSwapChain(HWND hWnd, UINT width, UINT height);
-	DeviceContext* GetDeviceContext();
+	VertexBufferPtr CreateVertexBuffer(void* vertices, UINT size, UINT sizes, void* shaderByteCode, UINT shaderSizeByte);
+	ConstantBufferPtr CreateConstantBuffer(const void* buffer, UINT bufferSize);
+	IndexBufferPtr CreatIndexBuffer(void* indices, UINT indicesSize);
 
-	VertexBuffer* CreateVertexBuffer(void* vertices, UINT size, UINT sizes, void* shaderByteCode, UINT shaderSizeByte);
-	ConstantBuffer* CreateConstantBuffer(const void* buffer, UINT bufferSize);
-	IndexBuffer* CreatIndexBuffer(void* indices, UINT indicesSize);
-
-	VertexShader* CreateVertexShader(const void* shaderByteCode, size_t byteCodeSize);
-	PixelShader* CreatePixelShader(const void* shaderByteCode, size_t byteCodeSize);
+	VertexShaderPtr CreateVertexShader(const void* shaderByteCode, size_t byteCodeSize);
+	PixelShaderPtr CreatePixelShader(const void* shaderByteCode, size_t byteCodeSize);
 
 public:
 	bool CompileVertexShader(const wchar_t* fileName, const char* entryPointName, void** shaderByteCode, size_t* byteCodeSize);
@@ -28,9 +33,7 @@ public:
 	void ReleaseCompiledShader();
 
 private:
-	DeviceContext* pDeviceContext = nullptr;
-
-private:
+	DeviceContextPtr pDeviceContext = nullptr;
 	ID3D11Device* pDevice = nullptr;
 	D3D_FEATURE_LEVEL featureLevel;
 	ID3D11DeviceContext* pContext = nullptr;
@@ -46,14 +49,7 @@ private:
 	ID3D11PixelShader* pPs = nullptr;
 
 private:
-	friend class SwapChain;
-
-	friend class VertexBuffer;
-	friend class ConstantBuffer;
-	friend class IndexBuffer;
-
-	friend class VertexShader;
-	friend class PixelShader;
-
+	void Init();
+	void Release();
 };
 

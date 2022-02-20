@@ -2,14 +2,21 @@
 #include "PinelineStruct.h"
 
 #include "d3dcompiler.h"
+#include <exception>
 
 //#pragma comment(lib, "D3DCompiler.lib")
 
 RenderSystem::RenderSystem() : featureLevel(D3D_FEATURE_LEVEL_11_0), pDevice(nullptr), pContext(nullptr)
 {
+	Init();
 }
 
-bool RenderSystem::Init()
+RenderSystem::~RenderSystem()
+{
+	Release();
+}
+
+void RenderSystem::Init()
 {
 	D3D_DRIVER_TYPE deviceType[] =
 	{
@@ -35,20 +42,17 @@ bool RenderSystem::Init()
 
 	if (FAILED(res))
 	{
-		return false;
+		throw std::exception("CreateDevice failed!");
 	}
 
-
-	pDeviceContext = new DeviceContext(pContext, this);
+	pDeviceContext = std::make_shared<DeviceContext>(pContext, this);
 
 	pDevice->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&pDXGIDevice));
 	pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), reinterpret_cast<void**>(&pDXGIAdapter));
 	pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&pDXGIFactory));
-
-	return true;
 }
 
-bool RenderSystem::Release()
+void RenderSystem::Release()
 {
 	if (pDXGIAdapter)
 		pDXGIAdapter->Release();
@@ -57,87 +61,83 @@ bool RenderSystem::Release()
 	if (pDXGIFactory)
 		pDXGIFactory->Release();
 
-	delete pDeviceContext;
-
 	if (pContext)
 		pContext->Release();
 	if (pDevice)
 		pDevice->Release();
-
-	return true;
 }
 
-SwapChain* RenderSystem::CreateSwapChain(HWND hWnd, UINT width, UINT height)
+SwapChainPtr RenderSystem::CreateSwapChain(HWND hWnd, UINT width, UINT height)
 {
-	SwapChain* ptr = nullptr;
+	SwapChainPtr ptr = nullptr;
 	try
 	{
-		ptr = new SwapChain(hWnd, width, height, this);
+		ptr = std::make_shared<SwapChain>(hWnd, width, height, this);
 	}
-	catch(...) {}
+	catch (...) {}
 
 	return ptr;
 }
 
-DeviceContext* RenderSystem::GetDeviceContext()
+DeviceContextPtr RenderSystem::GetDeviceContext()
 {
 	return this->pDeviceContext;
 }
 
-VertexBuffer* RenderSystem::CreateVertexBuffer(void* vertices, UINT size, UINT sizes, void* shaderByteCode, UINT shaderSizeByte)
+VertexBufferPtr RenderSystem::CreateVertexBuffer(void* vertices, UINT size, UINT sizes, void* shaderByteCode, UINT shaderSizeByte)
 {
-	VertexBuffer* ptr = nullptr;
+	VertexBufferPtr ptr = nullptr;
 	try
 	{
-		ptr = new VertexBuffer(vertices, size, sizes, shaderByteCode, shaderSizeByte, this);
+		ptr = std::make_shared<VertexBuffer>(vertices, size, sizes, shaderByteCode, shaderSizeByte, this);
 	}
 	catch (...) {}
 
 	return ptr;
 }
 
-ConstantBuffer* RenderSystem::CreateConstantBuffer(const void* buffer, UINT bufferSize)
+ConstantBufferPtr RenderSystem::CreateConstantBuffer(const void* buffer, UINT bufferSize)
 {
-	ConstantBuffer* ptr = nullptr;
+	ConstantBufferPtr ptr = nullptr;
 	try
 	{
-		ptr = new ConstantBuffer(buffer, bufferSize, this);
+		ptr = std::make_shared<ConstantBuffer>(buffer, bufferSize, this);
 	}
 	catch (...) {}
 
 	return ptr;
 }
 
-IndexBuffer* RenderSystem::CreatIndexBuffer(void* indices, UINT indicesSize)
+IndexBufferPtr RenderSystem::CreatIndexBuffer(void* indices, UINT indicesSize)
 {
-	IndexBuffer* ptr = nullptr;
+	IndexBufferPtr ptr = nullptr;
 	try
 	{
-		ptr = new IndexBuffer(indices, indicesSize, this);	
+		ptr = std::make_shared<IndexBuffer>(indices, indicesSize, this);
 	}
 	catch (...) {}
 
 	return ptr;
 }
 
-VertexShader* RenderSystem::CreateVertexShader(const void* shaderByteCode, size_t byteCodeSize)
+VertexShaderPtr RenderSystem::CreateVertexShader(const void* shaderByteCode, size_t byteCodeSize)
 {
-	VertexShader* ptr = nullptr;
+	VertexShaderPtr ptr = nullptr;
 	try
 	{
-		ptr = new VertexShader(shaderByteCode, byteCodeSize, this);
+		ptr = std::make_shared<VertexShader>(shaderByteCode, byteCodeSize, this);
 	}
 	catch (...) {}
 
 	return ptr;
 }
 
-PixelShader* RenderSystem::CreatePixelShader(const void* shaderByteCode, size_t byteCodeSize)
+PixelShaderPtr RenderSystem::CreatePixelShader(const void* shaderByteCode, size_t byteCodeSize)
 {
-	PixelShader* ptr = nullptr;
+	PixelShaderPtr ptr = nullptr;
 	try
 	{
-		ptr = new PixelShader(shaderByteCode, byteCodeSize, this);
+		ptr = std::make_shared<PixelShader>(shaderByteCode, byteCodeSize, this);
 	}
 	catch (...) {}
 

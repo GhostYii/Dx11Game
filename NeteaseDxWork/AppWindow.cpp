@@ -29,7 +29,6 @@ void AppWindow::OnCreate()
 
 	//InputSystem::GetInstance()->SetCursorVisiable(false);
 
-	GraphicsEngine::GetInstance()->Init();
 	RECT rect = this->GetClientWindowRect();
 	pSwapChain = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateSwapChain(this->hWnd, rect.right - rect.left, rect.bottom - rect.top);
 	
@@ -128,8 +127,7 @@ void AppWindow::OnDestroy()
 {
 	InputSystem::GetInstance()->SetCursorVisiable(true);
 
-	Window::OnDestroy();
-	GraphicsEngine::GetInstance()->Release();
+	Window::OnDestroy();	
 }
 
 void AppWindow::UpdatePosition()

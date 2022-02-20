@@ -10,7 +10,7 @@ public:
 	~ConstantBuffer();
 
 public:
-	void Update(DeviceContext* context, const void* buffer);
+	void Update(DeviceContextPtr context, const void* buffer);
 
 private:
 	void Load(const void* buffer, UINT bufferSize);	

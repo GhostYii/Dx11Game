@@ -5,12 +5,14 @@
 
 class InputSystem
 {
-public:
+private:
 	InputSystem() = default;
 	~InputSystem() = default;
 
 public:
 	static InputSystem* GetInstance();
+	static void CreateInstance();
+	static void ReleaseInstance();
 
 	void AddListener(InputListener* listener);
 	void RemoveListener(InputListener* listener);
@@ -21,6 +23,7 @@ public:
 	void SetCursorVisiable(bool visiable);
 
 	Point GetMouseDelta();
+
 private:
 	std::unordered_set<InputListener*> listenerMap;
 
@@ -31,5 +34,6 @@ private:
 
 private:
 	bool isFirstTimeMoveMouse = true;
+	static InputSystem* instance;
 };
 

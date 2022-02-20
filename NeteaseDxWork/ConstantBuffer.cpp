@@ -37,7 +37,7 @@ void ConstantBuffer::Load(const void* buffer, UINT bufferSize)
 	}
 }
 
-void ConstantBuffer::Update(DeviceContext* context, const void* buffer)
+void ConstantBuffer::Update(DeviceContextPtr context, const void* buffer)
 {
 	context->pDeviceContext->UpdateSubresource(this->pBuffer, NULL, NULL, buffer, NULL, NULL);
 }

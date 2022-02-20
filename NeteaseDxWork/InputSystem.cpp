@@ -1,10 +1,27 @@
 #include "InputSystem.h"
 #include <Windows.h>
 
+InputSystem* InputSystem::instance = nullptr;
+
 InputSystem* InputSystem::GetInstance()
 {
-	static InputSystem instance;
-	return &instance;
+	return instance;
+}
+
+void InputSystem::CreateInstance()
+{
+	if (InputSystem::instance)
+		delete instance;
+	instance = new InputSystem();
+
+}
+
+void InputSystem::ReleaseInstance()
+{
+	if (!InputSystem::instance)
+		return;
+
+	delete InputSystem::instance;
 }
 
 void InputSystem::AddListener(InputListener* listener)

@@ -11,14 +11,14 @@ DeviceContext::~DeviceContext()
 	pDeviceContext->Release();
 }
 
-void DeviceContext::ClearRenderTargetColor(SwapChain* swapChain, float r, float g, float b, float a)
+void DeviceContext::ClearRenderTargetColor(SwapChainPtr swapChain, float r, float g, float b, float a)
 {
 	const float color[] = { r,g,b,a };
 	pDeviceContext->ClearRenderTargetView(swapChain->pTargetView, color);
 	pDeviceContext->OMSetRenderTargets(1, &swapChain->pTargetView, NULL);
 }
 
-void DeviceContext::SetVertexBuffer(VertexBuffer* pBuffer)
+void DeviceContext::SetVertexBuffer(VertexBufferPtr pBuffer)
 {
 	UINT stride = pBuffer->vertexSize;
 	UINT offset = 0;
@@ -27,7 +27,7 @@ void DeviceContext::SetVertexBuffer(VertexBuffer* pBuffer)
 	pDeviceContext->IASetInputLayout(pBuffer->pInputLayout);
 }
 
-void DeviceContext::SetIndexBuffer(IndexBuffer* pBuffer)
+void DeviceContext::SetIndexBuffer(IndexBufferPtr pBuffer)
 {
 	pDeviceContext->IASetIndexBuffer(pBuffer->pBuffer, DXGI_FORMAT_R32_UINT, 0);
 }
@@ -55,22 +55,22 @@ void DeviceContext::SetViewportSize(UINT width, UINT height)
 	pDeviceContext->RSSetViewports(1, &vp);
 }
 
-void DeviceContext::SetVertexShader(VertexShader* shader)
+void DeviceContext::SetVertexShader(VertexShaderPtr shader)
 {
 	pDeviceContext->VSSetShader(shader->pVertexShader, nullptr, 0);
 }
 
-void DeviceContext::SetPixelShader(PixelShader* shader)
+void DeviceContext::SetPixelShader(PixelShaderPtr shader)
 {
 	pDeviceContext->PSSetShader(shader->pPixelShader, nullptr, 0);
 }
 
-void DeviceContext::VSSetConstantBuffer(/*VertexShader* shader,*/ ConstantBuffer* cBuffer)
+void DeviceContext::VSSetConstantBuffer(ConstantBufferPtr cBuffer)
 {
 	pDeviceContext->VSSetConstantBuffers(0, 1, &cBuffer->pBuffer);
 }
 
-void DeviceContext::PSSetConstantBuffer(/*PixelShader* shader,*/ ConstantBuffer* cBuffer)
+void DeviceContext::PSSetConstantBuffer(ConstantBufferPtr cBuffer)
 {
 	pDeviceContext->PSSetConstantBuffers(0, 1, &cBuffer->pBuffer);
 }
