@@ -57,8 +57,8 @@ bool RenderSystem::Release()
 	if (pDXGIFactory)
 		pDXGIFactory->Release();
 
-	if (pDeviceContext)
-		pDeviceContext->Release();
+	delete pDeviceContext;
+
 	if (pContext)
 		pContext->Release();
 	if (pDevice)
@@ -67,9 +67,9 @@ bool RenderSystem::Release()
 	return true;
 }
 
-SwapChain* RenderSystem::CreateSwapChain()
+SwapChain* RenderSystem::CreateSwapChain(HWND hWnd, UINT width, UINT height)
 {
-	return new SwapChain(this);
+	return new SwapChain(hWnd, width, height, this);
 }
 
 DeviceContext* RenderSystem::GetDeviceContext()
@@ -77,42 +77,30 @@ DeviceContext* RenderSystem::GetDeviceContext()
 	return this->pDeviceContext;
 }
 
-VertexBuffer* RenderSystem::CreateVertexBuffer()
+VertexBuffer* RenderSystem::CreateVertexBuffer(void* vertices, UINT size, UINT sizes, void* shaderByteCode, UINT shaderSizeByte)
 {
-	return new VertexBuffer(this);
+	return new VertexBuffer(vertices, size, sizes, shaderByteCode, shaderSizeByte, this);
 }
 
-ConstantBuffer* RenderSystem::CreateConstantBuffer()
+ConstantBuffer* RenderSystem::CreateConstantBuffer(const void* buffer, UINT bufferSize)
 {
-	return new ConstantBuffer(this);
+	return new ConstantBuffer(buffer, bufferSize, this);
 }
 
-IndexBuffer* RenderSystem::CreatIndexBuffer()
+IndexBuffer* RenderSystem::CreatIndexBuffer(void* indices, UINT indicesSize)
 {
-	return new IndexBuffer(this);
+	return new IndexBuffer(indices, indicesSize, this);
 }
 
 VertexShader* RenderSystem::CreateVertexShader(const void* shaderByteCode, size_t byteCodeSize)
 {
-	VertexShader* vs = new VertexShader(this);
-
-	if (!vs->Init(shaderByteCode, byteCodeSize))
-	{
-		vs->Release();
-		return nullptr;
-	}
+	VertexShader* vs = new VertexShader(shaderByteCode, byteCodeSize, this);
 	return vs;
 }
 
 PixelShader* RenderSystem::CreatePixelShader(const void* shaderByteCode, size_t byteCodeSize)
 {
-	PixelShader* ps = new PixelShader(this);
-
-	if (!ps->Init(shaderByteCode, byteCodeSize))
-	{
-		ps->Release();
-		return nullptr;
-	}
+	PixelShader* ps = new PixelShader(shaderByteCode, byteCodeSize, this);
 	return ps;
 }
 

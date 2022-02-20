@@ -1,7 +1,18 @@
 #include "IndexBuffer.h"
 #include "RenderSystem.h"
+#include <exception>
 
-bool IndexBuffer::Load(void* indices, UINT indicesSize)
+IndexBuffer::IndexBuffer(void* indices, UINT indicesSize, RenderSystem* rs) : pRenderSystem(rs)
+{
+	Load(indices, indicesSize);
+}
+
+IndexBuffer::~IndexBuffer()
+{
+	Release();
+}
+
+void IndexBuffer::Load(void* indices, UINT indicesSize)
 {
 	if (pBuffer)
 		pBuffer->Release();
@@ -21,9 +32,7 @@ bool IndexBuffer::Load(void* indices, UINT indicesSize)
 	HRESULT res = pRenderSystem->pDevice->CreateBuffer(&bd, &data, &pBuffer);
 
 	if (FAILED(res))
-		return false;
-
-	return false;
+		throw std::exception("Create IndexBuffer failed!");
 }
 
 UINT IndexBuffer::GetIndexListSize()
@@ -31,9 +40,7 @@ UINT IndexBuffer::GetIndexListSize()
 	return indexListSize;
 }
 
-bool IndexBuffer::Release()
+void IndexBuffer::Release()
 {
 	pBuffer->Release();
-	delete this;
-	return true;
 }

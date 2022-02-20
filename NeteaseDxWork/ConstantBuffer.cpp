@@ -2,11 +2,23 @@
 #include "RenderSystem.h"
 #include "DeviceContext.h"
 
+#include <exception>
 
-bool ConstantBuffer::Load(const void* buffer, UINT bufferSize)
+
+ConstantBuffer::ConstantBuffer(const void* buffer, UINT bufferSize, RenderSystem* rs) :pRenderSystem(rs)
+{
+	Load(buffer, bufferSize);
+}
+
+ConstantBuffer::~ConstantBuffer()
+{
+	Release();
+}
+
+void ConstantBuffer::Load(const void* buffer, UINT bufferSize)
 {
 	if (pBuffer)
-		pBuffer->Release();	
+		pBuffer->Release();
 
 	D3D11_BUFFER_DESC bd = {};
 	bd.Usage = D3D11_USAGE_DEFAULT;
@@ -20,9 +32,9 @@ bool ConstantBuffer::Load(const void* buffer, UINT bufferSize)
 
 	HRESULT res = pRenderSystem->pDevice->CreateBuffer(&bd, &data, &pBuffer);
 	if (FAILED(res))
-		return false;
-	
-	return true;
+	{
+		throw std::exception("Create ConstantBuffer failed!");
+	}
 }
 
 void ConstantBuffer::Update(DeviceContext* context, const void* buffer)
@@ -30,10 +42,8 @@ void ConstantBuffer::Update(DeviceContext* context, const void* buffer)
 	context->pDeviceContext->UpdateSubresource(this->pBuffer, NULL, NULL, buffer, NULL, NULL);
 }
 
-bool ConstantBuffer::Release()
+void ConstantBuffer::Release()
 {
 	if (pBuffer)
 		pBuffer->Release();
-	delete this;
-	return true;
 }

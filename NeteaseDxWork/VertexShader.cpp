@@ -1,17 +1,26 @@
 #include "VertexShader.h"
 #include "RenderSystem.h"
 
+#include <exception>
+
 void VertexShader::Release()
 {
 	pVertexShader->Release();
-	delete this;
 }
 
-bool VertexShader::Init(const void* shaderByteCode, size_t byteCodeSize)
+VertexShader::VertexShader(const void* shaderByteCode, size_t byteCodeSize, RenderSystem* rs) : pRenderSystem(rs)
+{
+	Init(shaderByteCode, byteCodeSize);
+}
+
+VertexShader::~VertexShader()
+{
+	Release();
+}
+
+void VertexShader::Init(const void* shaderByteCode, size_t byteCodeSize)
 {
 	HRESULT res = pRenderSystem->pDevice->CreateVertexShader(shaderByteCode, byteCodeSize, nullptr, &pVertexShader);
 	if (FAILED(res))
-		return false;
-
-	return true;
+		throw std::exception("Create VertexShader failed!");
 }

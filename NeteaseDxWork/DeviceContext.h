@@ -1,6 +1,5 @@
 #pragma once
 #include <d3d11.h>
-
 #include "GraphicsClasses.h"
 
 class DeviceContext
@@ -8,10 +7,9 @@ class DeviceContext
 	friend class ConstantBuffer;
 public:
 	DeviceContext(ID3D11DeviceContext* pDeviceContext, RenderSystem* rs);
-	~DeviceContext() = default;
+	~DeviceContext();
 
 public:
-	bool Release();
 	void ClearRenderTargetColor(SwapChain* swapChain, float r, float g, float b, float a);
 	void SetVertexBuffer(VertexBuffer* pBuffer);
 	void SetIndexBuffer(IndexBuffer* pBuffer);

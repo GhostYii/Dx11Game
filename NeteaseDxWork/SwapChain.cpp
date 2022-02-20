@@ -1,7 +1,9 @@
 #include "SwapChain.h"
 #include "RenderSystem.h"
 
-bool SwapChain::Init(HWND hWnd, UINT width, UINT height)
+#include <exception>
+
+void SwapChain::Init(HWND hWnd, UINT width, UINT height)
 {
 	DXGI_SWAP_CHAIN_DESC scd = {};
 	//ZeroMemory(scd, sizeof(scd));
@@ -20,28 +22,34 @@ bool SwapChain::Init(HWND hWnd, UINT width, UINT height)
 	HRESULT res = pRenderSystem->pDXGIFactory->CreateSwapChain(pRenderSystem->pDevice, &scd, &pSwapChain);
 
 	if (FAILED(res))
-		return false;
+		throw std::exception("Create SwapChain failed!");
 
 	ID3D11Texture2D* buffer = nullptr;
 	res = pSwapChain->GetBuffer(0u, __uuidof(ID3D11Texture2D), (void**)&buffer);
 
 	if (FAILED(res))
-		return false;
+		throw std::exception("SwapChain get buffer failed!");
 
 	res = pRenderSystem->pDevice->CreateRenderTargetView(buffer, NULL, &pTargetView);
 	buffer->Release();
 
 	if (FAILED(res))
-		return false;
-
-	return true;
+		throw std::exception("SwapChain CreateRenderTargetView failed!");
 }
 
-bool SwapChain::Release()
+void SwapChain::Release()
 {
 	pSwapChain->Release();
-	delete this;
-	return true;
+}
+
+SwapChain::SwapChain(HWND hWnd, UINT width, UINT height, RenderSystem* rs) : pRenderSystem(rs)
+{
+	Init(hWnd, width, height);
+}
+
+SwapChain::~SwapChain()
+{
+	Release();
 }
 
 bool SwapChain::Present(bool vSync)

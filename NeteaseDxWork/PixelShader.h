@@ -9,14 +9,12 @@ class PixelShader
 	friend class DeviceContext;
 
 public:
-	PixelShader(RenderSystem* rs) : pRenderSystem(rs) {}
-	~PixelShader() = default;
-
-public:
-	void Release();
+	PixelShader(const void* shaderByteCode, size_t byteCodeSize, RenderSystem* rs);
+	~PixelShader();
 
 private:
-	bool Init(const void* shaderByteCode, size_t byteCodeSize);
+	void Init(const void* shaderByteCode, size_t byteCodeSize);
+	void Release();
 
 private:
 	ID3D11PixelShader* pPixelShader = nullptr;

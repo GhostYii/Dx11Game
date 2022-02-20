@@ -7,13 +7,10 @@ class VertexBuffer
 {
 	friend class DeviceContext;
 public:
-	VertexBuffer(RenderSystem* rs) : pRenderSystem(rs) {}
-	~VertexBuffer() = default;
+	VertexBuffer(void* vertices, UINT size, UINT sizes, void* shaderByteCode, UINT shaderSizeByte, RenderSystem* rs);
+	~VertexBuffer();
 
 public:
-	bool Load(void* vertices, UINT size, UINT sizes, void* shaderByteCode, UINT shaderSizeByte);
-	bool Release();
-
 	UINT GetvertexSize() { return vertexSize; }
 
 private:
@@ -24,5 +21,9 @@ private:
 	ID3D11InputLayout* pInputLayout = nullptr;
 
 	RenderSystem* pRenderSystem = nullptr;
+
+private:
+	void Load(void* vertices, UINT size, UINT sizes, void* shaderByteCode, UINT shaderSizeByte);
+	void Release();
 };
 

@@ -8,14 +8,12 @@ class VertexShader
 	friend class RenderSystem;
 	friend class DeviceContext;
 public:
-	VertexShader(RenderSystem* rs) : pRenderSystem(rs) {}
-	~VertexShader() = default;
-
-public:	
-	void Release();
+	VertexShader(const void* shaderByteCode, size_t byteCodeSize, RenderSystem* rs);
+	~VertexShader();
 
 private:
-	bool Init(const void* shaderByteCode, size_t byteCodeSize);
+	void Init(const void* shaderByteCode, size_t byteCodeSize);
+	void Release();
 
 private:
 	ID3D11VertexShader* pVertexShader = nullptr;

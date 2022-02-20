@@ -6,11 +6,9 @@ DeviceContext::DeviceContext(ID3D11DeviceContext* pDeviceContext, RenderSystem* 
 {
 }
 
-bool DeviceContext::Release()
+DeviceContext::~DeviceContext()
 {
 	pDeviceContext->Release();
-	delete this;
-	return true;
 }
 
 void DeviceContext::ClearRenderTargetColor(SwapChain* swapChain, float r, float g, float b, float a)

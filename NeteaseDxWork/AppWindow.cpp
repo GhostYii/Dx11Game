@@ -30,10 +30,9 @@ void AppWindow::OnCreate()
 	//InputSystem::GetInstance()->SetCursorVisiable(false);
 
 	GraphicsEngine::GetInstance()->Init();
-	pSwapChain = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateSwapChain();
 	RECT rect = this->GetClientWindowRect();
-	pSwapChain->Init(this->hWnd, rect.right - rect.left, rect.bottom - rect.top);
-
+	pSwapChain = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateSwapChain(this->hWnd, rect.right - rect.left, rect.bottom - rect.top);
+	
 	worldCamMat.SetTranslate(Vector3(0, 0, -2.f));
 
 	Vertex vertices[] =
@@ -52,7 +51,7 @@ void AppWindow::OnCreate()
 		{ Vector3(-0.5f,-0.5f,0.5f), Vector3(0,0,1), Vector3(1,0,0) }
 	};
 
-	pTmpVB = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateVertexBuffer();
+	
 	UINT vertexSize = ARRAYSIZE(vertices);
 
 	unsigned int indexList[] =
@@ -77,17 +76,15 @@ void AppWindow::OnCreate()
 		1,0,7
 	};
 
-	pTmpIndexBuff = GraphicsEngine::GetInstance()->GetRenderSystem()->CreatIndexBuffer();
 	UINT indexListSize = ARRAYSIZE(indexList);
-
-	pTmpIndexBuff->Load(indexList, indexListSize);
+	pTmpIndexBuff = GraphicsEngine::GetInstance()->GetRenderSystem()->CreatIndexBuffer(indexList, indexListSize);	
 
 	void* shaderByteCode = nullptr;
 	UINT shaderSize = 0;
 	GraphicsEngine::GetInstance()->GetRenderSystem()->CompileVertexShader(L"VertexShader.hlsl", "main", &shaderByteCode, &shaderSize);
 	pTmpVS = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateVertexShader(shaderByteCode, shaderSize);
 
-	pTmpVB->Load(vertices, sizeof(Vertex), vertexSize, shaderByteCode, shaderSize);
+	pTmpVB = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateVertexBuffer(vertices, sizeof(Vertex), vertexSize, shaderByteCode, shaderSize);
 
 	GraphicsEngine::GetInstance()->GetRenderSystem()->CompilePixelShader(L"PixelShader.hlsl", "main", &shaderByteCode, &shaderSize);
 	pTmpPS = GraphicsEngine::GetInstance()->GetRenderSystem()->CreatePixelShader(shaderByteCode, shaderSize);
@@ -96,8 +93,7 @@ void AppWindow::OnCreate()
 
 	Constant cBuffer = { 0 };
 
-	pTmpCBuff = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateConstantBuffer();
-	pTmpCBuff->Load(&cBuffer, sizeof(Constant));
+	pTmpCBuff = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateConstantBuffer(&cBuffer, sizeof(Constant));
 }
 
 void AppWindow::OnUpdate()
@@ -133,13 +129,6 @@ void AppWindow::OnDestroy()
 	InputSystem::GetInstance()->SetCursorVisiable(true);
 
 	Window::OnDestroy();
-	pTmpVB->Release();
-	pSwapChain->Release();
-
-	pTmpIndexBuff->Release();
-	pTmpVS->Release();
-	pTmpPS->Release();
-
 	GraphicsEngine::GetInstance()->Release();
 }
 

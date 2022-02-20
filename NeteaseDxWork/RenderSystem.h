@@ -12,12 +12,12 @@ public:
 	bool Init();
 	bool Release();
 
-	SwapChain* CreateSwapChain();
+	SwapChain* CreateSwapChain(HWND hWnd, UINT width, UINT height);
 	DeviceContext* GetDeviceContext();
 
-	VertexBuffer* CreateVertexBuffer();
-	ConstantBuffer* CreateConstantBuffer();
-	IndexBuffer* CreatIndexBuffer();
+	VertexBuffer* CreateVertexBuffer(void* vertices, UINT size, UINT sizes, void* shaderByteCode, UINT shaderSizeByte);
+	ConstantBuffer* CreateConstantBuffer(const void* buffer, UINT bufferSize);
+	IndexBuffer* CreatIndexBuffer(void* indices, UINT indicesSize);
 
 	VertexShader* CreateVertexShader(const void* shaderByteCode, size_t byteCodeSize);
 	PixelShader* CreatePixelShader(const void* shaderByteCode, size_t byteCodeSize);

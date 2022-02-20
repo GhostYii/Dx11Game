@@ -7,14 +7,11 @@ class IndexBuffer
 {
 	friend class DeviceContext;
 public:
-	IndexBuffer(RenderSystem* rs) : pRenderSystem(rs) {}
-	~IndexBuffer() = default;
+	IndexBuffer(void* indices, UINT indicesSize, RenderSystem* rs);
+	~IndexBuffer();
 
 public:
-	bool Load(void* indices, UINT indicesSize);
 	UINT GetIndexListSize();
-	bool Release();
-
 	UINT GetvertexSize() { return indexListSize; }
 
 private:
@@ -24,5 +21,9 @@ private:
 	ID3D11InputLayout* pInputLayout = nullptr;
 
 	RenderSystem* pRenderSystem = nullptr;
+
+private:
+	void Load(void* indices, UINT indicesSize);
+	void Release();
 };
 

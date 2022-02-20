@@ -1,7 +1,20 @@
 #include "VertexBuffer.h"
 #include "RenderSystem.h"
 
-bool VertexBuffer::Load(void* vertices, UINT size, UINT sizes, void* shaderByteCode, UINT shaderSizeByte)
+#include <exception>
+
+VertexBuffer::VertexBuffer(void* vertices, UINT size, UINT sizes, void* shaderByteCode, UINT shaderSizeByte, RenderSystem* rs)
+	: pRenderSystem(rs)
+{
+	Load(vertices, size, sizes, shaderByteCode, shaderSizeByte);
+}
+
+VertexBuffer::~VertexBuffer()
+{
+	Release();
+}
+
+void VertexBuffer::Load(void* vertices, UINT size, UINT sizes, void* shaderByteCode, UINT shaderSizeByte)
 {
 	if (pBuffer)
 		pBuffer->Release();
@@ -23,7 +36,7 @@ bool VertexBuffer::Load(void* vertices, UINT size, UINT sizes, void* shaderByteC
 
 	HRESULT res = pRenderSystem->pDevice->CreateBuffer(&bd, &data, &pBuffer);
 	if (FAILED(res))
-		return false;
+		throw std::exception("Create VertexBuffer failed!");
 
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
@@ -36,16 +49,12 @@ bool VertexBuffer::Load(void* vertices, UINT size, UINT sizes, void* shaderByteC
 
 	res = pRenderSystem->pDevice->CreateInputLayout(layout, layoutSize, shaderByteCode, shaderSizeByte, &pInputLayout);
 	if (FAILED(res))
-		return false;
-
-	return true;
+		throw std::exception("VertexBuffer create input layout failed!");
 }
 
-bool VertexBuffer::Release()
+void VertexBuffer::Release()
 {
 	if (pInputLayout)
 		pInputLayout->Release();
 	pBuffer->Release();
-	delete this;
-	return true;
 }
