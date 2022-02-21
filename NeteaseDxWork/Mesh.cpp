@@ -55,7 +55,11 @@ Mesh::Mesh(const wchar_t* fullPath) : Resource(fullPath)
 				tinyobj::real_t tx = attribs.texcoords[index.texcoord_index * 2 + 0];
 				tinyobj::real_t ty = attribs.texcoords[index.texcoord_index * 2 + 1];
 
-				MeshVertex vert(Vector3(vx, vy, vz), Vector2(tx, ty));
+				tinyobj::real_t nx = attribs.normals[index.normal_index * 3 + 0];
+				tinyobj::real_t ny = attribs.normals[index.normal_index * 3 + 1];
+				tinyobj::real_t nz = attribs.normals[index.normal_index * 3 + 2];
+
+				MeshVertex vert(Vector3(vx, vy, vz), Vector2(tx, ty), Vector3(nx, ny, nz));
 				meshVerts.push_back(vert);
 
 				meshIndices.push_back(indexOffset + k);

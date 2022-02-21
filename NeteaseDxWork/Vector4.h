@@ -5,6 +5,7 @@ class Vector4
 public:
 	Vector4() : x(0), y(0), z(0), w(0) {	}
 	Vector4(float x, float y, float z, float w) : x(x), y(y), z(z), w(0) {	}
+	Vector4(const Vector3& other) : x(other.x), y(other.y), z(other.z), w(1) {}
 	Vector4(const Vector4& other) : x(other.x), y(other.y), z(other.z), w(other.w) {}
 
 	~Vector4() = default;

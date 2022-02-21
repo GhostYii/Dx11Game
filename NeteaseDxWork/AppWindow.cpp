@@ -19,7 +19,7 @@ struct Constant
 	Matrix4x4 world;
 	Matrix4x4 view;
 	Matrix4x4 projection;
-	UINT time;
+	Vector4 light;
 };
 
 void AppWindow::OnCreate()
@@ -27,8 +27,8 @@ void AppWindow::OnCreate()
 	InputSystem::GetInstance()->AddListener(this);
 
 	//InputSystem::GetInstance()->SetCursorVisiable(false);
-	pTmpTexture = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\r_earth.jpg");
-	pTmpMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\sphere.obj");
+	pTmpTexture = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\spaceship.jpg");
+	pTmpMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\spaceship.obj");
 
 	RECT rect = this->GetClientWindowRect();
 	pSwapChain = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateSwapChain(this->hWnd, rect.right - rect.left, rect.bottom - rect.top);
@@ -185,13 +185,17 @@ void AppWindow::UpdatePosition()
 	// Scale - Rotation - Translate
 
 	Constant c = {};
-	c.time = GetTickCount();
 
 	tmpPos += deltaTime / 10.f;
 	if (tmpPos > 1.f)
 		tmpPos = 0;
 
 	Matrix4x4 tmpMat;
+	Matrix4x4 lightRotMat;
+
+	lightRotMat.SetIdentity();
+	lightRotMat.SetRotationY(0);
+	c.light = lightRotMat.GetDirectionZ();
 
 	tmpDelta += deltaTime / .5f;
 
