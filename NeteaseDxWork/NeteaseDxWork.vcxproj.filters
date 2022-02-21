@@ -35,6 +35,15 @@
     <Filter Include="GameEngine\Resource\Texture">
       <UniqueIdentifier>{dbf42ed9-2021-429e-8ca4-11ea64f4b9ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameEngine\Resource\Mesh">
+      <UniqueIdentifier>{338d3d5c-5a97-4c77-b9ad-3f139faed2d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugins">
+      <UniqueIdentifier>{eb79cab8-7111-4ed3-b54e-19ce4f772dd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugins\tinyobjloader">
+      <UniqueIdentifier>{d5eea8ea-0671-4afe-9e16-b4b68156fafc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AppWindow.cpp">
@@ -85,6 +94,12 @@
     </ClCompile>
     <ClCompile Include="Texture.cpp">
       <Filter>GameEngine\Resource\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshManager.cpp">
+      <Filter>GameEngine\Resource\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>GameEngine\Resource\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +187,21 @@
     <ClInclude Include="ResourceStruct.h">
       <Filter>GameEngine\Resource</Filter>
     </ClInclude>
+    <ClInclude Include="MeshManager.h">
+      <Filter>GameEngine\Resource\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>GameEngine\Resource\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshVertex.h">
+      <Filter>GameEngine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility.h">
+      <Filter>GameEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="tiny_obj_loader.h">
+      <Filter>Plugins\tinyobjloader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader.fx">
@@ -181,6 +211,9 @@
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="PixelShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="MeshDefaultVS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>

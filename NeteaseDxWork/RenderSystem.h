@@ -24,7 +24,7 @@ public:
 
 	VertexBufferPtr CreateVertexBuffer(void* vertices, UINT size, UINT sizes, void* shaderByteCode, UINT shaderSizeByte);
 	ConstantBufferPtr CreateConstantBuffer(const void* buffer, UINT bufferSize);
-	IndexBufferPtr CreatIndexBuffer(void* indices, UINT indicesSize);
+	IndexBufferPtr CreateIndexBuffer(void* indices, UINT indicesSize);
 
 	VertexShaderPtr CreateVertexShader(const void* shaderByteCode, size_t byteCodeSize);
 	PixelShaderPtr CreatePixelShader(const void* shaderByteCode, size_t byteCodeSize);

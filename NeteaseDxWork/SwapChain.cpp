@@ -35,6 +35,30 @@ void SwapChain::Init(HWND hWnd, UINT width, UINT height)
 
 	if (FAILED(res))
 		throw std::exception("SwapChain CreateRenderTargetView failed!");
+
+	D3D11_TEXTURE2D_DESC desc = {};
+	desc.Width = width;
+	desc.Height = height;
+	desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	desc.MipLevels = 1;
+	desc.SampleDesc.Count = 1;
+	desc.SampleDesc.Quality = 0;
+	desc.MiscFlags = 0;
+	desc.ArraySize = 1;
+	desc.CPUAccessFlags = 0;
+
+	res = pRenderSystem->pDevice->CreateTexture2D(&desc, nullptr, &buffer);
+
+	if (FAILED(res))
+		throw std::exception("SwapChain CreateTexture2D failed!");
+
+	res = pRenderSystem->pDevice->CreateDepthStencilView(buffer, NULL, pDepthStencilView.GetAddressOf());
+	buffer->Release();
+
+	if (FAILED(res))
+		throw std::exception("SwapChain CreateDepthStencilView failed!");
 }
 
 void SwapChain::Release()

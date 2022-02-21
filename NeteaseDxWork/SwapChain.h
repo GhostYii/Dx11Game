@@ -16,6 +16,7 @@ public:
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwapChain = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pTargetView = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDepthStencilView = nullptr;
 	RenderSystem* pRenderSystem = nullptr;
 
 private:

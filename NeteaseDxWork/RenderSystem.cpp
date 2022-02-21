@@ -108,7 +108,7 @@ ConstantBufferPtr RenderSystem::CreateConstantBuffer(const void* buffer, UINT bu
 	return ptr;
 }
 
-IndexBufferPtr RenderSystem::CreatIndexBuffer(void* indices, UINT indicesSize)
+IndexBufferPtr RenderSystem::CreateIndexBuffer(void* indices, UINT indicesSize)
 {
 	IndexBufferPtr ptr = nullptr;
 	try

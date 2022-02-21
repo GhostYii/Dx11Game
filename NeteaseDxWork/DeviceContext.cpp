@@ -13,11 +13,12 @@ DeviceContext::~DeviceContext()
 	pDeviceContext->Release();
 }
 
-void DeviceContext::ClearRenderTargetColor(SwapChainPtr swapChain, float r, float g, float b, float a)
+void DeviceContext::ClearRenderTargetColor(SwapChainPtr pSwapChain, float r, float g, float b, float a)
 {
 	const float color[] = { r,g,b,a };
-	pDeviceContext->ClearRenderTargetView(swapChain->pTargetView.Get(), color);
-	pDeviceContext->OMSetRenderTargets(1, swapChain->pTargetView.GetAddressOf(), NULL);
+	pDeviceContext->ClearRenderTargetView(pSwapChain->pTargetView.Get(), color);
+	pDeviceContext->ClearDepthStencilView(pSwapChain->pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
+	pDeviceContext->OMSetRenderTargets(1, pSwapChain->pTargetView.GetAddressOf(), pSwapChain->pDepthStencilView.Get());
 }
 
 void DeviceContext::SetVertexBuffer(VertexBufferPtr pBuffer)
@@ -25,6 +26,7 @@ void DeviceContext::SetVertexBuffer(VertexBufferPtr pBuffer)
 	UINT stride = pBuffer->vertexSize;
 	UINT offset = 0;
 	pDeviceContext->IASetVertexBuffers(0, 1, pBuffer->pBuffer.GetAddressOf(), &stride, &offset);
+	//pDeviceContext->IASetVertexBuffers(0, 1, &pBuffer->pBuffer, &stride, &offset);
 
 	pDeviceContext->IASetInputLayout(pBuffer->pInputLayout.Get());
 }

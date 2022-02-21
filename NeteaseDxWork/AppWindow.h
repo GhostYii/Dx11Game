@@ -38,6 +38,7 @@ private:
 	ConstantBufferPtr pTmpCBuff = nullptr;
 	IndexBufferPtr pTmpIndexBuff = nullptr;
 	TexturePtr pTmpTexture = nullptr;
+	MeshPtr pTmpMesh = nullptr;
 
 	unsigned long prevTime = 0;
 	float prevDeltaTime = 0;

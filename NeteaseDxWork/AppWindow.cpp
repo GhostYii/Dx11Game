@@ -1,7 +1,7 @@
 #include "AppWindow.h"
 #include "GraphicsEngine.h"
 #include "DeviceContext.h"
-
+#include "Mesh.h"
 #include "InputSystem.h"
 
 #include<Windows.h>
@@ -27,104 +27,107 @@ void AppWindow::OnCreate()
 	InputSystem::GetInstance()->AddListener(this);
 
 	//InputSystem::GetInstance()->SetCursorVisiable(false);
-	pTmpTexture = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\wood.jpg");
+	pTmpTexture = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\r_earth.jpg");
+	pTmpMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\sphere.obj");
 
 	RECT rect = this->GetClientWindowRect();
 	pSwapChain = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateSwapChain(this->hWnd, rect.right - rect.left, rect.bottom - rect.top);
 
-	worldCamMat.SetTranslate(Vector3(0, 0, -2.f));
+	worldCamMat.SetTranslate(Vector3(0, 0, -10.f));
 
-	Vector3 vertics[] =
-	{
-		//		X - Y - Z
-		//FRONT FACE
-		{ -0.5f,-0.5f,-0.5f },
-		{ -0.5f,0.5f,-0.5f },
-		{ 0.5f,0.5f,-0.5f },
-		{ 0.5f,-0.5f,-0.5f },
+#pragma region Cube
+	//Vector3 vertics[] =
+	//{
+	//	//		X - Y - Z
+	//	//FRONT FACE
+	//	{ -0.5f,-0.5f,-0.5f },
+	//	{ -0.5f,0.5f,-0.5f },
+	//	{ 0.5f,0.5f,-0.5f },
+	//	{ 0.5f,-0.5f,-0.5f },
 
-		//BACK FACE
-		{ 0.5f,-0.5f,0.5f },
-		{ 0.5f,0.5f,0.5f },
-		{ -0.5f,0.5f,0.5f },
-		{ -0.5f,-0.5f,0.5f }
-	};
+	//	//BACK FACE
+	//	{ 0.5f,-0.5f,0.5f },
+	//	{ 0.5f,0.5f,0.5f },
+	//	{ -0.5f,0.5f,0.5f },
+	//	{ -0.5f,-0.5f,0.5f }
+	//};
 
-	Vector2 texcoords[] =
-	{
-		{ 0, 0 },
-		{ 0, 1.f },
-		{ 1.f, 0 },
-		{ 1.f, 1.f }
-	};
+	//Vector2 texcoords[] =
+	//{
+	//	{ 0, 0 },
+	//	{ 0, 1.f },
+	//	{ 1.f, 0 },
+	//	{ 1.f, 1.f }
+	//};
 
-	Vertex vertices[] =
-	{
-		{ vertics[0], texcoords[1] },
-		{ vertics[1], texcoords[0] },
-		{ vertics[2], texcoords[2] },
-		{ vertics[3], texcoords[3] },
+	//Vertex vertices[] =
+	//{
+	//	{ vertics[0], texcoords[1] },
+	//	{ vertics[1], texcoords[0] },
+	//	{ vertics[2], texcoords[2] },
+	//	{ vertics[3], texcoords[3] },
 
-		{ vertics[4], texcoords[1] },
-		{ vertics[5], texcoords[0] },
-		{ vertics[6], texcoords[2] },
-		{ vertics[7], texcoords[3] },
+	//	{ vertics[4], texcoords[1] },
+	//	{ vertics[5], texcoords[0] },
+	//	{ vertics[6], texcoords[2] },
+	//	{ vertics[7], texcoords[3] },
 
-		{ vertics[1], texcoords[1] },
-		{ vertics[6], texcoords[0] },
-		{ vertics[5], texcoords[2] },
-		{ vertics[2], texcoords[3] },
+	//	{ vertics[1], texcoords[1] },
+	//	{ vertics[6], texcoords[0] },
+	//	{ vertics[5], texcoords[2] },
+	//	{ vertics[2], texcoords[3] },
 
-		{ vertics[7], texcoords[1] },
-		{ vertics[0], texcoords[0] },
-		{ vertics[3], texcoords[2] },
-		{ vertics[4], texcoords[3] },
+	//	{ vertics[7], texcoords[1] },
+	//	{ vertics[0], texcoords[0] },
+	//	{ vertics[3], texcoords[2] },
+	//	{ vertics[4], texcoords[3] },
 
-		{ vertics[3], texcoords[1] },
-		{ vertics[2], texcoords[0] },
-		{ vertics[5], texcoords[2] },
-		{ vertics[4], texcoords[3] },
+	//	{ vertics[3], texcoords[1] },
+	//	{ vertics[2], texcoords[0] },
+	//	{ vertics[5], texcoords[2] },
+	//	{ vertics[4], texcoords[3] },
 
-		{ vertics[7], texcoords[1] },
-		{ vertics[6], texcoords[0] },
-		{ vertics[1], texcoords[2] },
-		{ vertics[0], texcoords[3] },
-	};
+	//	{ vertics[7], texcoords[1] },
+	//	{ vertics[6], texcoords[0] },
+	//	{ vertics[1], texcoords[2] },
+	//	{ vertics[0], texcoords[3] },
+	//};
 
 
-	UINT vertexSize = ARRAYSIZE(vertices);
+	//UINT vertexSize = ARRAYSIZE(vertices);
 
-	unsigned int indexList[] =
-	{
-		//FRONT SIDE
-		0,1,2,  //FIRST TRIANGLE
-		2,3,0,  //SECOND TRIANGLE
-		//BACK SIDE
-		4,5,6,
-		6,7,4,
-		//TOP SIDE
-		8,9,10,
-		10,11,8,
-		//BOTTOM SIDE
-		12,13,14,
-		14,15,12,
-		//RIGHT SIDE
-		16,17,18,
-		18,19,16,
-		//LEFT SIDE
-		20,21,22,
-		22,23,20
-	};
+	//unsigned int indexList[] =
+	//{
+	//	//FRONT SIDE
+	//	0,1,2,  //FIRST TRIANGLE
+	//	2,3,0,  //SECOND TRIANGLE
+	//	//BACK SIDE
+	//	4,5,6,
+	//	6,7,4,
+	//	//TOP SIDE
+	//	8,9,10,
+	//	10,11,8,
+	//	//BOTTOM SIDE
+	//	12,13,14,
+	//	14,15,12,
+	//	//RIGHT SIDE
+	//	16,17,18,
+	//	18,19,16,
+	//	//LEFT SIDE
+	//	20,21,22,
+	//	22,23,20
+	//};
 
-	UINT indexListSize = ARRAYSIZE(indexList);
-	pTmpIndexBuff = GraphicsEngine::GetInstance()->GetRenderSystem()->CreatIndexBuffer(indexList, indexListSize);
+	//UINT indexListSize = ARRAYSIZE(indexList);
+	//pTmpIndexBuff = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateIndexBuffer(indexList, indexListSize);
+#pragma endregion
 
 	void* shaderByteCode = nullptr;
 	UINT shaderSize = 0;
 	GraphicsEngine::GetInstance()->GetRenderSystem()->CompileVertexShader(L"VertexShader.hlsl", "main", &shaderByteCode, &shaderSize);
 	pTmpVS = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateVertexShader(shaderByteCode, shaderSize);
 
-	pTmpVB = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateVertexBuffer(vertices, sizeof(Vertex), vertexSize, shaderByteCode, shaderSize);
+	//pTmpVB = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateVertexBuffer(vertices, sizeof(Vertex), vertexSize, shaderByteCode, shaderSize);
 
 	bool isBuild = GraphicsEngine::GetInstance()->GetRenderSystem()->CompilePixelShader(L"PixelShader.hlsl", "main", &shaderByteCode, &shaderSize);
 	pTmpPS = GraphicsEngine::GetInstance()->GetRenderSystem()->CreatePixelShader(shaderByteCode, shaderSize);
@@ -156,9 +159,12 @@ void AppWindow::OnUpdate()
 	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->VSSetTexture(pTmpTexture);
 	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->PSSetTexture(pTmpTexture);
 
-	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetVertexBuffer(pTmpVB);
-	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetIndexBuffer(pTmpIndexBuff);
-	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->DrawIndexedTriangleList(pTmpIndexBuff->GetIndexListSize(), 0, 0);
+	//GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetVertexBuffer(pTmpVB);
+	//GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetIndexBuffer(pTmpIndexBuff);
+	//GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->DrawIndexedTriangleList(pTmpIndexBuff->GetIndexListSize(), 0, 0);
+	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetVertexBuffer(pTmpMesh->GetVertexBuffer());
+	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetIndexBuffer(pTmpMesh->GetIndexBuffer());
+	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->DrawIndexedTriangleList(pTmpMesh->GetIndexBuffer()->GetIndexListSize(), 0, 0);
 
 	pSwapChain->Present(false);
 
