@@ -29,12 +29,14 @@ void AppWindow::OnCreate()
 
 	//InputSystem::GetInstance()->SetCursorVisiable(false);
 	pTmpTexture = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\earth.jpg");
-	pTmpMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\ball.obj");
+	pTmpSkyboxTex = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\galaxy_nasa.jpg");
+	pTmpMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\sphere.obj");
+	pTmpSkyboxMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\skybox.obj");
 
 	RECT rect = this->GetClientWindowRect();
 	pSwapChain = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateSwapChain(this->hWnd, rect.right - rect.left, rect.bottom - rect.top);
 
-	worldCamMat.SetTranslate(Vector3(0, 0, -10.f));
+	camTransMat.SetTranslation(Vector3(0, 0, -10.f));
 
 #pragma region Cube
 	//Vector3 vertics[] =
@@ -130,14 +132,18 @@ void AppWindow::OnCreate()
 
 	//pTmpVB = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateVertexBuffer(vertices, sizeof(Vertex), vertexSize, shaderByteCode, shaderSize);
 
-	bool isBuild = GraphicsEngine::GetInstance()->GetRenderSystem()->CompilePixelShader(L"PixelShader.hlsl", "main", &shaderByteCode, &shaderSize);
+	GraphicsEngine::GetInstance()->GetRenderSystem()->CompilePixelShader(L"PixelShader.hlsl", "main", &shaderByteCode, &shaderSize);
 	pTmpPS = GraphicsEngine::GetInstance()->GetRenderSystem()->CreatePixelShader(shaderByteCode, shaderSize);
+
+	GraphicsEngine::GetInstance()->GetRenderSystem()->CompilePixelShader(L"DefaultSkyPS.hlsl", "main", &shaderByteCode, &shaderSize);
+	pTmpSkyboxPS = GraphicsEngine::GetInstance()->GetRenderSystem()->CreatePixelShader(shaderByteCode, shaderSize);
 
 	GraphicsEngine::GetInstance()->GetRenderSystem()->ReleaseCompiledShader();
 
 	Constant cBuffer = { 0 };
 
 	pTmpCBuff = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateConstantBuffer(&cBuffer, sizeof(Constant));
+	pTmpSkyboxCBuff = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateConstantBuffer(&cBuffer, sizeof(Constant));
 }
 
 void AppWindow::OnUpdate()
@@ -146,26 +152,16 @@ void AppWindow::OnUpdate()
 
 	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->ClearRenderTargetColor(this->pSwapChain, 0, 0, 0, 1);
 
-	RECT rect = this->GetClientWindowRect();
+	RECT rect = GetClientWindowRect();
 	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetViewportSize(rect.right - rect.left, rect.bottom - rect.top);
 
-	UpdatePosition();
+	WndUpdate();
 
-	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->VSSetConstantBuffer(pTmpCBuff);
-	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->PSSetConstantBuffer(pTmpCBuff);
+	GraphicsEngine::GetInstance()->GetRenderSystem()->SetRasterizerState(D3D11_CULL_BACK);
+	GraphicsEngine::GetInstance()->DrawMesh(pTmpMesh, pTmpVS, pTmpPS, pTmpCBuff, pTmpTexture);
 
-	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetVertexShader(pTmpVS);
-	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetPixelShader(pTmpPS);
-
-	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->VSSetTexture(pTmpTexture);
-	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->PSSetTexture(pTmpTexture);
-
-	//GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetVertexBuffer(pTmpVB);
-	//GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetIndexBuffer(pTmpIndexBuff);
-	//GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->DrawIndexedTriangleList(pTmpIndexBuff->GetIndexListSize(), 0, 0);
-	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetVertexBuffer(pTmpMesh->GetVertexBuffer());
-	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetIndexBuffer(pTmpMesh->GetIndexBuffer());
-	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->DrawIndexedTriangleList(pTmpMesh->GetIndexBuffer()->GetIndexListSize(), 0, 0);
+	GraphicsEngine::GetInstance()->GetRenderSystem()->SetRasterizerState(D3D11_CULL_FRONT);
+	GraphicsEngine::GetInstance()->DrawMesh(pTmpSkyboxMesh, pTmpVS, pTmpSkyboxPS, pTmpSkyboxCBuff, pTmpSkyboxTex);
 
 	pSwapChain->Present(false);
 
@@ -181,103 +177,136 @@ void AppWindow::OnDestroy()
 	Window::OnDestroy();
 }
 
-void AppWindow::UpdatePosition()
+void AppWindow::WndUpdate()
 {
 	// Scale - Rotation - Translate
+	UpdateCamera();	
+	UpdateModel();
+	UpdateSkybox();
 
-	Constant c = {};
+	//Constant c = {};
 
-	tmpPos += deltaTime / 10.f;
-	if (tmpPos > 1.f)
-		tmpPos = 0;
+	//tmpPos += deltaTime / 10.f;
+	//if (tmpPos > 1.f)
+	//	tmpPos = 0;
 
-	Matrix4x4 tmpMat;
+	//Matrix4x4 tmpMat;
+	//Matrix4x4 lightRotMat;
+
+	//lightRotMat.SetIdentity();
+	//lightRotMat.SetRotationY(tmpRotLightY);
+
+	//tmpRotLightY += .0707f * .003f;
+
+	//c.light = lightRotMat.GetDirectionZ();
+
+	//tmpDelta += deltaTime / .5f;
+
+	//c.world.SetIdentity();
+	//c.world.SetScale(tmpScale);
+
+	//Matrix4x4 tmpWorldCamMat;
+
+
+	//tmpWorldCamMat.SetIdentity();
+
+	//tmpMat.SetIdentity();
+	//tmpMat.SetRotationX(tmpRotX);
+	//tmpWorldCamMat *= tmpMat;
+
+	//tmpMat.SetIdentity();
+	//tmpMat.SetRotationY(tmpRotY);
+	//tmpWorldCamMat *= tmpMat;
+
+	//Vector3 newPos = worldCamMat.GetTranslation() + tmpWorldCamMat.GetDirectionZ() * tmpForward * .0003f;
+	//newPos = newPos + tmpWorldCamMat.GetDirectionX() * tmpRight * .0003f;
+
+	//tmpWorldCamMat.SetTranslation(newPos);
+	//c.cameraPosition = newPos;
+	//worldCamMat = tmpWorldCamMat;
+
+	//tmpWorldCamMat.Inverse();
+
+	////c.view.SetIdentity();
+	//c.view = tmpWorldCamMat;
+
+	////c.projection.SetOrthoLH
+	////(
+	////	(GetClientWindowRect().right - GetClientWindowRect().left) / 300.f,
+	////	(GetClientWindowRect().bottom - GetClientWindowRect().top) / 300.f,
+	////	-4.f, 4.f
+	////);
+
+	//int width = GetClientWindowRect().right - GetClientWindowRect().left;
+	//int height = GetClientWindowRect().bottom - GetClientWindowRect().top;
+	//c.projection.SetPerpectiveFovLH(1.57f, ((float)width / (float)height), 0.1f, 100.f);
+
+	//pTmpCBuff->Update(GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext(), &c);
+}
+
+void AppWindow::UpdateModel()
+{
+	Constant cBuf;
 	Matrix4x4 lightRotMat;
-
 	lightRotMat.SetIdentity();
+
 	lightRotMat.SetRotationY(tmpRotLightY);
 
 	tmpRotLightY += .0707f * .003f;
 
-	c.light = lightRotMat.GetDirectionZ();
+	cBuf.world.SetIdentity();
+	cBuf.view = camViewMat;
+	cBuf.projection = camProjectionMat;
+	cBuf.cameraPosition = camTransMat.GetTranslation();
+	cBuf.light = lightRotMat.GetDirectionZ();
 
-	tmpDelta += deltaTime / .5f;
+	pTmpCBuff->Update(GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext(), &cBuf);
+}
 
-	//c.world.SetScale(Vector3::Lerp(Vector3(0, 0, 0), Vector3(1, 1, 0), (sin(tmpDelta) + 1.f) / 2.f));
-	//tmpMat.SetTranslate(Vector3::Lerp(Vector3(-1.5f, -1.5f, 0), Vector3(1.5f, 1.5f, 0), tmpPos));
+void AppWindow::UpdateSkybox()
+{
+	Constant cBuf;
+	cBuf.world.SetIdentity();
+	cBuf.world.SetScale(Vector3(100.f, 100.f, 100.f));
+	cBuf.world.SetTranslation(camTransMat.GetTranslation());
+	cBuf.view = camViewMat;
+	cBuf.projection = camProjectionMat;
 
-	//c.world *= tmpMat;
-	c.world.SetIdentity();
-	c.world.SetScale(tmpScale);
+	// skybox cbuffer
+	pTmpSkyboxCBuff->Update(GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext(), &cBuf);
 
-	//tmpMat.SetIdentity();
-	//tmpMat.SetRotationZ(0);
-	//c.world *= tmpMat;
+}
 
-	//tmpMat.SetIdentity();
-	//tmpMat.SetRotationY(tmpRotY);
-	//c.world *= tmpMat;
-
-	//tmpMat.SetIdentity();
-	//tmpMat.SetRotationX(tmpRotX);
-	//c.world *= tmpMat;
-
-	Matrix4x4 tmpWorldCamMat;
-
-
+void AppWindow::UpdateCamera()
+{
+	Matrix4x4 tmpWorldCamMat, tmp;
 	tmpWorldCamMat.SetIdentity();
+	
+	tmp.SetIdentity();
+	tmp.SetRotationX(tmpRotX);
+	tmpWorldCamMat *= tmp;
 
-	tmpMat.SetIdentity();
-	tmpMat.SetRotationX(tmpRotX);
-	tmpWorldCamMat *= tmpMat;
+	tmp.SetIdentity();
+	tmp.SetRotationY(tmpRotY);
+	tmpWorldCamMat *= tmp;
 
-	tmpMat.SetIdentity();
-	tmpMat.SetRotationY(tmpRotY);
-	tmpWorldCamMat *= tmpMat;
+	Vector3 newPos = camTransMat.GetTranslation() + camTransMat.GetDirectionZ() * (tmpForward * .0005f);
+	newPos = newPos + tmpWorldCamMat.GetDirectionX() * (tmpRight * .0005f);
 
-	Vector3 newPos = worldCamMat.GetTranslation() + tmpWorldCamMat.GetDirectionZ() * tmpForward * .0003f;
-	newPos = newPos + tmpWorldCamMat.GetDirectionX() * tmpRight * .0003f;
+	tmpWorldCamMat.SetTranslation(newPos);
 
-	tmpWorldCamMat.SetTranslate(newPos);
-	c.cameraPosition = newPos;
-	worldCamMat = tmpWorldCamMat;
+	camTransMat = tmpWorldCamMat;
 
 	tmpWorldCamMat.Inverse();
 
-	//c.view.SetIdentity();
-	c.view = tmpWorldCamMat;
-
-	//c.projection.SetOrthoLH
-	//(
-	//	(GetClientWindowRect().right - GetClientWindowRect().left) / 300.f,
-	//	(GetClientWindowRect().bottom - GetClientWindowRect().top) / 300.f,
-	//	-4.f, 4.f
-	//);
+	camViewMat = tmpWorldCamMat;
 
 	int width = GetClientWindowRect().right - GetClientWindowRect().left;
 	int height = GetClientWindowRect().bottom - GetClientWindowRect().top;
-	c.projection.SetPerpectiveFovLH(1.57f, ((float)width / (float)height), 0.1f, 100.f);
 
-	pTmpCBuff->Update(GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext(), &c);
+	camProjectionMat.SetPerpectiveFovLH(1.57f, ((float)width / (float)height), .1f, 100.f);
+
 }
-
-//void AppWindow::UpdateCamera()
-//{
-//	Matrix4x4 worldCamMat, tmp;
-//
-//	tmp.SetIdentity();
-//	tmp.SetRotationX(tmpRotX);
-//	worldCamMat *= tmp;
-//
-//	tmp.SetIdentity();
-//	tmp.SetRotationY(tmpRotY);
-//	worldCamMat *= tmp;
-//
-//	worldCamMat.Inverse();
-//
-//
-//
-//}
 
 void AppWindow::OnMouseKeyDown(int mouseKey)
 {

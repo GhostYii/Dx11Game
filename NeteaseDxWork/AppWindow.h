@@ -25,8 +25,12 @@ public:
 	virtual void OnMouseKeyUp(int mouseKey) override;
 
 public:
-	void UpdatePosition();
-	//void UpdateCamera();
+	void WndUpdate();
+	void UpdateModel();
+	void UpdateSkybox();
+	void UpdateCamera();
+
+	//void DrawMesh(const MeshPtr& mesh, const VertexShaderPtr& vs, const PixelShaderPtr& ps, const ConstantBufferPtr& cb, const TexturePtr& tex);
 
 private:
 	SwapChainPtr pSwapChain = nullptr;
@@ -35,10 +39,14 @@ private:
 	VertexBufferPtr pTmpVB = nullptr;
 	VertexShaderPtr pTmpVS = nullptr;
 	PixelShaderPtr pTmpPS = nullptr;
+	PixelShaderPtr pTmpSkyboxPS = nullptr;
 	ConstantBufferPtr pTmpCBuff = nullptr;
+	ConstantBufferPtr pTmpSkyboxCBuff = nullptr;
 	IndexBufferPtr pTmpIndexBuff = nullptr;
 	TexturePtr pTmpTexture = nullptr;
+	TexturePtr pTmpSkyboxTex = nullptr;
 	MeshPtr pTmpMesh = nullptr;
+	MeshPtr pTmpSkyboxMesh = nullptr;
 
 	unsigned long prevTime = 0;
 	float prevDeltaTime = 0;
@@ -54,7 +62,9 @@ private:
 	float tmpForward = 0.f;
 	float tmpRight = 0.f;
 
-	Matrix4x4 worldCamMat;
+	Matrix4x4 camTransMat;
+	Matrix4x4 camViewMat;
+	Matrix4x4 camProjectionMat;
 
 	float tmpRotLightY = 0;
 };

@@ -50,6 +50,8 @@ void RenderSystem::Init()
 	pDevice->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&pDXGIDevice));
 	pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), reinterpret_cast<void**>(&pDXGIAdapter));
 	pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&pDXGIFactory));
+
+	InitRasterizerState();
 }
 
 void RenderSystem::Release()
@@ -65,6 +67,23 @@ void RenderSystem::Release()
 		pContext->Release();
 	if (pDevice)
 		pDevice->Release();
+
+	if (pCullFrontState)
+		pCullFrontState->Release();
+	if (pCullBackState)
+		pCullBackState->Release();
+}
+
+void RenderSystem::InitRasterizerState()
+{
+	D3D11_RASTERIZER_DESC desc = {};
+	desc.CullMode = D3D11_CULL_FRONT;
+	desc.DepthClipEnable = true;
+	desc.FillMode = D3D11_FILL_SOLID;
+	pDevice->CreateRasterizerState(&desc, &pCullFrontState);
+
+	desc.CullMode = D3D11_CULL_BACK;
+	pDevice->CreateRasterizerState(&desc, &pCullBackState);
 }
 
 SwapChainPtr RenderSystem::CreateSwapChain(HWND hWnd, UINT width, UINT height)
@@ -142,6 +161,23 @@ PixelShaderPtr RenderSystem::CreatePixelShader(const void* shaderByteCode, size_
 	catch (...) {}
 
 	return ptr;
+}
+
+void RenderSystem::SetRasterizerState(D3D11_CULL_MODE mode)
+{
+	switch (mode)
+	{
+	case D3D11_CULL_NONE:
+		break;
+	case D3D11_CULL_FRONT:
+		pContext->RSSetState(pCullFrontState);
+		break;
+	case D3D11_CULL_BACK:
+		pContext->RSSetState(pCullBackState);
+		break;
+	default:
+		break;
+	}
 }
 
 bool RenderSystem::CompileVertexShader(const wchar_t* fileName, const char* entryPointName, void** shaderByteCode, size_t* byteCodeSize)

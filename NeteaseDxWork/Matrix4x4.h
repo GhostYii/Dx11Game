@@ -22,7 +22,7 @@ public:
 			value[i][i] = 1;
 	}
 
-	void SetTranslate(const Vector3& translation)
+	void SetTranslation(const Vector3& translation)
 	{
 		//SetIdentity();
 		value[3][0] = translation.x;

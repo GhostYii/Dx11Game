@@ -1,5 +1,6 @@
 #include "GraphicsEngine.h"
-
+#include "PinelineStruct.h"
+#include "ResourceStruct.h"
 //#pragma comment(lib, "D3DCompiler.lib")
 
 GraphicsEngine* GraphicsEngine::instance = nullptr;
@@ -93,6 +94,22 @@ void GraphicsEngine::GetDefaultVertexShaderByteCodeAndSize(void** shaderByteCode
 {	
 	*shaderByteCode = pDefaultVertexShaderByteCode;
 	*size = defaultVertexShaderSize;
+}
+
+void GraphicsEngine::DrawMesh(const MeshPtr& pMesh, const VertexShaderPtr& pVs, const PixelShaderPtr& pPs, const ConstantBufferPtr& pCb, const TexturePtr& pTex)
+{	
+	pRenderSystem->GetDeviceContext()->VSSetConstantBuffer(pCb);
+	pRenderSystem->GetDeviceContext()->PSSetConstantBuffer(pCb);
+
+	pRenderSystem->GetDeviceContext()->SetVertexShader(pVs);
+	pRenderSystem->GetDeviceContext()->SetPixelShader(pPs);
+
+	pRenderSystem->GetDeviceContext()->PSSetTexture(pTex);
+
+	pRenderSystem->GetDeviceContext()->SetVertexBuffer(pMesh->GetVertexBuffer());
+	pRenderSystem->GetDeviceContext()->SetIndexBuffer(pMesh->GetIndexBuffer());
+
+	pRenderSystem->GetDeviceContext()->DrawIndexedTriangleList(pMesh->GetIndexBuffer()->GetIndexListSize(), 0, 0);
 }
 
 GraphicsEngine* GraphicsEngine::GetInstance()

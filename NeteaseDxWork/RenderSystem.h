@@ -29,6 +29,8 @@ public:
 	VertexShaderPtr CreateVertexShader(const void* shaderByteCode, size_t byteCodeSize);
 	PixelShaderPtr CreatePixelShader(const void* shaderByteCode, size_t byteCodeSize);
 
+	void SetRasterizerState(D3D11_CULL_MODE mode);
+
 public:
 	bool CompileVertexShader(const wchar_t* fileName, const char* entryPointName, void** shaderByteCode, size_t* byteCodeSize);
 	bool CompilePixelShader(const wchar_t* fileName, const char* entryPointName, void** shaderByteCode, size_t* byteCodeSize);
@@ -49,9 +51,13 @@ private:
 	ID3DBlob* pPSBlob = nullptr;
 	ID3D11VertexShader* pVs = nullptr;
 	ID3D11PixelShader* pPs = nullptr;
+	ID3D11RasterizerState* pCullFrontState = nullptr;
+	ID3D11RasterizerState* pCullBackState = nullptr;
 
 private:
 	void Init();
 	void Release();
+
+	void InitRasterizerState();
 };
 
