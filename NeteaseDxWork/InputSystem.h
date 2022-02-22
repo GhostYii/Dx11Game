@@ -3,6 +3,8 @@
 #include "Point.h"
 #include <unordered_set>
 #include <vector>
+#include <Keyboard.h>
+#include <Mouse.h>
 
 class InputSystem
 {
@@ -25,19 +27,15 @@ public:
 
 	Point GetMouseDelta();
 
-	bool GetKeyDown(int keycode);
-	bool GetKey(int keycode);
-	bool GetKeyUp(int keycode);
-
 private:
 	std::unordered_set<InputListener*> listenerMap;
-	unsigned char keyStates[256u] = {};	
-	unsigned char prevKeyStates[256u] = {};
-
-	bool prevKeyboardStates[256u] = {};
-
 	Point prevMousePos = {};
+	std::unique_ptr<DirectX::Keyboard> pKeyboard;
+	std::unique_ptr<DirectX::Mouse> pMouse;
 
+	DirectX::Keyboard::KeyboardStateTracker keyboardTracker;
+	DirectX::Mouse::ButtonStateTracker mouseTracker;
+	
 private:
 	bool isFirstTimeMoveMouse = true;	
 	static InputSystem* instance;

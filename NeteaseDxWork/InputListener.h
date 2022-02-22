@@ -14,5 +14,6 @@ public:
 
 	virtual void OnMouseMove(const Point& mousePosition) = 0;
 	virtual void OnMouseKeyDown(int mouseKey) = 0;
+	virtual void OnMouseKey(int mouseKey) = 0;
 	virtual void OnMouseKeyUp(int mouseKey) = 0;
 };

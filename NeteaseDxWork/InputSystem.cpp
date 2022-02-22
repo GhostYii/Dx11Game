@@ -1,14 +1,14 @@
 #include "InputSystem.h"
 #include <Windows.h>
+#include <Keyboard.h>
+using ButtonState = DirectX::Mouse::ButtonStateTracker::ButtonState;
 
 InputSystem* InputSystem::instance = nullptr;
 
 InputSystem::InputSystem()
 {
-	for (unsigned int keyNum = 0U; keyNum < 256u; ++keyNum)
-	{
-		prevKeyboardStates[keyNum] = GetKeyDown(keyNum);
-	}
+	pKeyboard = std::make_unique<DirectX::Keyboard>();
+	pMouse = std::make_unique<DirectX::Mouse>();
 }
 
 InputSystem* InputSystem::GetInstance()
@@ -44,6 +44,156 @@ void InputSystem::RemoveListener(InputListener* listener)
 
 void InputSystem::Update()
 {
+	
+	auto keyboardState = pKeyboard->GetState();
+	keyboardTracker.Update(keyboardState);
+	auto mouseState = pMouse->GetState();
+
+	mouseTracker.Update(mouseState);
+
+	for (unsigned int i = 0; i < 256u; i++)
+	{
+		auto key = (DirectX::Keyboard::Keys)i;
+		if (pKeyboard->GetState().IsKeyDown(key))
+		{
+			std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+
+			while (iter != listenerMap.end())
+			{
+				if (keyboardTracker.pressed.IsKeyDown(key))
+					(*iter)->OnKeyDown(i);
+				(*iter)->OnKey(i);
+				++iter;
+			}
+		}
+
+		if (keyboardTracker.IsKeyReleased(key))
+		{
+			std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+
+			while (iter != listenerMap.end())
+			{
+				(*iter)->OnKeyUp(i);
+				++iter;
+			}
+		}
+	}
+
+	switch (mouseTracker.leftButton)
+	{
+	case ButtonState::HELD:
+	{
+		std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+
+		while (iter != listenerMap.end())
+		{
+			(*iter)->OnMouseKey(0);
+			++iter;
+		}
+		break;
+	}
+	case ButtonState::RELEASED:
+	{
+		std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+
+		while (iter != listenerMap.end())
+		{
+			(*iter)->OnMouseKeyUp(0);
+			++iter;
+		}
+		break;
+	}
+	case ButtonState::PRESSED:
+	{
+		std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+
+		while (iter != listenerMap.end())
+		{
+			(*iter)->OnMouseKeyDown(0);
+			++iter;
+		}
+		break;
+	}
+	default:
+		break;
+	}
+	switch (mouseTracker.rightButton)
+	{
+	case ButtonState::HELD:
+	{
+		std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+
+		while (iter != listenerMap.end())
+		{
+			(*iter)->OnMouseKey(1);
+			++iter;
+		}
+		break;
+	}
+	case ButtonState::RELEASED:
+	{
+		std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+
+		while (iter != listenerMap.end())
+		{
+			(*iter)->OnMouseKeyUp(1);
+			++iter;
+		}
+		break;
+	}
+	case ButtonState::PRESSED:
+	{
+		std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+
+		while (iter != listenerMap.end())
+		{
+			(*iter)->OnMouseKeyDown(1);
+			++iter;
+		}
+		break;
+	}
+	default:
+		break;
+	}
+	switch (mouseTracker.middleButton)
+	{
+	case ButtonState::HELD:
+	{
+		std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+
+		while (iter != listenerMap.end())
+		{
+			(*iter)->OnMouseKey(2);
+			++iter;
+		}
+		break;
+	}
+	case ButtonState::RELEASED:
+	{
+		std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+
+		while (iter != listenerMap.end())
+		{
+			(*iter)->OnMouseKeyUp(2);
+			++iter;
+		}
+		break;
+	}
+	case ButtonState::PRESSED:
+	{
+		std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+
+		while (iter != listenerMap.end())
+		{
+			(*iter)->OnMouseKeyDown(2);
+			++iter;
+		}
+		break;
+	}
+	default:
+		break;
+	}
+
 	POINT currentMousePosition = {};
 	GetCursorPos(&currentMousePosition);
 
@@ -65,74 +215,6 @@ void InputSystem::Update()
 	}
 
 	prevMousePos = Point(currentMousePosition.x, currentMousePosition.y);
-
-	if (GetKeyboardState(keyStates))
-	{
-		for (unsigned int i = 0; i < 256; i++)
-		{
-			// key down
-			if (keyStates[i] & 0x80)
-			{
-				std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
-
-				while (iter != listenerMap.end())
-				{
-					if (i == VK_LBUTTON)
-					{
-						if (keyStates[i] != prevKeyStates[i])
-						{
-							(*iter)->OnMouseKeyDown(0);
-						}
-					}
-					else if (i == VK_RBUTTON)
-					{
-						if (keyStates[i] != prevKeyStates[i])
-						{
-							(*iter)->OnMouseKeyDown(1);
-						}
-					}
-					else if (i == VK_MBUTTON)
-					{
-						if (keyStates[i] != prevKeyStates[i])
-						{
-							(*iter)->OnMouseKeyDown(2);
-						}
-					}
-					else
-					{
-						if (GetKeyDown(i))
-							(*iter)->OnKeyDown(i);
-						(*iter)->OnKey(i);
-					}
-					++iter;
-				}
-			}
-			// key up
-			else
-			{
-				if (keyStates[i] != prevKeyStates[i])
-				{
-					std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
-
-					while (iter != listenerMap.end())
-					{
-						if (i == VK_LBUTTON)
-							(*iter)->OnMouseKeyUp(0);
-						else if (i == VK_RBUTTON)
-							(*iter)->OnMouseKeyUp(1);
-						else if (i == VK_MBUTTON)
-							(*iter)->OnMouseKeyUp(2);
-						else
-							(*iter)->OnKeyUp(i);
-
-						++iter;
-					}
-				}
-			}
-		}
-
-		memcpy(prevKeyStates, keyStates, sizeof(unsigned char) * 256);
-	}
 }
 
 void InputSystem::SetCursorPosition(const Point& position)
@@ -150,25 +232,4 @@ Point InputSystem::GetMouseDelta()
 	POINT curPos;
 	GetCursorPos(&curPos);
 	return Point(curPos.x - prevMousePos.x, curPos.y - prevMousePos.y);
-}
-
-bool InputSystem::GetKeyDown(int keycode)
-{
-	return (GetAsyncKeyState(keycode) & (1 << sizeof(SHORT) * 8 - 1));
-}
-
-bool InputSystem::GetKey(int keycode)
-{
-	bool previousState = prevKeyboardStates[keycode];
-	prevKeyboardStates[keycode] = GetKeyDown(keycode);
-
-	return (prevKeyboardStates[keycode] && !previousState);
-}
-
-bool InputSystem::GetKeyUp(int keycode)
-{
-	bool previousState = prevKeyboardStates[keycode];
-	prevKeyboardStates[keycode] = GetKeyDown(keycode);
-
-	return (!prevKeyboardStates[keycode] && previousState);
 }

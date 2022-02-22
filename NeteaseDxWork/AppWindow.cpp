@@ -320,6 +320,10 @@ void AppWindow::Render()
 	deltaTime = prevDeltaTime ? (newDeltaTime - prevDeltaTime) / 1000.f : 0;
 }
 
+void AppWindow::OnMouseKey(int mouseKey)
+{
+}
+
 void AppWindow::OnKey(int keycode)
 {
 	if (!tmpIsMoveable)
@@ -390,6 +394,10 @@ void AppWindow::OnMouseMove(const Point& mousePosition)
 
 void AppWindow::OnKeyDown(int keycode)
 {
+	//static int i = 0;
+	//i++;
+
+	//MessageBox(hWnd, std::to_string(i).c_str(), "pressed", MB_OK);
 }
 
 void AppWindow::OnKeyUp(int keycode)

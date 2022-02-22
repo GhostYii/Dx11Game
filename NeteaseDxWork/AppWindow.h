@@ -24,6 +24,7 @@ public:
 	virtual void OnKeyUp(int keycode) override;
 	virtual void OnMouseMove(const Point& mousePosition) override;
 	virtual void OnMouseKeyDown(int mouseKey) override;
+	virtual void OnMouseKey(int mouseKey) override;
 	virtual void OnMouseKeyUp(int mouseKey) override;
 
 public:

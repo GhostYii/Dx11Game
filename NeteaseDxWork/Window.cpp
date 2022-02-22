@@ -1,5 +1,6 @@
 #include "Window.h"
-
+#include <Keyboard.h>
+#include <Mouse.h>
 #include <exception>
 
 const int QUIT_CODE = 0;
@@ -8,6 +9,39 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{
+	case WM_ACTIVATE:
+	case WM_ACTIVATEAPP:
+	{
+		DirectX::Mouse::ProcessMessage(msg, wParam, lParam);
+	}
+	case WM_SYSKEYDOWN:
+	case WM_KEYDOWN:
+	case WM_KEYUP:
+	case WM_SYSKEYUP:
+	{
+		DirectX::Keyboard::ProcessMessage(msg, wParam, lParam);
+		break;
+	}
+	case WM_INPUT:
+	case WM_MOUSEMOVE:
+	case WM_LBUTTONDOWN:
+	case WM_LBUTTONUP:
+	case WM_RBUTTONDOWN:
+	case WM_RBUTTONUP:
+	case WM_MBUTTONDOWN:
+	case WM_MBUTTONUP:
+	case WM_MOUSEWHEEL:
+	case WM_XBUTTONDOWN:
+	case WM_XBUTTONUP:
+	case WM_MOUSEHOVER:
+	{
+		DirectX::Mouse::ProcessMessage(msg, wParam, lParam);
+		break; 
+	}
+	case WM_MOUSEACTIVATE:
+	{
+		return MA_ACTIVATEANDEAT;
+	}
 	case WM_CREATE:
 	{
 		//Window* window = (Window*)((LPCREATESTRUCT)lParam)->lpCreateParams;
@@ -15,7 +49,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		//window->SetHWND(hWnd);
 		//window->OnCreate();
 		break;
-	}	
+	}		
 	case WM_SIZE:
 	{
 		Window* pWindow = (Window*)GetWindowLongPtr(hWnd, GWL_USERDATA);
