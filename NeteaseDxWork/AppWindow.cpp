@@ -29,7 +29,7 @@ void AppWindow::OnCreate()
 
 	//InputSystem::GetInstance()->SetCursorVisiable(false);
 	pTmpTexture = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\earth.jpg");
-	pTmpSkyboxTex = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\galaxy_nasa.jpg");
+	pTmpSkyboxTex = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\galaxy.jpg");
 	pTmpMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\sphere.obj");
 	pTmpSkyboxMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\skybox.obj");
 
