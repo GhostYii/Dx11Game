@@ -10,6 +10,7 @@ struct VS_OUTPUT
     float4 position : SV_POSITION;
     float2 texcoord : TEXCOORD;
     float3 normal : TEXCOORD1;
+    float3 directionToCamera : TEXCOORD2;
 };
 
 cbuffer MVP : register(b0)
@@ -17,6 +18,8 @@ cbuffer MVP : register(b0)
     row_major float4x4 world;
     row_major float4x4 view;
     row_major float4x4 projection;
+    float4 lightDiretion;
+    float4 cameraPosition;
 };
 
 VS_OUTPUT main(VS_INPUT input)
@@ -27,6 +30,7 @@ VS_OUTPUT main(VS_INPUT input)
     
     // world space
     output.position = mul(input.position, world);
+    output.directionToCamera = normalize(output.position.xyz - cameraPosition.xyz);
     // view space
     output.position = mul(output.position, view);
     // projection space

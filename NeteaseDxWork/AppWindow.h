@@ -55,5 +55,7 @@ private:
 	float tmpRight = 0.f;
 
 	Matrix4x4 worldCamMat;
+
+	float tmpRotLightY = 0;
 };
 
