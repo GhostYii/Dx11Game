@@ -1,6 +1,5 @@
 #include "InputSystem.h"
 #include <Windows.h>
-#include <Keyboard.h>
 using ButtonState = DirectX::Mouse::ButtonStateTracker::ButtonState;
 
 InputSystem* InputSystem::instance = nullptr;
@@ -44,11 +43,9 @@ void InputSystem::RemoveListener(InputListener* listener)
 
 void InputSystem::Update()
 {
-	
 	auto keyboardState = pKeyboard->GetState();
 	keyboardTracker.Update(keyboardState);
 	auto mouseState = pMouse->GetState();
-
 	mouseTracker.Update(mouseState);
 
 	for (unsigned int i = 0; i < 256u; i++)
