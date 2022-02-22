@@ -6,7 +6,6 @@
 void SwapChain::Init(HWND hWnd, UINT width, UINT height)
 {
 	DXGI_SWAP_CHAIN_DESC scd = {};
-	//ZeroMemory(scd, sizeof(scd));
 	scd.BufferCount = 1;
 	scd.BufferDesc.Width = width;
 	scd.BufferDesc.Height = height;
@@ -17,6 +16,7 @@ void SwapChain::Init(HWND hWnd, UINT width, UINT height)
 	scd.OutputWindow = hWnd;
 	scd.SampleDesc.Count = 1;
 	scd.SampleDesc.Quality = 0;
+	scd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 	scd.Windowed = TRUE;
 
 	HRESULT res = pRenderSystem->pDXGIFactory->CreateSwapChain(pRenderSystem->pDevice, &scd, pSwapChain.GetAddressOf());
@@ -24,17 +24,27 @@ void SwapChain::Init(HWND hWnd, UINT width, UINT height)
 	if (FAILED(res))
 		throw std::exception("Create SwapChain failed!");
 
+	ReloadBuffers(width, height);
+}
+
+void SwapChain::Release()
+{
+	pSwapChain->Release();
+}
+
+void SwapChain::ReloadBuffers(unsigned int width, unsigned int height)
+{
 	ID3D11Texture2D* buffer = nullptr;
-	res = pSwapChain->GetBuffer(0u, __uuidof(ID3D11Texture2D), (void**)&buffer);
+	HRESULT res = pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&buffer);
 
 	if (FAILED(res))
 		throw std::exception("SwapChain get buffer failed!");
 
-	res = pRenderSystem->pDevice->CreateRenderTargetView(buffer, NULL, pTargetView.GetAddressOf());
+	res = pRenderSystem->pDevice->CreateRenderTargetView(buffer, nullptr, pRenderTargetView.GetAddressOf());
 	buffer->Release();
 
 	if (FAILED(res))
-		throw std::exception("SwapChain CreateRenderTargetView failed!");
+		throw std::exception("SwapChain CreateDepthStencilView failed!");
 
 	D3D11_TEXTURE2D_DESC desc = {};
 	desc.Width = width;
@@ -54,16 +64,11 @@ void SwapChain::Init(HWND hWnd, UINT width, UINT height)
 	if (FAILED(res))
 		throw std::exception("SwapChain CreateTexture2D failed!");
 
-	res = pRenderSystem->pDevice->CreateDepthStencilView(buffer, NULL, pDepthStencilView.GetAddressOf());
+	res = pRenderSystem->pDevice->CreateDepthStencilView(buffer, nullptr, pDepthStencilView.GetAddressOf());
 	buffer->Release();
 
 	if (FAILED(res))
 		throw std::exception("SwapChain CreateDepthStencilView failed!");
-}
-
-void SwapChain::Release()
-{
-	pSwapChain->Release();
 }
 
 SwapChain::SwapChain(HWND hWnd, UINT width, UINT height, RenderSystem* rs) : pRenderSystem(rs)
@@ -74,6 +79,23 @@ SwapChain::SwapChain(HWND hWnd, UINT width, UINT height, RenderSystem* rs) : pRe
 SwapChain::~SwapChain()
 {
 	Release();
+}
+
+void SwapChain::Resize(unsigned int width, unsigned int height)
+{
+	if (pRenderTargetView)
+		pRenderTargetView.Reset();
+	if (pDepthStencilView)
+		pDepthStencilView.Reset();
+
+	pSwapChain->ResizeBuffers(1, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+	ReloadBuffers(width, height);
+}
+
+void SwapChain::SetFullScreen(bool isFullScreen)
+{
+	Resize(GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
+	pSwapChain->SetFullscreenState(isFullScreen, nullptr);	
 }
 
 bool SwapChain::Present(bool vSync)

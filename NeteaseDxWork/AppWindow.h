@@ -16,9 +16,11 @@ public:
 	virtual void OnCreate() override;
 	virtual void OnUpdate() override;
 	virtual void OnDestroy() override;
+	virtual void OnSizeChanged() override;
 
 	// Inherited via InputLisenter
 	virtual void OnKeyDown(int keycode) override;
+	virtual void OnKey(int keycode) override;
 	virtual void OnKeyUp(int keycode) override;
 	virtual void OnMouseMove(const Point& mousePosition) override;
 	virtual void OnMouseKeyDown(int mouseKey) override;
@@ -30,11 +32,12 @@ public:
 	void UpdateSkybox();
 	void UpdateCamera();
 
-	//void DrawMesh(const MeshPtr& mesh, const VertexShaderPtr& vs, const PixelShaderPtr& ps, const ConstantBufferPtr& cb, const TexturePtr& tex);
+	void Render();	
 
 private:
 	SwapChainPtr pSwapChain = nullptr;
 
+	bool isFullScreen = false;
 private:
 	VertexBufferPtr pTmpVB = nullptr;
 	VertexShaderPtr pTmpVS = nullptr;
@@ -67,5 +70,7 @@ private:
 	Matrix4x4 camProjectionMat;
 
 	float tmpRotLightY = 0;
+	
+	bool tmpIsMoveable = true;
 };
 

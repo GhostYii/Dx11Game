@@ -16,9 +16,9 @@ DeviceContext::~DeviceContext()
 void DeviceContext::ClearRenderTargetColor(SwapChainPtr pSwapChain, float r, float g, float b, float a)
 {
 	const float color[] = { r,g,b,a };
-	pDeviceContext->ClearRenderTargetView(pSwapChain->pTargetView.Get(), color);
+	pDeviceContext->ClearRenderTargetView(pSwapChain->pRenderTargetView.Get(), color);
 	pDeviceContext->ClearDepthStencilView(pSwapChain->pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
-	pDeviceContext->OMSetRenderTargets(1, pSwapChain->pTargetView.GetAddressOf(), pSwapChain->pDepthStencilView.Get());
+	pDeviceContext->OMSetRenderTargets(1, pSwapChain->pRenderTargetView.GetAddressOf(), pSwapChain->pDepthStencilView.Get());
 }
 
 void DeviceContext::SetVertexBuffer(VertexBufferPtr pBuffer)

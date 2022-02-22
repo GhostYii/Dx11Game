@@ -3,6 +3,14 @@
 
 InputSystem* InputSystem::instance = nullptr;
 
+InputSystem::InputSystem()
+{
+	for (unsigned int keyNum = 0U; keyNum < 256u; ++keyNum)
+	{
+		prevKeyboardStates[keyNum] = GetKeyDown(keyNum);
+	}
+}
+
 InputSystem* InputSystem::GetInstance()
 {
 	return instance;
@@ -91,8 +99,11 @@ void InputSystem::Update()
 						}
 					}
 					else
-						(*iter)->OnKeyDown(i);
-					
+					{
+						if (GetKeyDown(i))
+							(*iter)->OnKeyDown(i);
+						(*iter)->OnKey(i);
+					}
 					++iter;
 				}
 			}
@@ -105,15 +116,15 @@ void InputSystem::Update()
 
 					while (iter != listenerMap.end())
 					{
-						if (i == VK_LBUTTON)						
-							(*iter)->OnMouseKeyUp(0);						
-						else if (i == VK_RBUTTON)						
-							(*iter)->OnMouseKeyUp(1);						
-						else if (i == VK_MBUTTON)						
-							(*iter)->OnMouseKeyUp(2);						
+						if (i == VK_LBUTTON)
+							(*iter)->OnMouseKeyUp(0);
+						else if (i == VK_RBUTTON)
+							(*iter)->OnMouseKeyUp(1);
+						else if (i == VK_MBUTTON)
+							(*iter)->OnMouseKeyUp(2);
 						else
 							(*iter)->OnKeyUp(i);
-						
+
 						++iter;
 					}
 				}
@@ -139,4 +150,25 @@ Point InputSystem::GetMouseDelta()
 	POINT curPos;
 	GetCursorPos(&curPos);
 	return Point(curPos.x - prevMousePos.x, curPos.y - prevMousePos.y);
+}
+
+bool InputSystem::GetKeyDown(int keycode)
+{
+	return (GetAsyncKeyState(keycode) & (1 << sizeof(SHORT) * 8 - 1));
+}
+
+bool InputSystem::GetKey(int keycode)
+{
+	bool previousState = prevKeyboardStates[keycode];
+	prevKeyboardStates[keycode] = GetKeyDown(keycode);
+
+	return (prevKeyboardStates[keycode] && !previousState);
+}
+
+bool InputSystem::GetKeyUp(int keycode)
+{
+	bool previousState = prevKeyboardStates[keycode];
+	prevKeyboardStates[keycode] = GetKeyDown(keycode);
+
+	return (!prevKeyboardStates[keycode] && previousState);
 }

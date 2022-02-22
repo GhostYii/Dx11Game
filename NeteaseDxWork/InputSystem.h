@@ -2,11 +2,12 @@
 #include "InputListener.h"
 #include "Point.h"
 #include <unordered_set>
+#include <vector>
 
 class InputSystem
 {
 private:
-	InputSystem() = default;
+	InputSystem();
 	~InputSystem() = default;
 
 public:
@@ -24,16 +25,21 @@ public:
 
 	Point GetMouseDelta();
 
+	bool GetKeyDown(int keycode);
+	bool GetKey(int keycode);
+	bool GetKeyUp(int keycode);
+
 private:
 	std::unordered_set<InputListener*> listenerMap;
+	unsigned char keyStates[256u] = {};	
+	unsigned char prevKeyStates[256u] = {};
 
-	unsigned char keyStates[256] = {};
-	unsigned char prevKeyStates[256] = {};
+	bool prevKeyboardStates[256u] = {};
 
 	Point prevMousePos = {};
 
 private:
-	bool isFirstTimeMoveMouse = true;
+	bool isFirstTimeMoveMouse = true;	
 	static InputSystem* instance;
 };
 

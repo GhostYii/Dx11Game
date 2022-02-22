@@ -15,12 +15,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		//window->SetHWND(hWnd);
 		//window->OnCreate();
 		break;
-	}
-	case WM_DESTROY:
+	}	
+	case WM_SIZE:
 	{
-		Window* window = (Window*)GetWindowLong(hWnd, GWL_USERDATA);
-		window->OnDestroy();
-		//pWindow->OnDestroy();
+		Window* pWindow = (Window*)GetWindowLongPtr(hWnd, GWL_USERDATA);
+		if (pWindow)
+			pWindow->OnSizeChanged();
+		break;
+	}case WM_DESTROY:
+	{
+		Window* pWindow = (Window*)GetWindowLongPtr(hWnd, GWL_USERDATA);
+		if (pWindow)
+			pWindow->OnDestroy();
 		PostQuitMessage(QUIT_CODE);
 		break;
 	}
@@ -59,12 +65,12 @@ void Window::Init()
 	wc.lpszClassName = "Window";
 	wc.lpszMenuName = "";
 	wc.style = NULL;
-	wc.lpfnWndProc = WndProc;
+	wc.lpfnWndProc = &WndProc;
 
 	if (!RegisterClassEx(&wc))
 		throw std::exception("Register window class failed!");
 
-	hWnd = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, "Window", "DirectX Application", WS_CAPTION | WS_SYSMENU, CW_USEDEFAULT, CW_USEDEFAULT, 1024, 768, NULL, NULL, NULL, NULL);
+	hWnd = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, "Window", "DirectX Application", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 1024, 768, NULL, NULL, NULL, NULL);
 
 	if (!hWnd)
 		throw std::exception("Create window failed!");
@@ -87,13 +93,16 @@ bool Window::Update()
 	this->OnUpdate();
 
 	MSG msg;
-	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) > 0)
+	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 	{
+		if (msg.message == WM_QUIT)
+			return false;
+
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
 
-	//Sleep(0);
+	//Sleep(1);
 
 	return true;
 }

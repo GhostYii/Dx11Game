@@ -133,9 +133,6 @@
     <ClInclude Include="Vector4.h">
       <Filter>GameEngine\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>GameEngine\Input</Filter>
-    </ClInclude>
     <ClInclude Include="ConstantBuffer.h">
       <Filter>GameEngine\GraphicsEngine\RenderSystem</Filter>
     </ClInclude>

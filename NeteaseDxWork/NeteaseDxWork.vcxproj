@@ -174,7 +174,6 @@
     <ClInclude Include="GraphicsClasses.h" />
     <ClInclude Include="GraphicsEngine.h" />
     <ClInclude Include="IndexBuffer.h" />
-    <ClInclude Include="Input.h" />
     <ClInclude Include="InputListener.h" />
     <ClInclude Include="InputSystem.h" />
     <ClInclude Include="Math.h" />

@@ -149,25 +149,7 @@ void AppWindow::OnCreate()
 void AppWindow::OnUpdate()
 {
 	InputSystem::GetInstance()->Update();
-
-	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->ClearRenderTargetColor(this->pSwapChain, 0, 0, 0, 1);
-
-	RECT rect = GetClientWindowRect();
-	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetViewportSize(rect.right - rect.left, rect.bottom - rect.top);
-
-	WndUpdate();
-
-	GraphicsEngine::GetInstance()->GetRenderSystem()->SetRasterizerState(D3D11_CULL_BACK);
-	GraphicsEngine::GetInstance()->DrawMesh(pTmpMesh, pTmpVS, pTmpPS, pTmpCBuff, pTmpTexture);
-
-	GraphicsEngine::GetInstance()->GetRenderSystem()->SetRasterizerState(D3D11_CULL_FRONT);
-	GraphicsEngine::GetInstance()->DrawMesh(pTmpSkyboxMesh, pTmpVS, pTmpSkyboxPS, pTmpSkyboxCBuff, pTmpSkyboxTex);
-
-	pSwapChain->Present(false);
-
-	prevDeltaTime = newDeltaTime;
-	newDeltaTime = GetTickCount();
-	deltaTime = prevDeltaTime ? (newDeltaTime - prevDeltaTime) / 1000.f : 0;
+	Render();
 }
 
 void AppWindow::OnDestroy()
@@ -177,12 +159,20 @@ void AppWindow::OnDestroy()
 	Window::OnDestroy();
 }
 
+void AppWindow::OnSizeChanged()
+{
+	RECT rc = GetClientWindowRect();
+	pSwapChain->Resize(rc.right, rc.bottom);
+	OnUpdate();
+}
+
 void AppWindow::WndUpdate()
 {
 	// Scale - Rotation - Translate
-	UpdateCamera();	
+	UpdateCamera();
 	UpdateModel();
 	UpdateSkybox();
+
 
 	//Constant c = {};
 
@@ -281,7 +271,7 @@ void AppWindow::UpdateCamera()
 {
 	Matrix4x4 tmpWorldCamMat, tmp;
 	tmpWorldCamMat.SetIdentity();
-	
+
 	tmp.SetIdentity();
 	tmp.SetRotationX(tmpRotX);
 	tmpWorldCamMat *= tmp;
@@ -306,6 +296,55 @@ void AppWindow::UpdateCamera()
 
 	camProjectionMat.SetPerpectiveFovLH(1.57f, ((float)width / (float)height), .1f, 100.f);
 
+}
+
+void AppWindow::Render()
+{
+	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->ClearRenderTargetColor(this->pSwapChain, 0, 0, 0, 1);
+
+	RECT rect = GetClientWindowRect();
+	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetViewportSize(rect.right - rect.left, rect.bottom - rect.top);
+
+	WndUpdate();
+
+	GraphicsEngine::GetInstance()->GetRenderSystem()->SetRasterizerState(D3D11_CULL_BACK);
+	GraphicsEngine::GetInstance()->DrawMesh(pTmpMesh, pTmpVS, pTmpPS, pTmpCBuff, pTmpTexture);
+
+	GraphicsEngine::GetInstance()->GetRenderSystem()->SetRasterizerState(D3D11_CULL_FRONT);
+	GraphicsEngine::GetInstance()->DrawMesh(pTmpSkyboxMesh, pTmpVS, pTmpSkyboxPS, pTmpSkyboxCBuff, pTmpSkyboxTex);
+
+	pSwapChain->Present(false);
+
+	prevDeltaTime = newDeltaTime;
+	newDeltaTime = GetTickCount();
+	deltaTime = prevDeltaTime ? (newDeltaTime - prevDeltaTime) / 1000.f : 0;
+}
+
+void AppWindow::OnKey(int keycode)
+{
+	if (!tmpIsMoveable)
+		return;
+
+	if (keycode == 'W')
+	{
+		//tmpRotX += deltaTime;
+		tmpForward = 1.f;
+	}
+	else if (keycode == 'S')
+	{
+		//tmpRotX -= deltaTime;
+		tmpForward = -1.f;
+	}
+	else if (keycode == 'A')
+	{
+		//tmpRotY += deltaTime;
+		tmpRight = -1.f;
+	}
+	else if (keycode == 'D')
+	{
+		//tmpRotY -= deltaTime;
+		tmpRight = 1.f;
+	}
 }
 
 void AppWindow::OnMouseKeyDown(int mouseKey)
@@ -339,46 +378,35 @@ void AppWindow::OnMouseKeyUp(int mouseKey)
 
 void AppWindow::OnMouseMove(const Point& mousePosition)
 {
-	//if (!deltaTime)
-	//	MessageBox(hWnd, "WTF", "WTF", MB_OK);
+	if (!tmpIsMoveable)
+		return;
+
 	int width = GetClientWindowRect().right - GetClientWindowRect().left;
 	int height = GetClientWindowRect().bottom - GetClientWindowRect().top;
 
 	tmpRotX += InputSystem::GetInstance()->GetMouseDelta().y * .003f;
 	tmpRotY += InputSystem::GetInstance()->GetMouseDelta().x * .003f;
-
-
-	//InputSystem::GetInstance()->SetCursorPosition(Point(width / 2.f, height / 2.f));
-
 }
 
 void AppWindow::OnKeyDown(int keycode)
 {
-	if (keycode == 'W')
-	{
-		//tmpRotX += deltaTime;
-		tmpForward = 1.f;
-	}
-	else if (keycode == 'S')
-	{
-		//tmpRotX -= deltaTime;
-		tmpForward = -1.f;
-	}
-	else if (keycode == 'A')
-	{
-		//tmpRotY += deltaTime;
-		tmpRight = -1.f;
-	}
-	else if (keycode == 'D')
-	{
-		//tmpRotY -= deltaTime;
-		tmpRight = 1.f;
-	}
-
 }
 
 void AppWindow::OnKeyUp(int keycode)
 {
 	tmpForward = 0;
 	tmpRight = 0;
+
+	if (keycode == VK_ESCAPE)
+	{
+		tmpIsMoveable = !tmpIsMoveable;
+		InputSystem::GetInstance()->SetCursorVisiable(!tmpIsMoveable);
+	}
+
+	//if (keycode == VK_RETURN && InputSystem::GetInstance()->GetKey(VK_MENU))
+	if (keycode == 'F')
+	{
+		isFullScreen = !isFullScreen;
+		pSwapChain->SetFullScreen(isFullScreen);
+	}
 }

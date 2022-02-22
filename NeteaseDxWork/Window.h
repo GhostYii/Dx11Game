@@ -13,11 +13,11 @@ public:
 	bool IsRun();
 
 	RECT GetClientWindowRect();
-	//void SetHWND(HWND hWnd);
 
 	virtual void OnCreate() = 0;
 	virtual void OnUpdate() = 0;
 	virtual void OnDestroy();
+	virtual void OnSizeChanged() = 0;
 	
 protected:
 	HWND hWnd;
