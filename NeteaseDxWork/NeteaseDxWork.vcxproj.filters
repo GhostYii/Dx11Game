@@ -39,13 +39,13 @@
       <UniqueIdentifier>{338d3d5c-5a97-4c77-b9ad-3f139faed2d1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Plugins">
-      <UniqueIdentifier>{eb79cab8-7111-4ed3-b54e-19ce4f772dd8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Plugins\tinyobjloader">
-      <UniqueIdentifier>{d5eea8ea-0671-4afe-9e16-b4b68156fafc}</UniqueIdentifier>
+      <UniqueIdentifier>{675df1e0-c557-4a49-9122-36a253962aae}</UniqueIdentifier>
     </Filter>
     <Filter Include="Plugins\imgui">
-      <UniqueIdentifier>{a0e53dae-5808-4806-9a68-a67ab0b75f4d}</UniqueIdentifier>
+      <UniqueIdentifier>{3f2dd9ca-4c7a-46af-91c5-c511ffcddc5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugins\tinyobjloader">
+      <UniqueIdentifier>{3dce4ae7-1ab0-4565-a792-1f32bac0450a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -104,25 +104,25 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>GameEngine\Resource\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="Plugins\imgui\imgui.cpp">
+    <ClCompile Include="imgui.cpp">
       <Filter>Plugins\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Plugins\imgui\imgui_demo.cpp">
+    <ClCompile Include="imgui_demo.cpp">
       <Filter>Plugins\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Plugins\imgui\imgui_draw.cpp">
+    <ClCompile Include="imgui_draw.cpp">
       <Filter>Plugins\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Plugins\imgui\imgui_impl_dx11.cpp">
+    <ClCompile Include="imgui_impl_dx11.cpp">
       <Filter>Plugins\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Plugins\imgui\imgui_impl_win32.cpp">
+    <ClCompile Include="imgui_impl_win32.cpp">
       <Filter>Plugins\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Plugins\imgui\imgui_tables.cpp">
+    <ClCompile Include="imgui_tables.cpp">
       <Filter>Plugins\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Plugins\imgui\imgui_widgets.cpp">
+    <ClCompile Include="imgui_widgets.cpp">
       <Filter>Plugins\imgui</Filter>
     </ClCompile>
   </ItemGroup>
@@ -220,31 +220,31 @@
     <ClInclude Include="Utility.h">
       <Filter>GameEngine</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\imgui\imconfig.h">
+    <ClInclude Include="imconfig.h">
       <Filter>Plugins\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\imgui\imgui.h">
+    <ClInclude Include="imgui.h">
       <Filter>Plugins\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\imgui\imgui_impl_dx11.h">
+    <ClInclude Include="imgui_impl_dx11.h">
       <Filter>Plugins\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\imgui\imgui_impl_win32.h">
+    <ClInclude Include="imgui_impl_win32.h">
       <Filter>Plugins\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\imgui\imgui_internal.h">
+    <ClInclude Include="imgui_internal.h">
       <Filter>Plugins\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\imgui\imstb_rectpack.h">
+    <ClInclude Include="imstb_rectpack.h">
       <Filter>Plugins\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\imgui\imstb_textedit.h">
+    <ClInclude Include="imstb_textedit.h">
       <Filter>Plugins\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\imgui\imstb_truetype.h">
+    <ClInclude Include="imstb_truetype.h">
       <Filter>Plugins\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\tinyobjloader\tiny_obj_loader.h">
+    <ClInclude Include="tiny_obj_loader.h">
       <Filter>Plugins\tinyobjloader</Filter>
     </ClInclude>
   </ItemGroup>
