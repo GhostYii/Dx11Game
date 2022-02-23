@@ -13,6 +13,7 @@ public:
 	~Texture() = default;
 	
 private:
+	Microsoft::WRL::ComPtr<ID3D11SamplerState> pSamplerState = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11Resource> pTexture = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pShaderResourceView = nullptr;
 };

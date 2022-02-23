@@ -32,7 +32,8 @@ void AppWindow::OnCreate()
 	ImGui_ImplWin32_Init(hWnd);
 
 	//InputSystem::GetInstance()->SetCursorVisiable(false);
-	pTmpTexture = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\earth.jpg");
+	pTmpDayTexture = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\earth_day.jpg");
+	pTmpNightTexture = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\earth_night.jpg");
 	pTmpSkyboxTex = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\galaxy.jpg");
 	pTmpMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\sphere.obj");
 	pTmpSkyboxMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\skybox.obj");
@@ -189,7 +190,7 @@ void AppWindow::UpdateModel()
 
 	lightRotMat.SetRotationY(tmpRotLightY);
 
-	tmpRotLightY += .0707f * .003f;
+	tmpRotLightY += .0707f * .001f;
 
 	cBuf.world.SetIdentity();
 	cBuf.view = camViewMat;
@@ -255,13 +256,16 @@ void AppWindow::Render()
 	WndUpdate();
 
 	GraphicsEngine::GetInstance()->GetRenderSystem()->SetRasterizerState(D3D11_CULL_BACK);
-	GraphicsEngine::GetInstance()->DrawMesh(pTmpMesh, pTmpVS, pTmpPS, pTmpCBuff, pTmpTexture);
 
+	TexturePtr texLst[] =
+	{
+		pTmpDayTexture,
+		pTmpNightTexture
+	};
+	GraphicsEngine::GetInstance()->DrawMesh(pTmpMesh, pTmpVS, pTmpPS, pTmpCBuff, texLst, ARRAYSIZE(texLst));
 	GraphicsEngine::GetInstance()->GetRenderSystem()->SetRasterizerState(D3D11_CULL_FRONT);
+
 	GraphicsEngine::GetInstance()->DrawMesh(pTmpSkyboxMesh, pTmpVS, pTmpSkyboxPS, pTmpSkyboxCBuff, pTmpSkyboxTex);
-
-	
-
 	GraphicsEngine::GetInstance()->GetGuiManager()->Update();
 
 	this->OnGUI();

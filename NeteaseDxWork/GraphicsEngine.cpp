@@ -116,7 +116,7 @@ void GraphicsEngine::GetDefaultVertexShaderByteCodeAndSize(void** shaderByteCode
 	*size = defaultVertexShaderSize;
 }
 
-void GraphicsEngine::DrawMesh(const MeshPtr& pMesh, const VertexShaderPtr& pVs, const PixelShaderPtr& pPs, const ConstantBufferPtr& pCb, const TexturePtr& pTex)
+void GraphicsEngine::DrawMesh(const MeshPtr& pMesh, const VertexShaderPtr& pVs, const PixelShaderPtr& pPs, const ConstantBufferPtr& pCb, const TexturePtr* pTextureList, UINT texSize)
 {	
 	pRenderSystem->GetDeviceContext()->VSSetConstantBuffer(pCb);
 	pRenderSystem->GetDeviceContext()->PSSetConstantBuffer(pCb);
@@ -124,7 +124,23 @@ void GraphicsEngine::DrawMesh(const MeshPtr& pMesh, const VertexShaderPtr& pVs, 
 	pRenderSystem->GetDeviceContext()->SetVertexShader(pVs);
 	pRenderSystem->GetDeviceContext()->SetPixelShader(pPs);
 
-	pRenderSystem->GetDeviceContext()->PSSetTexture(pTex);
+	pRenderSystem->GetDeviceContext()->PSSetTexture(pTextureList, texSize);
+
+	pRenderSystem->GetDeviceContext()->SetVertexBuffer(pMesh->GetVertexBuffer());
+	pRenderSystem->GetDeviceContext()->SetIndexBuffer(pMesh->GetIndexBuffer());
+
+	pRenderSystem->GetDeviceContext()->DrawIndexedTriangleList(pMesh->GetIndexBuffer()->GetIndexListSize(), 0, 0);
+}
+
+void GraphicsEngine::DrawMesh(const MeshPtr& pMesh, const VertexShaderPtr& pVs, const PixelShaderPtr& pPs, const ConstantBufferPtr& pCb, const TexturePtr& pTexture)
+{
+	pRenderSystem->GetDeviceContext()->VSSetConstantBuffer(pCb);
+	pRenderSystem->GetDeviceContext()->PSSetConstantBuffer(pCb);
+
+	pRenderSystem->GetDeviceContext()->SetVertexShader(pVs);
+	pRenderSystem->GetDeviceContext()->SetPixelShader(pPs);
+
+	pRenderSystem->GetDeviceContext()->PSSetTexture(pTexture);
 
 	pRenderSystem->GetDeviceContext()->SetVertexBuffer(pMesh->GetVertexBuffer());
 	pRenderSystem->GetDeviceContext()->SetIndexBuffer(pMesh->GetIndexBuffer());

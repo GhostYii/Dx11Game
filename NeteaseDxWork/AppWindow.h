@@ -50,7 +50,8 @@ private:
 	ConstantBufferPtr pTmpCBuff = nullptr;
 	ConstantBufferPtr pTmpSkyboxCBuff = nullptr;
 	IndexBufferPtr pTmpIndexBuff = nullptr;
-	TexturePtr pTmpTexture = nullptr;
+	TexturePtr pTmpDayTexture = nullptr;
+	TexturePtr pTmpNightTexture = nullptr;
 	TexturePtr pTmpSkyboxTex = nullptr;
 	MeshPtr pTmpMesh = nullptr;
 	MeshPtr pTmpSkyboxMesh = nullptr;

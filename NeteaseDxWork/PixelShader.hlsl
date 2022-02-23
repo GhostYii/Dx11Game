@@ -1,12 +1,15 @@
 Texture2D Texture : register(t0);
 sampler TextureSampler : register(s0);
 
+Texture2D NightTexture : register(t1);
+sampler NightTextureSampler : register(s1);
+
 struct PS_IUTPUT
 {
     float4 position : SV_POSITION;
     float2 texcoord : TEXCOORD0;
-    float3 normal : TEXCOORD1;
-    float3 directionToCamera : TEXCOORD2;
+    float3 normal : NORMAL0;
+    float3 directionToCamera : TEXCOORD1;
 };
 
 cbuffer MVP : register(b0)
@@ -15,24 +18,34 @@ cbuffer MVP : register(b0)
     row_major float4x4 view;
     row_major float4x4 projection;
     float4 lightDiretion;
+    float4 cameraPosition;
 };
 
 float4 main(PS_IUTPUT input) : SV_TARGET
 {
+    float4 texColor = Texture.Sample(TextureSampler, 1.0 - input.texcoord);
+    float4 nightColor = NightTexture.Sample(NightTextureSampler, 1.0 - input.texcoord);
+    
     // 环境光
-    float ka = .1f;
-    float3 ia = float3(1.f, 1.f, 1.f);
-    float3 ambientLight = ka * ia;
+    float ka = 1.5f;
+    float3 ia = float3(.1f, .1f, .1f);
+    ia *= texColor;
+    float3 ambientLight = ka * ia;   
     
     // 漫反射
-    float kd = .7f;
-    float3 id = float3(1.f, 1.f, 1.f);
-    float amountDiffuseLight = max(0, dot(lightDiretion.xyz, input.normal));
+    float kd = .9f;
+    float3 idDay = float3(1.f, 1.f, 1.f) * texColor.rgb;
+    idDay *= texColor.rgb;
+    float3 idNight = float3(1.f, 1.f, 1.f) * nightColor.rgb;
+    idNight *= nightColor.rgb;
+    float amountDiffuseLight = dot(lightDiretion.xyz, input.normal);
     
-    float diffuseLight = kd * amountDiffuseLight * id;
+    float3 id = lerp(idNight, idDay, (amountDiffuseLight + 1.f) / 2.f);
     
-    // 镜面反射（高光）
-    float ks = 1.f;
+    float3 diffuseLight = kd *  id;
+    
+    // 镜面反射（高光）    
+    float ks = 0.f;
     float3 is = float3(1.f, 1.f, 1.f);
     float3 reflectionLight = reflect(lightDiretion.xyz, input.normal);
     float shininess = 20.f;
@@ -43,6 +56,4 @@ float4 main(PS_IUTPUT input) : SV_TARGET
     float3 light = ambientLight + diffuseLight + specularLight;
     
     return float4(light, 1.f);
-    
-    //return Texture.Sample(TextureSampler, input.texcoord);
 }

@@ -16,7 +16,8 @@ public:
 
 	void GetDefaultVertexShaderByteCodeAndSize(void** shaderByteCode, size_t* size);
 
-	void DrawMesh(const MeshPtr& pMesh, const VertexShaderPtr& pVs, const PixelShaderPtr& pPs, const ConstantBufferPtr& pCb, const TexturePtr& pTex);
+	void DrawMesh(const MeshPtr& pMesh, const VertexShaderPtr& pVs, const PixelShaderPtr& pPs, const ConstantBufferPtr& pCb, const TexturePtr* pTextureList, UINT texSize);
+	void DrawMesh(const MeshPtr& pMesh, const VertexShaderPtr& pVs, const PixelShaderPtr& pPs, const ConstantBufferPtr& pCb, const TexturePtr& pTexture);
 
 	static GraphicsEngine* GetInstance();
 

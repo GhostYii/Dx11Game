@@ -9,8 +9,8 @@ struct VS_OUTPUT
 {
     float4 position : SV_POSITION;
     float2 texcoord : TEXCOORD;
-    float3 normal : TEXCOORD1;
-    float3 directionToCamera : TEXCOORD2;
+    float3 normal : NORMAL0;
+    float3 directionToCamera : TEXCOORD1;
 };
 
 cbuffer MVP : register(b0)

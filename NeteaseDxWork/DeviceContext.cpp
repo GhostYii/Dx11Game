@@ -21,7 +21,7 @@ void DeviceContext::ClearRenderTargetColor(SwapChainPtr pSwapChain, float r, flo
 	pDeviceContext->OMSetRenderTargets(1, pSwapChain->pRenderTargetView.GetAddressOf(), pSwapChain->pDepthStencilView.Get());
 }
 
-void DeviceContext::SetVertexBuffer(VertexBufferPtr pBuffer)
+void DeviceContext::SetVertexBuffer(const VertexBufferPtr& pBuffer)
 {
 	UINT stride = pBuffer->vertexSize;
 	UINT offset = 0;
@@ -31,7 +31,7 @@ void DeviceContext::SetVertexBuffer(VertexBufferPtr pBuffer)
 	pDeviceContext->IASetInputLayout(pBuffer->pInputLayout.Get());
 }
 
-void DeviceContext::SetIndexBuffer(IndexBufferPtr pBuffer)
+void DeviceContext::SetIndexBuffer(const IndexBufferPtr& pBuffer)
 {
 	pDeviceContext->IASetIndexBuffer(pBuffer->pBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 }
@@ -59,32 +59,57 @@ void DeviceContext::SetViewportSize(UINT width, UINT height)
 	pDeviceContext->RSSetViewports(1, &vp);
 }
 
-void DeviceContext::SetVertexShader(VertexShaderPtr shader)
+void DeviceContext::SetVertexShader(const VertexShaderPtr& shader)
 {
 	pDeviceContext->VSSetShader(shader->pVertexShader.Get(), nullptr, 0);
 }
 
-void DeviceContext::SetPixelShader(PixelShaderPtr shader)
+void DeviceContext::SetPixelShader(const PixelShaderPtr& shader)
 {
 	pDeviceContext->PSSetShader(shader->pPixelShader.Get(), nullptr, 0);
 }
 
-void DeviceContext::VSSetConstantBuffer(ConstantBufferPtr cBuffer)
+void DeviceContext::VSSetConstantBuffer(const ConstantBufferPtr& cBuffer)
 {
 	pDeviceContext->VSSetConstantBuffers(0, 1, cBuffer->pBuffer.GetAddressOf());
 }
 
-void DeviceContext::PSSetConstantBuffer(ConstantBufferPtr cBuffer)
+void DeviceContext::PSSetConstantBuffer(const ConstantBufferPtr& cBuffer)
 {
 	pDeviceContext->PSSetConstantBuffers(0, 1, cBuffer->pBuffer.GetAddressOf());
 }
 
-void DeviceContext::VSSetTexture(TexturePtr texture)
+void DeviceContext::VSSetTexture(const TexturePtr* textures, UINT size)
 {
-	pDeviceContext->VSSetShaderResources(0, 1, texture->pShaderResourceView.GetAddressOf());
+	ID3D11ShaderResourceView* resList[32u];
+	ID3D11SamplerState* samplerList[32u];
+
+	for (size_t i = 0; i < size; i++)
+	{
+		resList[i] = textures[i]->pShaderResourceView.Get();
+		samplerList[i] = textures[i]->pSamplerState.Get();
+	}
+
+	pDeviceContext->VSSetShaderResources(0, size, resList);
+	pDeviceContext->VSSetSamplers(0, size, samplerList);
 }
 
-void DeviceContext::PSSetTexture(TexturePtr texture)
+void DeviceContext::PSSetTexture(const TexturePtr* textures, UINT size)
+{
+	ID3D11ShaderResourceView* resList[32u];
+	ID3D11SamplerState* samplerList[32u];
+
+	for (size_t i = 0; i < size; i++)
+	{
+		resList[i] = textures[i]->pShaderResourceView.Get();
+		samplerList[i] = textures[i]->pSamplerState.Get();
+	}
+	pDeviceContext->PSSetShaderResources(0, size, resList);
+	pDeviceContext->PSSetSamplers(0, size, samplerList);
+}
+
+void DeviceContext::PSSetTexture(const TexturePtr& texture)
 {
 	pDeviceContext->PSSetShaderResources(0, 1, texture->pShaderResourceView.GetAddressOf());
+	pDeviceContext->PSSetSamplers(0, 1, texture->pSamplerState.GetAddressOf());
 }
