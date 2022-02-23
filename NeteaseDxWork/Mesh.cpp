@@ -9,9 +9,6 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 
-//#include <locale>
-
-
 Mesh::Mesh(const wchar_t* fullPath) : Resource(fullPath)
 {
 	tinyobj::attrib_t attribs;

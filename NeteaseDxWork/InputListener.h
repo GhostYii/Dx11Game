@@ -1,13 +1,16 @@
 #pragma once
 #include "Point.h"
 
+class InputSystem;
+
 class InputListener
 {
+	friend class InputSystem;
 public:
 	InputListener() = default;
 	virtual ~InputListener() = default;
 
-public:
+protected:
 	virtual void OnKeyDown(int keycode) = 0;
 	virtual void OnKey(int keycode) = 0;
 	virtual void OnKeyUp(int keycode) = 0;

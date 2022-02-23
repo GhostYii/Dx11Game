@@ -4,7 +4,7 @@
 #include "d3dcompiler.h"
 #include <exception>
 
-//#pragma comment(lib, "D3DCompiler.lib")
+#include "imgui_impl_dx11.h"
 
 RenderSystem::RenderSystem() : featureLevel(D3D_FEATURE_LEVEL_11_0), pDevice(nullptr), pContext(nullptr)
 {
@@ -52,6 +52,8 @@ void RenderSystem::Init()
 	pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&pDXGIFactory));
 
 	InitRasterizerState();
+
+	ImGui_ImplDX11_Init(pDevice, pContext);
 }
 
 void RenderSystem::Release()
@@ -72,6 +74,8 @@ void RenderSystem::Release()
 		pCullFrontState->Release();
 	if (pCullBackState)
 		pCullBackState->Release();
+
+	ImGui_ImplDX11_Shutdown();
 }
 
 void RenderSystem::InitRasterizerState()

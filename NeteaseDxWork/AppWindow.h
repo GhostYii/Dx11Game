@@ -12,6 +12,17 @@ public:
 	AppWindow() = default;
 	virtual ~AppWindow() = default;
 
+public:
+	void WndUpdate();
+	void UpdateModel();
+	void UpdateSkybox();
+	void UpdateCamera();
+
+	void Render();	
+
+protected:
+	virtual void OnGUI();
+
 	// Inherited via Window
 	virtual void OnCreate() override;
 	virtual void OnUpdate() override;
@@ -26,14 +37,6 @@ public:
 	virtual void OnMouseKeyDown(int mouseKey) override;
 	virtual void OnMouseKey(int mouseKey) override;
 	virtual void OnMouseKeyUp(int mouseKey) override;
-
-public:
-	void WndUpdate();
-	void UpdateModel();
-	void UpdateSkybox();
-	void UpdateCamera();
-
-	void Render();	
 
 private:
 	SwapChainPtr pSwapChain = nullptr;

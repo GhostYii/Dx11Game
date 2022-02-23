@@ -47,6 +47,9 @@
     <Filter Include="Plugins\tinyobjloader">
       <UniqueIdentifier>{3dce4ae7-1ab0-4565-a792-1f32bac0450a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameEngine\GUI">
+      <UniqueIdentifier>{8777cfc6-f3c7-48ac-9dc7-d68bcaf1d07f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AppWindow.cpp">
@@ -124,6 +127,9 @@
     </ClCompile>
     <ClCompile Include="imgui_widgets.cpp">
       <Filter>Plugins\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIManager.cpp">
+      <Filter>GameEngine\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -246,6 +252,9 @@
     </ClInclude>
     <ClInclude Include="tiny_obj_loader.h">
       <Filter>Plugins\tinyobjloader</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIManager.h">
+      <Filter>GameEngine\GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

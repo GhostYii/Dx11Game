@@ -1,7 +1,9 @@
 #include "GraphicsEngine.h"
 #include "PinelineStruct.h"
 #include "ResourceStruct.h"
-//#pragma comment(lib, "D3DCompiler.lib")
+
+#include "imgui.h"
+#include "imgui_impl_dx11.h"
 
 GraphicsEngine* GraphicsEngine::instance = nullptr;
 
@@ -16,7 +18,17 @@ GraphicsEngine::~GraphicsEngine()
 }
 
 void GraphicsEngine::Init()
-{	
+{
+	// 先初始化GUIManager再初始化RenderSystem!
+	try
+	{
+		pGuiManager = new GUIManager();
+	}
+	catch (...)
+	{
+		pGuiManager = nullptr;
+	}
+
 	try
 	{
 		pRenderSystem = new RenderSystem();
@@ -42,7 +54,10 @@ void GraphicsEngine::Init()
 	catch (...)
 	{
 		pMeshManager = nullptr;
-	}
+	}	
+
+	
+
 	void* shaderByteCode = nullptr;
 	size_t sizeShader = 0;
 	pRenderSystem->CompileVertexShader(L"MeshDefaultVS.hlsl", "main", &shaderByteCode, &sizeShader);
@@ -83,6 +98,11 @@ RenderSystem* GraphicsEngine::GetRenderSystem()
 TextureManager* GraphicsEngine::GetTextureManger()
 {
 	return pTextureManager;
+}
+
+GUIManager* GraphicsEngine::GetGuiManager()
+{
+	return pGuiManager;
 }
 
 MeshManager* GraphicsEngine::GetMeshManager()

@@ -3,6 +3,7 @@
 
 class Window
 {
+	friend LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 public:
 	Window();
 	Window(const Window&) = default;
@@ -14,6 +15,7 @@ public:
 
 	RECT GetClientWindowRect();
 
+protected:
 	virtual void OnCreate() = 0;
 	virtual void OnUpdate() = 0;
 	virtual void OnDestroy();

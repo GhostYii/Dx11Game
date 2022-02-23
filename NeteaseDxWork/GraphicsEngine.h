@@ -4,13 +4,15 @@
 #include "RenderSystem.h"
 #include "TextureManager.h"
 #include "MeshManager.h"
+#include "GUIManager.h"
 
 class GraphicsEngine
 {
 public:	
 	RenderSystem* GetRenderSystem();
-	TextureManager* GetTextureManger();
+	TextureManager* GetTextureManger();	
 	MeshManager* GetMeshManager();
+	GUIManager* GetGuiManager();
 
 	void GetDefaultVertexShaderByteCodeAndSize(void** shaderByteCode, size_t* size);
 
@@ -33,6 +35,7 @@ private:
 	RenderSystem* pRenderSystem = nullptr;
 	TextureManager* pTextureManager = nullptr;
 	MeshManager* pMeshManager = nullptr;
+	GUIManager* pGuiManager = nullptr;
 	static GraphicsEngine* instance;
 
 private:

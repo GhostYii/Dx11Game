@@ -151,6 +151,7 @@
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="DeviceContext.cpp" />
     <ClCompile Include="GraphicsEngine.cpp" />
+    <ClCompile Include="GUIManager.cpp" />
     <ClCompile Include="imgui.cpp" />
     <ClCompile Include="imgui_demo.cpp" />
     <ClCompile Include="imgui_draw.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="DeviceContext.h" />
     <ClInclude Include="GraphicsClasses.h" />
     <ClInclude Include="GraphicsEngine.h" />
+    <ClInclude Include="GUIManager.h" />
     <ClInclude Include="imconfig.h" />
     <ClInclude Include="imgui.h" />
     <ClInclude Include="imgui_impl_dx11.h" />

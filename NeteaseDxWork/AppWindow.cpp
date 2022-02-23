@@ -6,6 +6,8 @@
 
 #include<Windows.h>
 
+#include "imgui_impl_win32.h"
+
 
 struct Vertex
 {
@@ -26,6 +28,8 @@ struct Constant
 void AppWindow::OnCreate()
 {
 	InputSystem::GetInstance()->AddListener(this);
+
+	ImGui_ImplWin32_Init(hWnd);
 
 	//InputSystem::GetInstance()->SetCursorVisiable(false);
 	pTmpTexture = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\earth.jpg");
@@ -149,13 +153,15 @@ void AppWindow::OnCreate()
 void AppWindow::OnUpdate()
 {
 	InputSystem::GetInstance()->Update();
+
+	ImGui_ImplWin32_NewFrame();
 	Render();
 }
 
 void AppWindow::OnDestroy()
 {
 	InputSystem::GetInstance()->SetCursorVisiable(true);
-
+	ImGui_ImplWin32_Shutdown();
 	Window::OnDestroy();
 }
 
@@ -167,75 +173,16 @@ void AppWindow::OnSizeChanged()
 }
 
 void AppWindow::WndUpdate()
-{
-	// Scale - Rotation - Translate
+{	
 	UpdateCamera();
 	UpdateModel();
 	UpdateSkybox();
-
-
-	//Constant c = {};
-
-	//tmpPos += deltaTime / 10.f;
-	//if (tmpPos > 1.f)
-	//	tmpPos = 0;
-
-	//Matrix4x4 tmpMat;
-	//Matrix4x4 lightRotMat;
-
-	//lightRotMat.SetIdentity();
-	//lightRotMat.SetRotationY(tmpRotLightY);
-
-	//tmpRotLightY += .0707f * .003f;
-
-	//c.light = lightRotMat.GetDirectionZ();
-
-	//tmpDelta += deltaTime / .5f;
-
-	//c.world.SetIdentity();
-	//c.world.SetScale(tmpScale);
-
-	//Matrix4x4 tmpWorldCamMat;
-
-
-	//tmpWorldCamMat.SetIdentity();
-
-	//tmpMat.SetIdentity();
-	//tmpMat.SetRotationX(tmpRotX);
-	//tmpWorldCamMat *= tmpMat;
-
-	//tmpMat.SetIdentity();
-	//tmpMat.SetRotationY(tmpRotY);
-	//tmpWorldCamMat *= tmpMat;
-
-	//Vector3 newPos = worldCamMat.GetTranslation() + tmpWorldCamMat.GetDirectionZ() * tmpForward * .0003f;
-	//newPos = newPos + tmpWorldCamMat.GetDirectionX() * tmpRight * .0003f;
-
-	//tmpWorldCamMat.SetTranslation(newPos);
-	//c.cameraPosition = newPos;
-	//worldCamMat = tmpWorldCamMat;
-
-	//tmpWorldCamMat.Inverse();
-
-	////c.view.SetIdentity();
-	//c.view = tmpWorldCamMat;
-
-	////c.projection.SetOrthoLH
-	////(
-	////	(GetClientWindowRect().right - GetClientWindowRect().left) / 300.f,
-	////	(GetClientWindowRect().bottom - GetClientWindowRect().top) / 300.f,
-	////	-4.f, 4.f
-	////);
-
-	//int width = GetClientWindowRect().right - GetClientWindowRect().left;
-	//int height = GetClientWindowRect().bottom - GetClientWindowRect().top;
-	//c.projection.SetPerpectiveFovLH(1.57f, ((float)width / (float)height), 0.1f, 100.f);
-
-	//pTmpCBuff->Update(GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext(), &c);
 }
 
 void AppWindow::UpdateModel()
 {
+	// Scale - Rotation - Translate
+
 	Constant cBuf;
 	Matrix4x4 lightRotMat;
 	lightRotMat.SetIdentity();
@@ -313,6 +260,14 @@ void AppWindow::Render()
 	GraphicsEngine::GetInstance()->GetRenderSystem()->SetRasterizerState(D3D11_CULL_FRONT);
 	GraphicsEngine::GetInstance()->DrawMesh(pTmpSkyboxMesh, pTmpVS, pTmpSkyboxPS, pTmpSkyboxCBuff, pTmpSkyboxTex);
 
+	
+
+	GraphicsEngine::GetInstance()->GetGuiManager()->Update();
+
+	this->OnGUI();
+
+	GraphicsEngine::GetInstance()->GetGuiManager()->Render();
+
 	pSwapChain->Present(false);
 
 	prevDeltaTime = newDeltaTime;
@@ -320,8 +275,14 @@ void AppWindow::Render()
 	deltaTime = prevDeltaTime ? (newDeltaTime - prevDeltaTime) / 1000.f : 0;
 }
 
+void AppWindow::OnGUI()
+{
+	ImGui::Text("fps: %.1f", ImGui::GetIO().Framerate);
+}
+
 void AppWindow::OnMouseKey(int mouseKey)
 {
+	
 }
 
 void AppWindow::OnKey(int keycode)

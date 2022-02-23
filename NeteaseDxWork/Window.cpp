@@ -3,10 +3,13 @@
 #include <Mouse.h>
 #include <exception>
 
+#include "imgui_impl_win32.h"
+
 const int QUIT_CODE = 0;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
+{		
+	ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam);
 	switch (msg)
 	{
 	case WM_ACTIVATE:
@@ -109,6 +112,7 @@ void Window::Init()
 	if (!hWnd)
 		throw std::exception("Create window failed!");
 
+
 	ShowWindow(hWnd, SW_SHOW);
 	UpdateWindow(hWnd);
 
@@ -135,6 +139,8 @@ bool Window::Update()
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
+
+	
 
 	//Sleep(1);
 
