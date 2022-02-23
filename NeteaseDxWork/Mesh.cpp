@@ -25,10 +25,10 @@ Mesh::Mesh(const wchar_t* fullPath) : Resource(fullPath)
 		throw std::exception("Mesh load failed!");
 	}
 
-	if (shapes.size() > 1)
-	{
-		throw std::exception("Mesh shapes error!");
-	}
+	//if (shapes.size() > 1)
+	//{
+	//	throw std::exception("Mesh shapes error!");
+	//}
 
 	std::vector<MeshVertex> meshVerts;
 	std::vector<unsigned int> meshIndices;

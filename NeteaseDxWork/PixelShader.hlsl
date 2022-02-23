@@ -34,9 +34,9 @@ float4 main(PS_IUTPUT input) : SV_TARGET
     
     // Âþ·´Éä
     float kd = .9f;
-    float3 idDay = float3(1.f, 1.f, 1.f) * texColor.rgb;
+    float3 idDay = float3(1.f, 1.f, 1.f);
     idDay *= texColor.rgb;
-    float3 idNight = float3(1.f, 1.f, 1.f) * nightColor.rgb;
+    float3 idNight = float3(1.f, 1.f, 1.f);
     idNight *= nightColor.rgb;
     float amountDiffuseLight = dot(lightDiretion.xyz, input.normal);
     

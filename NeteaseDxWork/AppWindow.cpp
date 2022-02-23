@@ -35,8 +35,20 @@ void AppWindow::OnCreate()
 	pTmpDayTexture = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\earth_day.jpg");
 	pTmpNightTexture = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\earth_night.jpg");
 	pTmpSkyboxTex = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\galaxy.jpg");
-	pTmpMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\sphere.obj");
+	pTmpMoonTex = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\moon_rsave.jpg");
+
+	pTmpEarthMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\sphere.obj");
 	pTmpSkyboxMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\skybox.obj");
+	pTmpMoonMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\earth.obj");
+
+	//pTmpEarthMaterial = GraphicsEngine::GetInstance()->CreateMaterial(L"VertexShader.hlsl", L"PixelShader.hlsl");
+	//pTmpEarthMaterial->AddTexture(pTmpDayTexture);
+	//pTmpEarthMaterial->AddTexture(pTmpNightTexture);
+	//pTmpEarthMaterial->SetCullMode(D3D11_CULL_BACK);
+	
+	pTmpMoonMaterial = GraphicsEngine::GetInstance()->CreateMaterial(L"MoonVS.hlsl", L"MoonPS.hlsl");
+	pTmpMoonMaterial->AddTexture(pTmpMoonTex);
+	pTmpMoonMaterial->SetCullMode(D3D11_CULL_BACK);
 
 	RECT rect = this->GetClientWindowRect();
 	pSwapChain = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateSwapChain(this->hWnd, rect.right - rect.left, rect.bottom - rect.top);
@@ -199,6 +211,20 @@ void AppWindow::UpdateModel()
 	cBuf.light = lightRotMat.GetDirectionZ();
 
 	pTmpCBuff->Update(GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext(), &cBuf);
+
+
+	Constant moonCBuffer;
+	moonCBuffer.world.SetIdentity();
+	moonCBuffer.world.SetScale(Vector3(.5f, .5f, .5f));
+	moonCBuffer.world.SetTranslation(Vector3(3.5f, 0, 0));
+	moonCBuffer.view = camViewMat;
+	moonCBuffer.projection = camProjectionMat;
+	moonCBuffer.cameraPosition = camTransMat.GetTranslation();
+	moonCBuffer.light = lightRotMat.GetDirectionZ();
+
+	tmpMoonTrans = moonCBuffer.world.GetTranslation();
+
+	pTmpMoonMaterial->SetCBuffer(&moonCBuffer, sizeof(Constant));
 }
 
 void AppWindow::UpdateSkybox()
@@ -255,6 +281,8 @@ void AppWindow::Render()
 
 	WndUpdate();
 
+	GraphicsEngine::GetInstance()->DrawMesh(pTmpMoonMesh, pTmpMoonMaterial);
+
 	GraphicsEngine::GetInstance()->GetRenderSystem()->SetRasterizerState(D3D11_CULL_BACK);
 
 	TexturePtr texLst[] =
@@ -262,10 +290,15 @@ void AppWindow::Render()
 		pTmpDayTexture,
 		pTmpNightTexture
 	};
-	GraphicsEngine::GetInstance()->DrawMesh(pTmpMesh, pTmpVS, pTmpPS, pTmpCBuff, texLst, ARRAYSIZE(texLst));
+	GraphicsEngine::GetInstance()->DrawMesh(pTmpEarthMesh, pTmpVS, pTmpPS, pTmpCBuff, texLst, ARRAYSIZE(texLst));
+	
+
 	GraphicsEngine::GetInstance()->GetRenderSystem()->SetRasterizerState(D3D11_CULL_FRONT);
 
 	GraphicsEngine::GetInstance()->DrawMesh(pTmpSkyboxMesh, pTmpVS, pTmpSkyboxPS, pTmpSkyboxCBuff, pTmpSkyboxTex);
+
+	
+
 	GraphicsEngine::GetInstance()->GetGuiManager()->Update();
 
 	this->OnGUI();
@@ -282,6 +315,12 @@ void AppWindow::Render()
 void AppWindow::OnGUI()
 {
 	ImGui::Text("fps: %.1f", ImGui::GetIO().Framerate);
+	ImGui::Text("cam pos: (%.2f, %.2f, %.2f)", camTransMat.GetTranslation().x, camTransMat.GetTranslation().y, camTransMat.GetTranslation().z);
+	ImGui::Text("moon pos: (%.2f, %.2f, %.2f)", tmpMoonTrans.x, tmpMoonTrans.y, tmpMoonTrans.z);
+	Matrix4x4 tmp;
+	tmp.SetIdentity();
+	tmp.SetRotationY(tmpRotLightY);
+	ImGui::Text("sun direction : (%.2f, %.2f, %.2f)", tmp.GetDirectionZ().x, tmp.GetDirectionZ().y,tmp.GetDirectionZ().z);
 }
 
 void AppWindow::OnMouseKey(int mouseKey)

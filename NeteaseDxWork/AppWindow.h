@@ -53,8 +53,15 @@ private:
 	TexturePtr pTmpDayTexture = nullptr;
 	TexturePtr pTmpNightTexture = nullptr;
 	TexturePtr pTmpSkyboxTex = nullptr;
-	MeshPtr pTmpMesh = nullptr;
+	TexturePtr pTmpMoonTex = nullptr;
+	
+	MeshPtr pTmpEarthMesh = nullptr;
 	MeshPtr pTmpSkyboxMesh = nullptr;
+	MeshPtr pTmpMoonMesh = nullptr;
+
+	MaterialPtr pTmpEarthMaterial = nullptr;
+	MaterialPtr pTmpMoonMaterial = nullptr;
+	MaterialPtr pSkySphereMateral = nullptr;
 
 	unsigned long prevTime = 0;
 	float prevDeltaTime = 0;
@@ -77,5 +84,7 @@ private:
 	float tmpRotLightY = 0;
 	
 	bool tmpIsMoveable = true;
+
+	Vector3 tmpMoonTrans;
 };
 

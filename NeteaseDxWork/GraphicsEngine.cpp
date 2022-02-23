@@ -105,6 +105,31 @@ GUIManager* GraphicsEngine::GetGuiManager()
 	return pGuiManager;
 }
 
+MaterialPtr GraphicsEngine::CreateMaterial(const wchar_t* vertexShaderPath, const wchar_t* pixelShaderPath)
+{
+	MaterialPtr ptr = nullptr;
+	try 
+	{
+		ptr = std::make_shared<Material>(vertexShaderPath, pixelShaderPath);
+	}
+	catch (...) {}
+
+	return ptr;
+}
+
+void GraphicsEngine::SetMaterial(const MaterialPtr& material)
+{
+	pRenderSystem->SetRasterizerState(material->cullMode);
+	pRenderSystem->GetDeviceContext()->VSSetConstantBuffer(material->pConstantBuffer);
+	pRenderSystem->GetDeviceContext()->PSSetConstantBuffer(material->pConstantBuffer);
+
+	pRenderSystem->GetDeviceContext()->SetVertexShader(material->pVertexShader);
+	pRenderSystem->GetDeviceContext()->SetPixelShader(material->pPixelShader);
+
+	pRenderSystem->GetDeviceContext()->PSSetTexture(&material->textures[0], material->textures.size());
+
+}
+
 MeshManager* GraphicsEngine::GetMeshManager()
 {
 	return pMeshManager;
@@ -114,6 +139,19 @@ void GraphicsEngine::GetDefaultVertexShaderByteCodeAndSize(void** shaderByteCode
 {	
 	*shaderByteCode = pDefaultVertexShaderByteCode;
 	*size = defaultVertexShaderSize;
+}
+
+void GraphicsEngine::DrawMesh(const MeshPtr& pMesh, const MaterialPtr& pMaterial)
+{
+	SetMaterial(pMaterial);
+
+	auto a = pMesh->GetVertexBuffer();
+	auto b = pMesh->GetIndexBuffer();
+
+	pRenderSystem->GetDeviceContext()->SetVertexBuffer(pMesh->GetVertexBuffer());
+	pRenderSystem->GetDeviceContext()->SetIndexBuffer(pMesh->GetIndexBuffer());
+
+	pRenderSystem->GetDeviceContext()->DrawIndexedTriangleList(pMesh->GetIndexBuffer()->GetIndexListSize(), 0, 0);
 }
 
 void GraphicsEngine::DrawMesh(const MeshPtr& pMesh, const VertexShaderPtr& pVs, const PixelShaderPtr& pPs, const ConstantBufferPtr& pCb, const TexturePtr* pTextureList, UINT texSize)
@@ -133,7 +171,7 @@ void GraphicsEngine::DrawMesh(const MeshPtr& pMesh, const VertexShaderPtr& pVs, 
 }
 
 void GraphicsEngine::DrawMesh(const MeshPtr& pMesh, const VertexShaderPtr& pVs, const PixelShaderPtr& pPs, const ConstantBufferPtr& pCb, const TexturePtr& pTexture)
-{
+{	
 	pRenderSystem->GetDeviceContext()->VSSetConstantBuffer(pCb);
 	pRenderSystem->GetDeviceContext()->PSSetConstantBuffer(pCb);
 

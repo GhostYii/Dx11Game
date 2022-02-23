@@ -14,8 +14,15 @@ public:
 	MeshManager* GetMeshManager();
 	GUIManager* GetGuiManager();
 
+public:
+	MaterialPtr CreateMaterial(const wchar_t* vertexShaderPath, const wchar_t* pixelShaderPath);
+
+	void SetMaterial(const MaterialPtr& material);
+
+public:
 	void GetDefaultVertexShaderByteCodeAndSize(void** shaderByteCode, size_t* size);
 
+	void DrawMesh(const MeshPtr& pMesh, const MaterialPtr& pMaterial);
 	void DrawMesh(const MeshPtr& pMesh, const VertexShaderPtr& pVs, const PixelShaderPtr& pPs, const ConstantBufferPtr& pCb, const TexturePtr* pTextureList, UINT texSize);
 	void DrawMesh(const MeshPtr& pMesh, const VertexShaderPtr& pVs, const PixelShaderPtr& pPs, const ConstantBufferPtr& pCb, const TexturePtr& pTexture);
 

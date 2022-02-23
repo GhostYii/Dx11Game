@@ -50,6 +50,9 @@
     <Filter Include="GameEngine\GUI">
       <UniqueIdentifier>{8777cfc6-f3c7-48ac-9dc7-d68bcaf1d07f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameEngine\GraphicsEngine\Material">
+      <UniqueIdentifier>{af3f3c97-d10c-4196-a68a-030fbdc8a985}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AppWindow.cpp">
@@ -130,6 +133,9 @@
     </ClCompile>
     <ClCompile Include="GUIManager.cpp">
       <Filter>GameEngine\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>GameEngine\GraphicsEngine\Material</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -256,6 +262,9 @@
     <ClInclude Include="GUIManager.h">
       <Filter>GameEngine\GUI</Filter>
     </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>GameEngine\GraphicsEngine\Material</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader.fx">
@@ -271,6 +280,12 @@
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="DefaultSkyPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="MoonVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="MoonPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>
