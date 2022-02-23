@@ -44,6 +44,9 @@
     <Filter Include="Plugins\tinyobjloader">
       <UniqueIdentifier>{d5eea8ea-0671-4afe-9e16-b4b68156fafc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Plugins\imgui">
+      <UniqueIdentifier>{a0e53dae-5808-4806-9a68-a67ab0b75f4d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AppWindow.cpp">
@@ -100,6 +103,27 @@
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
       <Filter>GameEngine\Resource\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\imgui\imgui.cpp">
+      <Filter>Plugins\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\imgui\imgui_demo.cpp">
+      <Filter>Plugins\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\imgui\imgui_draw.cpp">
+      <Filter>Plugins\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\imgui\imgui_impl_dx11.cpp">
+      <Filter>Plugins\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\imgui\imgui_impl_win32.cpp">
+      <Filter>Plugins\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\imgui\imgui_tables.cpp">
+      <Filter>Plugins\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\imgui\imgui_widgets.cpp">
+      <Filter>Plugins\imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -196,7 +220,31 @@
     <ClInclude Include="Utility.h">
       <Filter>GameEngine</Filter>
     </ClInclude>
-    <ClInclude Include="tiny_obj_loader.h">
+    <ClInclude Include="Plugins\imgui\imconfig.h">
+      <Filter>Plugins\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\imgui\imgui.h">
+      <Filter>Plugins\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\imgui\imgui_impl_dx11.h">
+      <Filter>Plugins\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\imgui\imgui_impl_win32.h">
+      <Filter>Plugins\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\imgui\imgui_internal.h">
+      <Filter>Plugins\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\imgui\imstb_rectpack.h">
+      <Filter>Plugins\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\imgui\imstb_textedit.h">
+      <Filter>Plugins\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\imgui\imstb_truetype.h">
+      <Filter>Plugins\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\tinyobjloader\tiny_obj_loader.h">
       <Filter>Plugins\tinyobjloader</Filter>
     </ClInclude>
   </ItemGroup>
