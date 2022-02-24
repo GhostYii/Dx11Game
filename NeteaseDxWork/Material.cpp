@@ -24,8 +24,8 @@ Material::Material(const wchar_t* vertexShaderPath, const wchar_t* pixelShaderPa
 
 Material::Material(const Material& other)
 {
-	pVertexShader = other.pPixelShader;
-	pPixelShader = other.pVertexShader;
+	pVertexShader = other.pVertexShader;
+	pPixelShader = other.pPixelShader;
 	pConstantBuffer = other.pConstantBuffer;
 
 	cullMode = other.cullMode;

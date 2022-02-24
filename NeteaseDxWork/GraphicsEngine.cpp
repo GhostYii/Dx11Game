@@ -151,36 +151,20 @@ void GraphicsEngine::DrawMesh(const MeshPtr& pMesh, const MaterialPtr& pMaterial
 	pRenderSystem->GetDeviceContext()->DrawIndexedTriangleList(pMesh->GetIndexBuffer()->GetIndexListSize(), 0, 0);
 }
 
-void GraphicsEngine::DrawMesh(const MeshPtr& pMesh, const VertexShaderPtr& pVs, const PixelShaderPtr& pPs, const ConstantBufferPtr& pCb, const TexturePtr* pTextureList, UINT texSize)
-{	
-	pRenderSystem->GetDeviceContext()->VSSetConstantBuffer(pCb);
-	pRenderSystem->GetDeviceContext()->PSSetConstantBuffer(pCb);
-
-	pRenderSystem->GetDeviceContext()->SetVertexShader(pVs);
-	pRenderSystem->GetDeviceContext()->SetPixelShader(pPs);
-
-	pRenderSystem->GetDeviceContext()->PSSetTexture(pTextureList, texSize);
-
+void GraphicsEngine::DrawMesh(const MeshPtr& pMesh, const std::vector<MaterialPtr>& pMaterials)
+{
 	pRenderSystem->GetDeviceContext()->SetVertexBuffer(pMesh->GetVertexBuffer());
 	pRenderSystem->GetDeviceContext()->SetIndexBuffer(pMesh->GetIndexBuffer());
 
-	pRenderSystem->GetDeviceContext()->DrawIndexedTriangleList(pMesh->GetIndexBuffer()->GetIndexListSize(), 0, 0);
-}
+	for (size_t i = 0; i < pMesh->GetMaterialSlotCount(); i++)
+	{
+		if (i >= pMaterials.size())
+			break;
 
-void GraphicsEngine::DrawMesh(const MeshPtr& pMesh, const VertexShaderPtr& pVs, const PixelShaderPtr& pPs, const ConstantBufferPtr& pCb, const TexturePtr& pTexture)
-{	
-	pRenderSystem->GetDeviceContext()->VSSetConstantBuffer(pCb);
-	pRenderSystem->GetDeviceContext()->PSSetConstantBuffer(pCb);
-
-	pRenderSystem->GetDeviceContext()->SetVertexShader(pVs);
-	pRenderSystem->GetDeviceContext()->SetPixelShader(pPs);
-
-	pRenderSystem->GetDeviceContext()->PSSetTexture(pTexture);
-
-	pRenderSystem->GetDeviceContext()->SetVertexBuffer(pMesh->GetVertexBuffer());
-	pRenderSystem->GetDeviceContext()->SetIndexBuffer(pMesh->GetIndexBuffer());
-
-	pRenderSystem->GetDeviceContext()->DrawIndexedTriangleList(pMesh->GetIndexBuffer()->GetIndexListSize(), 0, 0);
+		MaterialSlot slot = pMesh->GetMaterialSlot(i);
+		SetMaterial(pMaterials[i]);
+		pRenderSystem->GetDeviceContext()->DrawIndexedTriangleList(slot.numIndices, 0, slot.startIndex);
+	}
 }
 
 GraphicsEngine* GraphicsEngine::GetInstance()
