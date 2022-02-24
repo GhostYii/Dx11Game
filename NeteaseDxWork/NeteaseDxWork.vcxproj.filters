@@ -267,9 +267,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="shader.fx">
-      <Filter>Shader</Filter>
-    </FxCompile>
     <FxCompile Include="VertexShader.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>

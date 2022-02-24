@@ -27,26 +27,26 @@ float4 pixel(PS_IUTPUT input) : SV_TARGET
     float3 ia = float3(.1, .1, .1);
     ia *= texColor.rgb;
 
-    float3 ambient_light = ka * ia;
+    float3 ambientLight = ka * ia;
 
 	//DIFFUSE LIGHT
     float kd = .9;
     float3 id = float3(1.0, 1.0, 1.0);
     id *= texColor.rgb;
-    float amount_diffuse_light = max(0.0, dot(lightDiretion.xyz, input.normal));
+    float amountDiffuseLight = max(0.0, dot(lightDiretion.xyz, input.normal));
 
-    float3 diffuse_light = kd * amount_diffuse_light * id;
+    float3 diffuseLight = kd * amountDiffuseLight * id;
 
 	//SPECULAR LIGHT
     float ks = 0;
     float3 is = float3(1.0, 1.0, 1.0);
-    float3 reflected_light = reflect(lightDiretion.xyz, input.normal);
+    float3 reflectedLight = reflect(lightDiretion.xyz, input.normal);
     float shininess = 20.0;
-    float amount_specular_light = pow(max(0.0, dot(reflected_light, input.directionToCamera)), shininess);
+    float amountSpecularLight = pow(max(0.0, dot(reflectedLight, input.directionToCamera)), shininess);
 
-    float3 specular_light = ks * amount_specular_light * is;
+    float3 specularLight = ks * amountSpecularLight * is;
 
-    float3 final_light = ambient_light + diffuse_light + specular_light;
+    float3 finalLight = ambientLight + diffuseLight + specularLight;
 
-    return float4(final_light, 1.0);
+    return float4(finalLight, 1.0);
 }

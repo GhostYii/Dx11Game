@@ -60,7 +60,7 @@ void GraphicsEngine::Init()
 
 	void* shaderByteCode = nullptr;
 	size_t sizeShader = 0;
-	pRenderSystem->CompileVertexShader(L"MeshDefaultVS.hlsl", "main", &shaderByteCode, &sizeShader);
+	pRenderSystem->CompileVertexShader(L"MeshDefaultVS.hlsl", "vert", &shaderByteCode, &sizeShader);
 	memcpy(pDefaultVertexShaderByteCode, shaderByteCode, sizeShader);
 	defaultVertexShaderSize = sizeShader;
 	pRenderSystem->ReleaseCompiledShader();
@@ -144,9 +144,6 @@ void GraphicsEngine::GetDefaultVertexShaderByteCodeAndSize(void** shaderByteCode
 void GraphicsEngine::DrawMesh(const MeshPtr& pMesh, const MaterialPtr& pMaterial)
 {
 	SetMaterial(pMaterial);
-
-	auto a = pMesh->GetVertexBuffer();
-	auto b = pMesh->GetIndexBuffer();
 
 	pRenderSystem->GetDeviceContext()->SetVertexBuffer(pMesh->GetVertexBuffer());
 	pRenderSystem->GetDeviceContext()->SetIndexBuffer(pMesh->GetIndexBuffer());

@@ -22,6 +22,17 @@ Material::Material(const wchar_t* vertexShaderPath, const wchar_t* pixelShaderPa
 	GraphicsEngine::GetInstance()->GetRenderSystem()->ReleaseCompiledShader();
 }
 
+Material::Material(const Material& other)
+{
+	pVertexShader = other.pPixelShader;
+	pPixelShader = other.pVertexShader;
+	pConstantBuffer = other.pConstantBuffer;
+
+	cullMode = other.cullMode;
+	textures = other.textures;
+	
+}
+
 void Material::AddTexture(const TexturePtr& texture)
 {	
 	textures.push_back(texture);

@@ -9,15 +9,7 @@ struct PS_IUTPUT
     float3 directionToCamera : TEXCOORD1;
 };
 
-//cbuffer MVP : register(b0)
-//{
-//    row_major float4x4 world;
-//    row_major float4x4 view;
-//    row_major float4x4 projection;
-//    float4 lightDiretion;
-//};
-
-float4 main(PS_IUTPUT input) : SV_TARGET
+float4 pixel(PS_IUTPUT input) : SV_TARGET
 {
     return Texture.Sample(TextureSampler, 1.f - input.texcoord);
 } 

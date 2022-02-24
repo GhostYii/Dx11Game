@@ -35,16 +35,20 @@ void AppWindow::OnCreate()
 	pTmpDayTexture = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\earth_day.jpg");
 	pTmpNightTexture = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\earth_night.jpg");
 	pTmpSkyboxTex = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\galaxy.jpg");
-	pTmpMoonTex = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\moon_rsave.jpg");
+	pTmpMoonTex = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\moon.jpg");
 
-	pTmpEarthMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\sphere.obj");
-	pTmpSkyboxMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\skybox.obj");
-	pTmpMoonMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\earth.obj");
+	pTmpEarthMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\lowpoly_earth.obj");
+	pTmpSkyboxMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\sphere.obj");
+	pTmpMoonMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\sphere.obj");
 
-	//pTmpEarthMaterial = GraphicsEngine::GetInstance()->CreateMaterial(L"VertexShader.hlsl", L"PixelShader.hlsl");
-	//pTmpEarthMaterial->AddTexture(pTmpDayTexture);
-	//pTmpEarthMaterial->AddTexture(pTmpNightTexture);
-	//pTmpEarthMaterial->SetCullMode(D3D11_CULL_BACK);
+	pSkySphereMateral = GraphicsEngine::GetInstance()->CreateMaterial(L"VertexShader.hlsl", L"DefaultSkyPS.hlsl");
+	pSkySphereMateral->AddTexture(pTmpSkyboxTex);
+	pSkySphereMateral->SetCullMode(D3D11_CULL_FRONT);
+
+	pTmpEarthMaterial = GraphicsEngine::GetInstance()->CreateMaterial(L"VertexShader.hlsl", L"PixelShader.hlsl");
+	pTmpEarthMaterial->AddTexture(pTmpDayTexture);
+	pTmpEarthMaterial->AddTexture(pTmpNightTexture);
+	pTmpEarthMaterial->SetCullMode(D3D11_CULL_BACK);
 	
 	pTmpMoonMaterial = GraphicsEngine::GetInstance()->CreateMaterial(L"MoonVS.hlsl", L"MoonPS.hlsl");
 	pTmpMoonMaterial->AddTexture(pTmpMoonTex);
@@ -54,113 +58,6 @@ void AppWindow::OnCreate()
 	pSwapChain = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateSwapChain(this->hWnd, rect.right - rect.left, rect.bottom - rect.top);
 
 	camTransMat.SetTranslation(Vector3(0, 0, -10.f));
-
-#pragma region Cube
-	//Vector3 vertics[] =
-	//{
-	//	//		X - Y - Z
-	//	//FRONT FACE
-	//	{ -0.5f,-0.5f,-0.5f },
-	//	{ -0.5f,0.5f,-0.5f },
-	//	{ 0.5f,0.5f,-0.5f },
-	//	{ 0.5f,-0.5f,-0.5f },
-
-	//	//BACK FACE
-	//	{ 0.5f,-0.5f,0.5f },
-	//	{ 0.5f,0.5f,0.5f },
-	//	{ -0.5f,0.5f,0.5f },
-	//	{ -0.5f,-0.5f,0.5f }
-	//};
-
-	//Vector2 texcoords[] =
-	//{
-	//	{ 0, 0 },
-	//	{ 0, 1.f },
-	//	{ 1.f, 0 },
-	//	{ 1.f, 1.f }
-	//};
-
-	//Vertex vertices[] =
-	//{
-	//	{ vertics[0], texcoords[1] },
-	//	{ vertics[1], texcoords[0] },
-	//	{ vertics[2], texcoords[2] },
-	//	{ vertics[3], texcoords[3] },
-
-	//	{ vertics[4], texcoords[1] },
-	//	{ vertics[5], texcoords[0] },
-	//	{ vertics[6], texcoords[2] },
-	//	{ vertics[7], texcoords[3] },
-
-	//	{ vertics[1], texcoords[1] },
-	//	{ vertics[6], texcoords[0] },
-	//	{ vertics[5], texcoords[2] },
-	//	{ vertics[2], texcoords[3] },
-
-	//	{ vertics[7], texcoords[1] },
-	//	{ vertics[0], texcoords[0] },
-	//	{ vertics[3], texcoords[2] },
-	//	{ vertics[4], texcoords[3] },
-
-	//	{ vertics[3], texcoords[1] },
-	//	{ vertics[2], texcoords[0] },
-	//	{ vertics[5], texcoords[2] },
-	//	{ vertics[4], texcoords[3] },
-
-	//	{ vertics[7], texcoords[1] },
-	//	{ vertics[6], texcoords[0] },
-	//	{ vertics[1], texcoords[2] },
-	//	{ vertics[0], texcoords[3] },
-	//};
-
-
-	//UINT vertexSize = ARRAYSIZE(vertices);
-
-	//unsigned int indexList[] =
-	//{
-	//	//FRONT SIDE
-	//	0,1,2,  //FIRST TRIANGLE
-	//	2,3,0,  //SECOND TRIANGLE
-	//	//BACK SIDE
-	//	4,5,6,
-	//	6,7,4,
-	//	//TOP SIDE
-	//	8,9,10,
-	//	10,11,8,
-	//	//BOTTOM SIDE
-	//	12,13,14,
-	//	14,15,12,
-	//	//RIGHT SIDE
-	//	16,17,18,
-	//	18,19,16,
-	//	//LEFT SIDE
-	//	20,21,22,
-	//	22,23,20
-	//};
-
-	//UINT indexListSize = ARRAYSIZE(indexList);
-	//pTmpIndexBuff = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateIndexBuffer(indexList, indexListSize);
-#pragma endregion
-
-	void* shaderByteCode = nullptr;
-	UINT shaderSize = 0;
-	GraphicsEngine::GetInstance()->GetRenderSystem()->CompileVertexShader(L"VertexShader.hlsl", "main", &shaderByteCode, &shaderSize);
-	pTmpVS = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateVertexShader(shaderByteCode, shaderSize);
-
-	//pTmpVB = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateVertexBuffer(vertices, sizeof(Vertex), vertexSize, shaderByteCode, shaderSize);
-
-	GraphicsEngine::GetInstance()->GetRenderSystem()->CompilePixelShader(L"PixelShader.hlsl", "main", &shaderByteCode, &shaderSize);
-	pTmpPS = GraphicsEngine::GetInstance()->GetRenderSystem()->CreatePixelShader(shaderByteCode, shaderSize);
-
-	GraphicsEngine::GetInstance()->GetRenderSystem()->CompilePixelShader(L"DefaultSkyPS.hlsl", "main", &shaderByteCode, &shaderSize);
-	pTmpSkyboxPS = GraphicsEngine::GetInstance()->GetRenderSystem()->CreatePixelShader(shaderByteCode, shaderSize);
-
-	GraphicsEngine::GetInstance()->GetRenderSystem()->ReleaseCompiledShader();
-
-	Constant cBuffer = { 0 };
-
-	pTmpCBuff = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateConstantBuffer(&cBuffer, sizeof(Constant));
-	pTmpSkyboxCBuff = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateConstantBuffer(&cBuffer, sizeof(Constant));
 }
 
 void AppWindow::OnUpdate()
@@ -196,7 +93,7 @@ void AppWindow::UpdateModel()
 {
 	// Scale - Rotation - Translate
 
-	Constant cBuf;
+	Constant earthBuffer;
 	Matrix4x4 lightRotMat;
 	lightRotMat.SetIdentity();
 
@@ -204,14 +101,13 @@ void AppWindow::UpdateModel()
 
 	tmpRotLightY += .0707f * .001f;
 
-	cBuf.world.SetIdentity();
-	cBuf.view = camViewMat;
-	cBuf.projection = camProjectionMat;
-	cBuf.cameraPosition = camTransMat.GetTranslation();
-	cBuf.light = lightRotMat.GetDirectionZ();
+	earthBuffer.world.SetIdentity();
+	earthBuffer.view = camViewMat;
+	earthBuffer.projection = camProjectionMat;
+	earthBuffer.cameraPosition = camTransMat.GetTranslation();
+	earthBuffer.light = lightRotMat.GetDirectionZ();
 
-	pTmpCBuff->Update(GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext(), &cBuf);
-
+	pTmpEarthMaterial->SetCBuffer(&earthBuffer, sizeof(Constant));
 
 	Constant moonCBuffer;
 	moonCBuffer.world.SetIdentity();
@@ -236,9 +132,7 @@ void AppWindow::UpdateSkybox()
 	cBuf.view = camViewMat;
 	cBuf.projection = camProjectionMat;
 
-	// skybox cbuffer
-	pTmpSkyboxCBuff->Update(GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext(), &cBuf);
-
+	pSkySphereMateral->SetCBuffer(&cBuf, sizeof(Constant));
 }
 
 void AppWindow::UpdateCamera()
@@ -281,23 +175,9 @@ void AppWindow::Render()
 
 	WndUpdate();
 
+	GraphicsEngine::GetInstance()->DrawMesh(pTmpSkyboxMesh, pSkySphereMateral);
+	GraphicsEngine::GetInstance()->DrawMesh(pTmpEarthMesh, pTmpEarthMaterial);
 	GraphicsEngine::GetInstance()->DrawMesh(pTmpMoonMesh, pTmpMoonMaterial);
-
-	GraphicsEngine::GetInstance()->GetRenderSystem()->SetRasterizerState(D3D11_CULL_BACK);
-
-	TexturePtr texLst[] =
-	{
-		pTmpDayTexture,
-		pTmpNightTexture
-	};
-	GraphicsEngine::GetInstance()->DrawMesh(pTmpEarthMesh, pTmpVS, pTmpPS, pTmpCBuff, texLst, ARRAYSIZE(texLst));
-	
-
-	GraphicsEngine::GetInstance()->GetRenderSystem()->SetRasterizerState(D3D11_CULL_FRONT);
-
-	GraphicsEngine::GetInstance()->DrawMesh(pTmpSkyboxMesh, pTmpVS, pTmpSkyboxPS, pTmpSkyboxCBuff, pTmpSkyboxTex);
-
-	
 
 	GraphicsEngine::GetInstance()->GetGuiManager()->Update();
 

@@ -10,6 +10,7 @@ class Material
 	friend class GraphicsEngine;
 public:
 	Material(const wchar_t* vertexShaderPath, const wchar_t* pixelShaderPath);
+	Material(const Material& other);
 	~Material() = default;
 	
 public:

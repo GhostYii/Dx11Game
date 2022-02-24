@@ -43,13 +43,6 @@ private:
 
 	bool isFullScreen = false;
 private:
-	VertexBufferPtr pTmpVB = nullptr;
-	VertexShaderPtr pTmpVS = nullptr;
-	PixelShaderPtr pTmpPS = nullptr;
-	PixelShaderPtr pTmpSkyboxPS = nullptr;
-	ConstantBufferPtr pTmpCBuff = nullptr;
-	ConstantBufferPtr pTmpSkyboxCBuff = nullptr;
-	IndexBufferPtr pTmpIndexBuff = nullptr;
 	TexturePtr pTmpDayTexture = nullptr;
 	TexturePtr pTmpNightTexture = nullptr;
 	TexturePtr pTmpSkyboxTex = nullptr;

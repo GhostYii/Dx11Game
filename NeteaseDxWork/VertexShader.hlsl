@@ -22,7 +22,7 @@ cbuffer MVP : register(b0)
     float4 cameraPosition;
 };
 
-VS_OUTPUT main(VS_INPUT input)
+VS_OUTPUT vert(VS_INPUT input)
 {
     VS_OUTPUT output = (VS_OUTPUT) 0;
         
