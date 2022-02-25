@@ -376,7 +376,6 @@ void AppWindow::OnKeyUp(int keycode)
 	else if (keycode == 'M')
 	{
 		isCamMoveable = !isCamMoveable;
-		//InputSystem::GetInstance()->SetCursorVisiable(!isCamMoveable);
 	}
 	else if (keycode == 'V')
 	{
