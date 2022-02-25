@@ -4,6 +4,7 @@
 #include <exception>
 
 #include "imgui_impl_win32.h"
+#include "internal_resource.h"
 
 const int QUIT_CODE = 0;
 
@@ -96,8 +97,8 @@ void Window::Init()
 	wc.cbWndExtra = NULL;
 	wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-	wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
+	wc.hIcon = static_cast<HICON>(LoadImage(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 128, 128, 0));
+	wc.hIconSm = static_cast<HICON>(LoadImage(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 128, 128, 0));
 	wc.hInstance = NULL;
 	wc.lpszClassName = "Window";
 	wc.lpszMenuName = "";
@@ -107,7 +108,7 @@ void Window::Init()
 	if (!RegisterClassEx(&wc))
 		throw std::exception("Register window class failed!");
 
-	hWnd = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, "Window", "DirectX Application", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 1024, 768, NULL, NULL, NULL, NULL);
+	hWnd = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, "Window", "To the Moon", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 1024, 768, NULL, NULL, NULL, NULL);
 
 	if (!hWnd)
 		throw std::exception("Create window failed!");

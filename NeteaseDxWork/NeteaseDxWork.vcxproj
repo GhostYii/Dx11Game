@@ -212,6 +212,7 @@
     <ClInclude Include="Point.h" />
     <ClInclude Include="RenderSystem.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="internal_resource.h" />
     <ClInclude Include="ResourceClasses.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="ResourceStruct.h" />
@@ -284,6 +285,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="NeteaseDxWork.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

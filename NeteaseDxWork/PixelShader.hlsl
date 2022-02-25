@@ -29,9 +29,10 @@ float4 pixel(PS_IUTPUT input) : SV_TARGET
     float4 nightColor = NightTexture.Sample(NightTextureSampler, 1.0 - input.texcoord);
     
     // 环境光
-    float ka = 1.5f;
+    float ka = lightIntensity;
     float3 ia = float3(.1f, .1f, .1f);
     ia *= texColor;
+    ia *= lightColor.rgb;
     float3 ambientLight = ka * ia;   
     
     // 漫反射

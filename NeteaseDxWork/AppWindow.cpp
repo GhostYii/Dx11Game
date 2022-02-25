@@ -28,15 +28,14 @@ void AppWindow::OnCreate()
 	RECT rect = this->GetClientWindowRect();
 	pSwapChain = GraphicsEngine::GetInstance()->GetRenderSystem()->CreateSwapChain(this->hWnd, rect.right - rect.left, rect.bottom - rect.top);
 
-	pCamera->pTransform->SetPosition(Vector3(0, 0, -10.f));
-
 	deltaTime = timer.Mark();
 }
 
 void AppWindow::CreateCamera()
 {
 	RECT rect = this->GetClientWindowRect();
-	pCamera = std::make_shared<CameraObject>((rect.right - rect.left) / 1.f / (rect.bottom - rect.top) / 1.f);
+	pCamera = std::make_shared<CameraObject>((rect.right - rect.left) / 1.f / (rect.bottom - rect.top) / 1.f);	
+	pCamera->pTransform->SetPosition(Vector3(0, 0, -60.f));
 }
 
 void AppWindow::CreateLight()
@@ -45,7 +44,7 @@ void AppWindow::CreateLight()
 	lightcolor.r = 1;
 	lightcolor.g = 1;
 	lightcolor.b = 1;
-	//lightcolor.a = 1;
+	lightcolor.a = 1;
 
 	pLight = std::make_shared<DirectionLightObject>(1.5f, lightcolor);
 }
@@ -85,23 +84,27 @@ void AppWindow::LoadModels()
 	modelsMap["skysphere"] = skysphere;
 
 	ModelObjectPtr earth = std::make_shared<ModelObject>();
+	earth->SetScale(Vector3(50, 50, 50));
+	earth->SetRotation(Vector3(0, 1.57f, 0));
 	earth->SetPosition(Vector3(0, 0, 0));
 	earth->pMesh = pSphereMesh;
 	earth->pMaterials.push_back(earthMaterial);
 	modelsMap["earth"] = earth;
 
 	ModelObjectPtr moon = std::make_shared<ModelObject>();
-	moon->SetPosition(Vector3(5, 5, 0));
+	moon->SetScale(Vector3(5, 5, 5));
+	moon->SetRotation(Vector3(0, 0, 0));
+	moon->SetPosition(Vector3(200, 0, 0));
 	moon->pMesh = pSphereMesh;
 	moon->pMaterials.push_back(moonMaterial);
 	modelsMap["moon"] = moon;
 
 	ModelObjectPtr spaceship = std::make_shared<ModelObject>();
-	spaceship->SetPosition(Vector3(0, 0, 0));
-	spaceship->SetScale(Vector3(.1f, .1f, .1f));
+	spaceship->SetPosition(Vector3(50, 20, 20));
+	spaceship->SetScale(Vector3(.2f, .2f, .2f));
 	spaceship->pMesh = pSpaceshipMesh;
 	spaceship->pMaterials.push_back(spaceshipMaterial);
-	//modelsMap["spaceship"] = spaceship;
+	modelsMap["spaceship"] = spaceship;
 }
 
 void AppWindow::OnUpdate()
@@ -155,7 +158,6 @@ void AppWindow::UpdateCamera()
 
 	pCamera->pTransform->SetPosition(newPos);
 
-
 	LONG width = GetClientWindowRect().right - GetClientWindowRect().left;
 	LONG height = GetClientWindowRect().bottom - GetClientWindowRect().top;
 
@@ -163,7 +165,7 @@ void AppWindow::UpdateCamera()
 }
 
 void AppWindow::UpdateLight()
-{
+{	
 	pLight->pTransform->SetRotation(sunDir);
 }
 
@@ -175,6 +177,10 @@ void AppWindow::UpdateModel()
 		Constant cBuf = {};
 		cBuf.model.SetIdentity();
 		cBuf.model.SetScale(iter->second->pTransform->GetScale());
+		cBuf.model.SetEuler
+		(
+			iter->second->pTransform->GetEulerAngle()
+		);
 		cBuf.model.SetTranslation(iter->second->pTransform->GetPosition());
 		cBuf.view = pCamera->GetViewMatrix();
 		cBuf.projection = pCamera->GetProjectionMatrix();
@@ -202,7 +208,7 @@ void AppWindow::OnGUI()
 
 		if (ImGui::CollapsingHeader("operator help"))
 		{
-			ImGui::Text("switch full screen: F11");			
+			ImGui::Text("switch full screen: F11");
 			ImGui::Text("toggle move: F");
 			ImGui::Text("toggle view: V");
 			ImGui::Text("toggle move & view: Esc");
@@ -259,8 +265,8 @@ void AppWindow::OnGUI()
 		int index = 0;
 		for (auto iter = modelsMap.begin(); iter != modelsMap.end(); ++iter)
 		{
-			/*if (iter->first == "skysphere")
-				continue;*/
+			if (iter->first == "skysphere")
+				continue;
 
 			std::ostringstream oss;
 			oss << iter->first << " transform";
@@ -272,34 +278,39 @@ void AppWindow::OnGUI()
 				position[1] = iter->second->pTransform->GetPosition().y;
 				position[2] = iter->second->pTransform->GetPosition().z;
 
-				//euler[0] = iter->second->pTransform->GetEulerAngle().x;
-				//euler[1] = iter->second->pTransform->GetEulerAngle().y;
-				//euler[2] = iter->second->pTransform->GetEulerAngle().z;
+				euler[0] = to_deg<float>(iter->second->pTransform->GetEulerAngle().x);
+				euler[1] = to_deg<float>(iter->second->pTransform->GetEulerAngle().y);
+				euler[2] = to_deg<float>(iter->second->pTransform->GetEulerAngle().z);
 
 				scale[0] = iter->second->pTransform->GetScale().x;
 				scale[1] = iter->second->pTransform->GetScale().y;
 				scale[2] = iter->second->pTransform->GetScale().z;
 
-				if (iter->first == "spaceship")
-					ImGui::BeginDisabled();
+				//if (iter->first == "spaceship")
+				//	ImGui::BeginDisabled();
 				oss.str("");
 				oss << "position" << "##pos" << index;
 				ImGui::DragFloat3(oss.str().c_str(), position);
 				//ImGui::BeginDisabled();
-				//oss.str("");
-				//oss << "euler angle" << "##euler" << index;
-				//ImGui::InputFloat3(oss.str().c_str(), euler);
+				oss.str("");
+				oss << "euler angle" << "##euler" << index;
+				ImGui::DragFloat3(oss.str().c_str(), euler);
+
+				euler[0] = to_rad<float>(euler[0]);
+				euler[1] = to_rad<float>(euler[1]);
+				euler[2] = to_rad<float>(euler[2]);
+
 				//ImGui::EndDisabled();
 				oss.str("");
 				oss << "scale" << "##scale" << index;
 				ImGui::DragFloat3(oss.str().c_str(), scale);
 
 				iter->second->pTransform->SetScale(Vector3(scale[0], scale[1], scale[2]));
-				//iter->second->pTransform->SetRotation(Vector3(euler[0], euler[1], euler[2]));
+				iter->second->pTransform->SetRotation(Vector3(euler[0], euler[1], euler[2]));
 				iter->second->pTransform->SetPosition(Vector3(position[0], position[1], position[2]));
 
-				if (iter->first == "spaceship")
-					ImGui::EndDisabled();
+				//if (iter->first == "spaceship")
+				//	ImGui::EndDisabled();
 			}
 			index++;
 		}
@@ -342,9 +353,6 @@ void AppWindow::OnMouseMove(const Point& mousePosition)
 {
 	if (!isCamViewable)
 		return;
-
-	//int width = GetClientWindowRect().right - GetClientWindowRect().left;
-	//int height = GetClientWindowRect().bottom - GetClientWindowRect().top;
 
 	camRotX += InputSystem::GetInstance()->GetMouseDelta().y * deltaTime * mouseSensitivity;
 	camRotY += InputSystem::GetInstance()->GetMouseDelta().x * deltaTime * mouseSensitivity;

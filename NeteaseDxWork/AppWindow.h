@@ -63,26 +63,22 @@ private:
 	float deltaTime = 0;
 
 	float mouseSensitivity = 8.f;
-	float fpCamMoveSpeed = 8.f;
+	float fpCamMoveSpeed = 35.f;
 
-private:
 	TexturePtr pEarthDayTex = nullptr;
 	TexturePtr pEarthNightTex = nullptr;
 	TexturePtr pSkysphereTex = nullptr;
 	TexturePtr pMoonTex = nullptr;
 	TexturePtr pSpaceshipTex = nullptr;
-	
+
 	MeshPtr pSphereMesh = nullptr;
 	MeshPtr pSpaceshipMesh = nullptr;
 
+private:
 	float camRotX = 0;
 	float camRotY = 0;
 	float camForward = 0.f;
 	float camRight = 0.f;
-
-	//Matrix4x4 globalModel;
-	//Matrix4x4 globalView;
-	//Matrix4x4 globalProjection;
 
 	Vector3 sunDir;
 };

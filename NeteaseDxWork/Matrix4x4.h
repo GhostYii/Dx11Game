@@ -22,6 +22,34 @@ public:
 			value[i][i] = 1;
 	}
 
+	void SetEuler(const Vector3& euler)
+	{
+		Vector3 scale = { value[0][0], value[1][1], value[2][2] };
+		Vector3 pos = GetTranslation();
+		Matrix4x4 tmp;		
+		SetIdentity();
+
+		tmp.SetIdentity();
+		tmp.SetScale(scale);
+		(*this) *= tmp;
+
+		tmp.SetIdentity();
+		tmp.SetRotationX(euler.x);
+		(*this) *= tmp;
+
+		tmp.SetIdentity();
+		tmp.SetRotationY(euler.y);
+		(*this) *= tmp;
+
+		tmp.SetIdentity();
+		tmp.SetRotationZ(euler.z);
+		(*this) *= tmp;
+
+		tmp.SetIdentity();
+		tmp.SetTranslation(pos);
+		(*this) *= tmp;
+	}
+
 	void SetTranslation(const Vector3& translation)
 	{
 		value[3][0] = translation.x;

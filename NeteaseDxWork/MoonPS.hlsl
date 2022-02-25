@@ -28,7 +28,7 @@ float4 pixel(PS_IUTPUT input) : SV_TARGET
     float ka = lightIntensity;
     float3 ia = float3(.1, .1, .1);
     ia *= texColor.rgb;
-    ia *= lightColor;
+    ia *= lightColor.rgb;
 
     float3 ambientLight = ka * ia;
 
@@ -36,7 +36,7 @@ float4 pixel(PS_IUTPUT input) : SV_TARGET
     float kd = .9;
     float3 id = float3(1.0, 1.0, 1.0);
     id *= texColor.rgb;
-    id *= lightColor;
+    id *= lightColor.rgb;
     float amountDiffuseLight = max(0.0, dot(lightDiretion.xyz, input.normal));
 
     float3 diffuseLight = kd * amountDiffuseLight * id;
