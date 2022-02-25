@@ -4,7 +4,7 @@
 #include "VertexBuffer.h"
 #include "MeshVertex.h"
 
-#include "Utility.h"
+#include "utility.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"

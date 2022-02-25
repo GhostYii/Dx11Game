@@ -53,6 +53,9 @@
     <Filter Include="GameEngine\GraphicsEngine\Material">
       <UniqueIdentifier>{af3f3c97-d10c-4196-a68a-030fbdc8a985}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameEngine\Component">
+      <UniqueIdentifier>{79ed0e3c-a506-4d9c-a3d9-ab0abd63b226}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AppWindow.cpp">
@@ -136,6 +139,9 @@
     </ClCompile>
     <ClCompile Include="Material.cpp">
       <Filter>GameEngine\GraphicsEngine\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelObject.cpp">
+      <Filter>GameEngine\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -229,9 +235,6 @@
     <ClInclude Include="MeshVertex.h">
       <Filter>GameEngine\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Utility.h">
-      <Filter>GameEngine</Filter>
-    </ClInclude>
     <ClInclude Include="imconfig.h">
       <Filter>Plugins\imgui</Filter>
     </ClInclude>
@@ -264,6 +267,27 @@
     </ClInclude>
     <ClInclude Include="Material.h">
       <Filter>GameEngine\GraphicsEngine\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>GameEngine\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="EulerAngle.h">
+      <Filter>GameEngine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelObject.h">
+      <Filter>GameEngine\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentClass.h">
+      <Filter>GameEngine\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="types.h">
+      <Filter>GameEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="timer.h">
+      <Filter>GameEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="utility.h">
+      <Filter>GameEngine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

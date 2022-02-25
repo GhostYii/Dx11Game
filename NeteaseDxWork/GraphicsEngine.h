@@ -25,6 +25,8 @@ public:
 	void DrawMesh(const MeshPtr& pMesh, const MaterialPtr& pMaterial);
 	void DrawMesh(const MeshPtr& pMesh, const std::vector<MaterialPtr>& pMaterials);
 
+	//void DrawObject(const)
+
 	static GraphicsEngine* GetInstance();
 
 	static void CreateInstance();

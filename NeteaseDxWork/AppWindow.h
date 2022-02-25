@@ -3,6 +3,8 @@
 #include "PinelineStruct.h"
 #include "GraphicsEngine.h"
 #include "InputSystem.h"
+#include "ComponentClass.h"
+#include "timer.h"
 
 #include "Math.h"
 
@@ -15,7 +17,7 @@ public:
 public:
 	void WndUpdate();
 	void UpdateModel();
-	void UpdateSkybox();
+	void UpdateSkysphere();
 	void UpdateCamera();
 
 	void Render();	
@@ -39,45 +41,49 @@ protected:
 	virtual void OnMouseKeyUp(int mouseKey) override;
 
 private:
+	void LoadModels();
+
+private:
 	SwapChainPtr pSwapChain = nullptr;
 
+	Timer timer;
+
 	bool isFullScreen = false;
-private:
-	TexturePtr pTmpDayTexture = nullptr;
-	TexturePtr pTmpNightTexture = nullptr;
-	TexturePtr pTmpSkyboxTex = nullptr;
-	TexturePtr pTmpMoonTex = nullptr;
-	
-	MeshPtr pTmpEarthMesh = nullptr;
-	MeshPtr pTmpSkyboxMesh = nullptr;
-	MeshPtr pTmpMoonMesh = nullptr;
+	bool isCamMoveable = true;
+	bool isCamViewable = true;
+	bool isUIShow = true;
 
-	MaterialPtr pTmpEarthMaterial = nullptr;
-	MaterialPtr pTmpMoonMaterial = nullptr;
-	MaterialPtr pSkySphereMateral = nullptr;
+	std::unordered_map<std::string, ModelObjectPtr> modelsMap;
 
-	unsigned long prevTime = 0;
-	float prevDeltaTime = 0;
-	float newDeltaTime = 0;
 	float deltaTime = 0;
+
+	float mouseSensitivity = 8.f;
+	float fpsMoveSpeed = 8.f;
+
+private:
+	TexturePtr pEarthDayTex = nullptr;
+	TexturePtr pEarthNightTex = nullptr;
+	TexturePtr pSkysphereTex = nullptr;
+	TexturePtr pMoonTex = nullptr;
+	TexturePtr pSpaceshipTex = nullptr;
 	
-	float tmpPos = 0;
-	float tmpDelta = 0;
+	MeshPtr pSphereMesh = nullptr;
+	MeshPtr pSpaceshipMesh = nullptr;
 
-	float tmpRotX = 0.f, tmpRotY = 0.f;
-	Vector3 tmpScale = { 1,1,1 };
-
-	float tmpForward = 0.f;
-	float tmpRight = 0.f;
+	float camRotX = 0;
+	float camRotY = 0;
+	float camForward = 0.f;
+	float camRight = 0.f;
+	float camFov = 1.57f;
+	float camNear = .1f;
+	float camFar = 1000.f;
 
 	Matrix4x4 camTransMat;
 	Matrix4x4 camViewMat;
 	Matrix4x4 camProjectionMat;
 
-	float tmpRotLightY = 0;
-	
-	bool tmpIsMoveable = true;
 
-	Vector3 tmpMoonTrans;
+	Vector3 sunDir;
+	//float lightRotY = 0;
 };
 

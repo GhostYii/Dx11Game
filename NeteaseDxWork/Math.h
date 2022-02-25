@@ -9,6 +9,9 @@
 constexpr float PI = 3.14159265f;
 constexpr double PI_D = 3.1415926535897932;
 
+const float ARC_TO_DEG = 57.29577951f;
+const float DEG_TO_ARC = 0.01745329f;
+
 template <typename T>
 constexpr auto sq(const T& x)
 {

@@ -1,6 +1,7 @@
 #pragma once
 #include "Vector3.h"
 
+#include <math.h>
 #include <memory>
 
 class Matrix4x4
@@ -38,6 +39,13 @@ public:
 		value[2][2] = scale.z;
 	}
 
+	void SetEuler(float roll, float pitch, float yaw)
+	{
+		// z-x-y
+		SetRotationZ(yaw);		
+		SetRotationX(roll);
+		SetRotationY(pitch);
+	}
 	void SetRotationX(float x)
 	{
 		value[1][1] = cos(x);
@@ -45,7 +53,6 @@ public:
 		value[2][1] = -sin(x);
 		value[2][2] = cos(x);
 	}
-
 	void SetRotationY(float y)
 	{
 		value[0][0] = cos(y);
@@ -53,7 +60,6 @@ public:
 		value[2][0] = sin(y);
 		value[2][2] = cos(y);
 	}
-
 	void SetRotationZ(float z)
 	{
 		value[0][0] = cos(z);
@@ -61,6 +67,18 @@ public:
 		value[1][0] = -sin(z);
 		value[1][1] = cos(z);
 	}
+
+	Vector3 GetEulerAngle()
+	{
+		Vector3 euler;
+		euler.x = Roll();
+		euler.y = Pitch();
+		euler.z = Yaw();
+		return euler;
+	}
+	float Roll() { return (float)atan2(value[3][2], sqrtf(1.f - powf(value[3][2], 2))); }
+	float Pitch() { return  atan2(-value[3][1], value[3][3]); }
+	float Yaw() { return atan2(-value[1][2], value[2][2]); }
 
 	void operator *=(const Matrix4x4& matrix)
 	{
