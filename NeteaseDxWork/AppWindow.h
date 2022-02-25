@@ -16,6 +16,7 @@ public:
 
 public:
 	void WndUpdate();
+	void UpdateLight();
 	void UpdateModel();
 	void UpdateSkysphere();
 	void UpdateCamera();
@@ -41,6 +42,8 @@ protected:
 	virtual void OnMouseKeyUp(int mouseKey) override;
 
 private:
+	void CreateCamera();
+	void CreateLight();
 	void LoadModels();
 
 private:
@@ -53,12 +56,14 @@ private:
 	bool isCamViewable = true;
 	bool isUIShow = true;
 
+	CameraObjectPtr pCamera;
+	DirectionLightObjectPtr pLight;
 	std::unordered_map<std::string, ModelObjectPtr> modelsMap;
 
 	float deltaTime = 0;
 
 	float mouseSensitivity = 8.f;
-	float fpsMoveSpeed = 8.f;
+	float fpCamMoveSpeed = 8.f;
 
 private:
 	TexturePtr pEarthDayTex = nullptr;
@@ -74,16 +79,11 @@ private:
 	float camRotY = 0;
 	float camForward = 0.f;
 	float camRight = 0.f;
-	float camFov = 1.57f;
-	float camNear = .1f;
-	float camFar = 1000.f;
 
-	Matrix4x4 camTransMat;
-	Matrix4x4 camViewMat;
-	Matrix4x4 camProjectionMat;
-
+	//Matrix4x4 globalModel;
+	//Matrix4x4 globalView;
+	//Matrix4x4 globalProjection;
 
 	Vector3 sunDir;
-	//float lightRotY = 0;
 };
 

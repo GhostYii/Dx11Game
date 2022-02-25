@@ -19,6 +19,8 @@ cbuffer MVP : register(b0)
     row_major float4x4 projection;
     float4 lightDiretion;
     float4 cameraPosition;
+    float lightIntensity;
+    float3 lightColor;
 };
 
 float4 pixel(PS_IUTPUT input) : SV_TARGET
@@ -35,6 +37,7 @@ float4 pixel(PS_IUTPUT input) : SV_TARGET
     // Âþ·´Éä
     float kd = .9f;
     float3 idDay = float3(1.f, 1.f, 1.f);
+    idDay *= texColor.rgb;
     idDay *= texColor.rgb;
     float3 idNight = float3(1.f, 1.f, 1.f);
     idNight *= nightColor.rgb;

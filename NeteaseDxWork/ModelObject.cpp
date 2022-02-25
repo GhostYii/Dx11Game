@@ -7,10 +7,7 @@
 
 #include <exception>
 
-ModelObject::ModelObject(TransformPtr pTransform) : pTransform(pTransform)
-{
-
-}
+ModelObject::ModelObject() { }
 
 void ModelObject::Draw()
 {

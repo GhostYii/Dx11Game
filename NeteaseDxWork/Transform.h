@@ -1,5 +1,5 @@
 #pragma once
-//#include "EulerAngle.h"
+#include "Math.h"
 
 class Transform
 {
@@ -55,14 +55,30 @@ public:
 	}
 
 private:
-	Matrix4x4 CalcMat()
+	void CalcMat()
 	{
-		this->matrix.SetIdentity();
-		this->matrix.SetScale(scale);
-		this->matrix.SetEuler(eulerAngle.x, eulerAngle.y, eulerAngle.z);
-		this->matrix.SetTranslation(position);
+		matrix.SetIdentity();				
+		Matrix4x4 tmp;
 
-		return this->matrix;
+		tmp.SetIdentity();
+		tmp.SetScale(scale);
+		matrix *= tmp;
+
+		tmp.SetIdentity();
+		tmp.SetRotationX(to_rad<float>(eulerAngle.x));
+		matrix *= tmp;
+
+		tmp.SetIdentity();
+		tmp.SetRotationY(to_rad<float>(eulerAngle.y));
+		matrix *= tmp;
+
+		tmp.SetIdentity();
+		tmp.SetRotationZ(to_rad<float>(eulerAngle.z));
+		matrix *= tmp;
+
+		tmp.SetIdentity();
+		tmp.SetTranslation(position);
+		matrix *= tmp;
 	}
 
 private:

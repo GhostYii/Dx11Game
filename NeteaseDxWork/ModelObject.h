@@ -2,14 +2,15 @@
 #include <vector>
 #include "Mesh.h"
 #include "types.h"
+#include "Object.h"
 #include "GraphicsClasses.h"
 #include "ComponentClass.h"
 #include "ResourceClasses.h"
 
-class ModelObject
+class ModelObject : public Object
 {
 public:
-	ModelObject(TransformPtr pTransform);
+	ModelObject();
 	~ModelObject() = default;
 
 public:
@@ -24,7 +25,6 @@ public:
 	void SetScale(const Vector3 scale);
 
 public:
-	TransformPtr pTransform = nullptr;
 	MeshPtr pMesh = nullptr;
 	std::vector<MaterialPtr> pMaterials;
 	ConstantBufferPtr pConstantBuffer = nullptr;

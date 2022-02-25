@@ -1,6 +1,5 @@
 #pragma once
 #include "Vector3.h"
-
 #include <math.h>
 #include <memory>
 
@@ -25,7 +24,6 @@ public:
 
 	void SetTranslation(const Vector3& translation)
 	{
-		//SetIdentity();
 		value[3][0] = translation.x;
 		value[3][1] = translation.y;
 		value[3][2] = translation.z;
@@ -33,19 +31,11 @@ public:
 
 	void SetScale(const Vector3& scale)
 	{
-		//SetIdentity();
 		value[0][0] = scale.x;
 		value[1][1] = scale.y;
 		value[2][2] = scale.z;
 	}
 
-	void SetEuler(float roll, float pitch, float yaw)
-	{
-		// z-x-y
-		SetRotationZ(yaw);		
-		SetRotationX(roll);
-		SetRotationY(pitch);
-	}
 	void SetRotationX(float x)
 	{
 		value[1][1] = cos(x);

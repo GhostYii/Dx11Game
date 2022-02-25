@@ -289,6 +289,15 @@
     <ClInclude Include="utility.h">
       <Filter>GameEngine</Filter>
     </ClInclude>
+    <ClInclude Include="DirectionLightObject.h">
+      <Filter>GameEngine\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>GameEngine\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraObject.h">
+      <Filter>GameEngine\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="VertexShader.hlsl">

@@ -179,9 +179,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppWindow.h" />
+    <ClInclude Include="CameraObject.h" />
     <ClInclude Include="ComponentClass.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="DeviceContext.h" />
+    <ClInclude Include="DirectionLightObject.h" />
     <ClInclude Include="EulerAngle.h" />
     <ClInclude Include="GraphicsClasses.h" />
     <ClInclude Include="GraphicsEngine.h" />
@@ -204,6 +206,7 @@
     <ClInclude Include="MeshManager.h" />
     <ClInclude Include="MeshVertex.h" />
     <ClInclude Include="ModelObject.h" />
+    <ClInclude Include="Object.h" />
     <ClInclude Include="PinelineStruct.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Point.h" />

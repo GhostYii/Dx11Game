@@ -1,8 +1,15 @@
 #pragma once
 #include "Vector2.h"
-#include "Vector3.h"
 #include "Vector4.h"
 #include "Matrix4x4.h"
+
+struct Color
+{
+	float r;
+	float g;
+	float b;
+	//float a;
+};
 
 struct Vertex
 {
@@ -18,4 +25,7 @@ struct Constant
 	Matrix4x4 projection;
 	Vector4 light;
 	Vector4 cameraPosition;
+	float lightIntensity;
+	Color lightColor;
 };
+
