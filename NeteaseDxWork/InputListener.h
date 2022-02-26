@@ -19,4 +19,5 @@ protected:
 	virtual void OnMouseKeyDown(int mouseKey) = 0;
 	virtual void OnMouseKey(int mouseKey) = 0;
 	virtual void OnMouseKeyUp(int mouseKey) = 0;
+	virtual void OnMouseWheel(int delta) = 0;
 };

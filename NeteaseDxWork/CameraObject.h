@@ -25,6 +25,11 @@ public:
 	float farPlane;
 
 public:
+	virtual void Update(float frameTime)
+	{
+		UpdateVP(aspect);
+	}
+
 	void UpdateVP(float aspect)
 	{
 		Matrix4x4 tmpView = pTransform->GetMatrix();

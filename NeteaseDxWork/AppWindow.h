@@ -40,6 +40,7 @@ protected:
 	virtual void OnMouseKeyDown(int mouseKey) override;
 	virtual void OnMouseKey(int mouseKey) override;
 	virtual void OnMouseKeyUp(int mouseKey) override;
+	virtual void OnMouseWheel(int delta) override;
 
 private:
 	void CreateCamera();
@@ -56,7 +57,7 @@ private:
 	bool isCamViewable = true;
 	bool isUIShow = true;
 
-	//CameraObjectPtr pCamera;
+	CameraObjectPtr pCamera;
 	TPCameraObjectPtr pTpCamera;
 	DirectionLightObjectPtr pLight;
 	std::unordered_map<std::string, ModelObjectPtr> modelsMap;
@@ -81,5 +82,8 @@ private:
 	float camRight = 0.f;
 
 	Vector3 sunDir;
+
+	bool isFpsMode = true;
+	bool isHelperShow = true;
 };
 

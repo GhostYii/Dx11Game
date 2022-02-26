@@ -212,6 +212,19 @@ void InputSystem::Update()
 	}
 
 	prevMousePos = Point(currentMousePosition.x, currentMousePosition.y);
+
+	if (mouseState.scrollWheelValue != 0)
+	{
+		std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+
+		while (iter != listenerMap.end())
+		{
+			(*iter)->OnMouseWheel(mouseState.scrollWheelValue / WHEEL_DELTA);
+			++iter;
+		}
+
+		pMouse->ResetScrollWheelValue();
+	}
 }
 
 void InputSystem::SetCursorPosition(const Point& position)

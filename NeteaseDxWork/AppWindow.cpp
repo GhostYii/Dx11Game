@@ -39,12 +39,12 @@ void AppWindow::CreateCamera()
 	camRotation.z = 0;
 
 	RECT rect = this->GetClientWindowRect();
-	//pCamera = std::make_shared<CameraObject>((rect.right - rect.left) / 1.f / (rect.bottom - rect.top) / 1.f);	
-	//pCamera->pTransform->SetRotation(camRotation);
-	//pCamera->pTransform->SetPosition(Vector3(28.8, 37, 34));
-	//pCamera->Start();
+	pCamera = std::make_shared<CameraObject>((rect.right - rect.left) / 1.f / (rect.bottom - rect.top) / 1.f);
+	pCamera->pTransform->SetRotation(camRotation);
+	pCamera->pTransform->SetPosition(Vector3(28.8, 37, 34));
+	pCamera->Start();
 
-	pTpCamera = std::make_shared<TPCameraObject>((rect.right - rect.left) / 1.f / (rect.bottom - rect.top) / 1.f);	
+	pTpCamera = std::make_shared<TPCameraObject>((rect.right - rect.left) / 1.f / (rect.bottom - rect.top) / 1.f);
 	pTpCamera->Start();
 }
 
@@ -89,8 +89,10 @@ void AppWindow::LoadModels()
 	spaceshipMaterial->SetCullMode(D3D11_CULL_BACK);
 
 	ModelObjectPtr skysphere = std::make_shared<ModelObject>();
-	//skysphere->pTransform->SetScale(Vector3(pCamera->farPlane, pCamera->farPlane, pCamera->farPlane));
-	skysphere->pTransform->SetScale(Vector3(pTpCamera->farPlane, pTpCamera->farPlane, pTpCamera->farPlane));
+	if (isFpsMode)
+		skysphere->pTransform->SetScale(Vector3(pCamera->farPlane, pCamera->farPlane, pCamera->farPlane));
+	else
+		skysphere->pTransform->SetScale(Vector3(pTpCamera->farPlane, pTpCamera->farPlane, pTpCamera->farPlane));
 	skysphere->pMesh = pSphereMesh;
 	skysphere->pMaterials.push_back(skyMaterial);
 	modelsMap["skysphere"] = skysphere;
@@ -132,11 +134,19 @@ void AppWindow::OnUpdate()
 	deltaTime = timer.Mark();
 
 	pLight->Update(deltaTime);
-	//pCamera->Update(deltaTime);	
 	for (auto iter = modelsMap.begin(); iter != modelsMap.end(); ++iter)
 		iter->second->Update(deltaTime);
 
+	WndUpdate();
 	Render();
+}
+
+void AppWindow::WndUpdate()
+{
+	UpdateCamera();
+	UpdateLight();
+	UpdateModel();
+	UpdateSkysphere();
 }
 
 void AppWindow::Render()
@@ -145,8 +155,6 @@ void AppWindow::Render()
 
 	RECT rect = GetClientWindowRect();
 	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetViewportSize(rect.right - rect.left, rect.bottom - rect.top);
-
-	WndUpdate();
 
 	for (auto iter = modelsMap.begin(); iter != modelsMap.end(); iter++)
 	{
@@ -162,35 +170,33 @@ void AppWindow::Render()
 	pSwapChain->Present(false);
 }
 
-void AppWindow::WndUpdate()
-{	
-	UpdateCamera();
-	UpdateLight();
-	UpdateModel();
-	UpdateSkysphere();
-}
-
 void AppWindow::UpdateCamera()
 {
 	Vector3 euler = { to_deg<float>(camRotation.x), to_deg<float>(camRotation.y), 0 };
-	//pCamera->pTransform->SetRotation(euler);
-	pTpCamera->pTransform->SetRotation(euler);
-	pTpCamera->mouseSensitivity = mouseSensitivity;
-	pTpCamera->Update(deltaTime);
+		
+	if (isFpsMode)
+	{
+		pCamera->pTransform->SetRotation(euler);
+		Vector3 newPos = pCamera->pTransform->GetPosition() + pCamera->pTransform->GetMatrix().GetDirectionZ() * (camForward * deltaTime * fpCamMoveSpeed);
+		newPos = newPos + pCamera->pTransform->GetMatrix().GetDirectionX() * (camRight * deltaTime * fpCamMoveSpeed);
 
-	//Vector3 newPos = pCamera->pTransform->GetPosition() + pCamera->pTransform->GetMatrix().GetDirectionZ() * (camForward * deltaTime * fpCamMoveSpeed);
-	//newPos = newPos + pCamera->pTransform->GetMatrix().GetDirectionX() * (camRight * deltaTime * fpCamMoveSpeed);
+		pCamera->pTransform->SetPosition(newPos);
 
-	//pCamera->pTransform->SetPosition(newPos);
-
-	//LONG width = GetClientWindowRect().right - GetClientWindowRect().left;
-	//LONG height = GetClientWindowRect().bottom - GetClientWindowRect().top;
-
-	//pCamera->UpdateVP(width / 1.f / height);
+		LONG width = GetClientWindowRect().right - GetClientWindowRect().left;
+		LONG height = GetClientWindowRect().bottom - GetClientWindowRect().top;		
+		pCamera->Update(deltaTime);
+	}
+	else
+	{
+		pTpCamera->pTransform->SetRotation(euler);
+		pTpCamera->mouseSensitivity = mouseSensitivity;
+		pTpCamera->Update(deltaTime);
+	}
+	
 }
 
 void AppWindow::UpdateLight()
-{	
+{
 	pLight->pTransform->SetRotation(sunDir);
 }
 
@@ -207,12 +213,18 @@ void AppWindow::UpdateModel()
 			iter->second->pTransform->GetEulerAngle()
 		);
 		cBuf.model.SetTranslation(iter->second->pTransform->GetPosition());
-		//cBuf.view = pCamera->GetViewMatrix();
-		//cBuf.projection = pCamera->GetProjectionMatrix();
-		//cBuf.cameraPosition = pCamera->pTransform->GetPosition();
-		cBuf.view = pTpCamera->GetViewMatrix();
-		cBuf.projection = pTpCamera->GetProjectionMatrix();
-		cBuf.cameraPosition = pTpCamera->pTransform->GetPosition();
+		if (isFpsMode)
+		{
+			cBuf.view = pCamera->GetViewMatrix();
+			cBuf.projection = pCamera->GetProjectionMatrix();
+			cBuf.cameraPosition = pCamera->pTransform->GetPosition();
+		}
+		else
+		{
+			cBuf.view = pTpCamera->GetViewMatrix();
+			cBuf.projection = pTpCamera->GetProjectionMatrix();
+			cBuf.cameraPosition = pTpCamera->pTransform->GetPosition();
+		}
 		cBuf.light = pLight->Forward();
 		cBuf.lightIntensity = pLight->intensity;
 		cBuf.lightColor = pLight->color;
@@ -225,22 +237,35 @@ void AppWindow::UpdateModel()
 
 void AppWindow::UpdateSkysphere()
 {
-	//modelsMap["skysphere"]->pTransform->SetPosition(pCamera->pTransform->GetPosition());
-	modelsMap["skysphere"]->pTransform->SetPosition(pTpCamera->pTransform->GetPosition());
+	if (isFpsMode)
+	{
+		modelsMap["skysphere"]->pTransform->SetScale(Vector3(pCamera->farPlane, pCamera->farPlane, pCamera->farPlane));
+		modelsMap["skysphere"]->pTransform->SetPosition(pCamera->pTransform->GetPosition());
+	}
+	else
+	{
+		modelsMap["skysphere"]->pTransform->SetScale(Vector3(pTpCamera->farPlane, pTpCamera->farPlane, pTpCamera->farPlane));
+		modelsMap["skysphere"]->pTransform->SetPosition(pTpCamera->pTransform->GetPosition());
+	}
 }
 
 void AppWindow::OnGUI()
 {
 	ImGui::Begin("information");
 	{
-		ImGui::Text("fps: %.1f", ImGui::GetIO().Framerate);
+		ImGui::Text("fps: %.1f", ImGui::GetIO().Framerate);		
 
-		if (ImGui::CollapsingHeader("operator help"))
+		if (ImGui::CollapsingHeader("operator help", &isHelperShow))
 		{
+			ImGui::Text("show help: F1");
 			ImGui::Text("switch full screen: F11");
 			ImGui::Text("toggle move: F");
 			ImGui::Text("toggle view: V");
 			ImGui::Text("toggle move & view: Esc");
+			ImGui::Text("camera view: mouse move");
+			ImGui::Text("switch cam: 1 or 2");			
+			ImGui::Text("tps camera zoom: mouse wheel");			
+			ImGui::Text("fps camera move: wasd");
 		}
 
 		if (ImGui::CollapsingHeader("config"))
@@ -249,7 +274,7 @@ void AppWindow::OnGUI()
 			ImGui::SameLine(100);
 			ImGui::Checkbox("viewable", &isCamViewable);
 			ImGui::SliderFloat("mouse sensitivity", &mouseSensitivity, 1.f, 100.f);
-			ImGui::SliderFloat("move speed", &fpCamMoveSpeed, 1.f, 100.f);			
+			ImGui::SliderFloat("move speed", &fpCamMoveSpeed, 1.f, 100.f);
 		}
 
 		if (ImGui::CollapsingHeader("light"))
@@ -269,36 +294,36 @@ void AppWindow::OnGUI()
 			pLight->color.b = color[2];
 		}
 
-		//if (ImGui::CollapsingHeader("camera"))
-		//{
-		//	float position[3], euler[3];
-		//	position[0] = pCamera->pTransform->GetPosition().x;
-		//	position[1] = pCamera->pTransform->GetPosition().y;
-		//	position[2] = pCamera->pTransform->GetPosition().z;
-		//	ImGui::DragFloat3("position##maincamerapos", position);
+		if (ImGui::CollapsingHeader("fps camera"))
+		{
+			float position[3], euler[3];
+			position[0] = pCamera->pTransform->GetPosition().x;
+			position[1] = pCamera->pTransform->GetPosition().y;
+			position[2] = pCamera->pTransform->GetPosition().z;
+			ImGui::DragFloat3("position##fppos", position);
 
-		//	euler[0] = to_deg<float>(pCamera->pTransform->GetEulerAngle().x);
-		//	euler[1] = to_deg<float>(pCamera->pTransform->GetEulerAngle().y);
-		//	euler[2] = to_deg<float>(pCamera->pTransform->GetEulerAngle().z);
-		//	ImGui::DragFloat3("rotation##fpc", euler);
+			euler[0] = to_deg<float>(pCamera->pTransform->GetEulerAngle().x);
+			euler[1] = to_deg<float>(pCamera->pTransform->GetEulerAngle().y);
+			euler[2] = to_deg<float>(pCamera->pTransform->GetEulerAngle().z);
+			ImGui::DragFloat3("rotation##fprot", euler);
 
-		//	euler[0] = to_rad<float>(euler[0]);
-		//	euler[1] = to_rad<float>(euler[1]);
-		//	euler[2] = to_rad<float>(euler[2]);
-		//	pCamera->pTransform->SetRotation(Vector3(euler[0], euler[1], euler[2]));
+			euler[0] = to_rad<float>(euler[0]);
+			euler[1] = to_rad<float>(euler[1]);
+			euler[2] = to_rad<float>(euler[2]);
+			pCamera->pTransform->SetRotation(Vector3(euler[0], euler[1], euler[2]));
 
-		//	float deg = to_deg<float>(pCamera->fov);
-		//	ImGui::SliderFloat("pov", &deg, 1, 159);
+			float deg = to_deg<float>(pCamera->fov);
+			ImGui::SliderFloat("pov##fppov", &deg, 1, 159);
 
-		//	pCamera->pTransform->SetPosition(Vector3(position[0], position[1], position[2]));
-		//	pCamera->fov = to_rad<float>(deg);
+			pCamera->pTransform->SetPosition(Vector3(position[0], position[1], position[2]));
+			pCamera->fov = to_rad<float>(deg);
 
-		//	ImGui::PushItemWidth(100);
-		//	ImGui::DragFloat("near", &pCamera->nearPlane);
-		//	ImGui::SameLine();
-		//	ImGui::DragFloat("far", &pCamera->farPlane);
-		//	ImGui::PopItemWidth();
-		//}
+			ImGui::PushItemWidth(100);
+			ImGui::DragFloat("near##fpnear", &pCamera->nearPlane);
+			ImGui::SameLine();
+			ImGui::DragFloat("far##fpfar", &pCamera->farPlane);
+			ImGui::PopItemWidth();
+		}
 
 		if (ImGui::CollapsingHeader("tps camera"))
 		{
@@ -307,12 +332,12 @@ void AppWindow::OnGUI()
 			position[0] = pTpCamera->pTransform->GetPosition().x;
 			position[1] = pTpCamera->pTransform->GetPosition().y;
 			position[2] = pTpCamera->pTransform->GetPosition().z;
-			ImGui::DragFloat3("position##maincamerapos", position);
+			ImGui::DragFloat3("position##tppos", position);
 
 			euler[0] = to_deg<float>(pTpCamera->pTransform->GetEulerAngle().x);
 			euler[1] = to_deg<float>(pTpCamera->pTransform->GetEulerAngle().y);
 			euler[2] = to_deg<float>(pTpCamera->pTransform->GetEulerAngle().z);
-			ImGui::DragFloat3("rotation##fpc", euler);
+			ImGui::DragFloat3("rotation##fprot", euler);
 
 			euler[0] = to_rad<float>(euler[0]);
 			euler[1] = to_rad<float>(euler[1]);
@@ -321,18 +346,18 @@ void AppWindow::OnGUI()
 			ImGui::EndDisabled();
 
 			float deg = to_deg<float>(pTpCamera->fov);
-			ImGui::SliderFloat("pov", &deg, 1, 159);
-	
+			ImGui::SliderFloat("pov##tppov", &deg, 1, 159);
+
 			pTpCamera->pTransform->SetPosition(Vector3(position[0], position[1], position[2]));
-			pTpCamera->fov = to_rad<float>(deg);			
+			pTpCamera->fov = to_rad<float>(deg);
 
 			ImGui::PushItemWidth(100);
-			ImGui::DragFloat("near", &pTpCamera->nearPlane);
+			ImGui::DragFloat("near##tpnear", &pTpCamera->nearPlane);
 			ImGui::SameLine();
-			ImGui::DragFloat("far", &pTpCamera->farPlane);
+			ImGui::DragFloat("far##tpfar", &pTpCamera->farPlane);
 			ImGui::PopItemWidth();
 
-			ImGui::SliderFloat("distance", &pTpCamera->distance, -100, 0);
+			ImGui::SliderFloat("distance##tpdis", &pTpCamera->distance, -100, -2);
 		}
 
 		int index = 0;
@@ -435,8 +460,22 @@ void AppWindow::OnMouseMove(const Point& mousePosition)
 	//InputSystem::GetInstance()->SetCursorPosition(Point(wndSize.left + width / 2, wndSize.top + height / 2));
 }
 
+void AppWindow::OnMouseWheel(int delta)
+{
+	float dampping = .5f;
+	float newDistance = pTpCamera->distance + delta * dampping;
+	pTpCamera->distance = newDistance > -2 ? -2 : newDistance;
+}
+
 void AppWindow::OnKeyDown(int keycode)
 {
+	if (keycode == '1')
+		isFpsMode = true;
+	else if (keycode == '2')
+		isFpsMode = false;
+
+	if (keycode == VK_F1)
+		isHelperShow = !isHelperShow;
 }
 
 void AppWindow::OnKey(int keycode)
