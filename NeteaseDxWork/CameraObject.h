@@ -5,7 +5,7 @@
 class CameraObject : public Object
 {
 public:
-	CameraObject(float aspect) : fov(1.57f), nearPlane(.1f), farPlane(1000.f)
+	CameraObject(float aspect) : fov(1.57f), nearPlane(.1f), farPlane(1000.f), aspect(aspect)
 	{
 		pTransform->SetPosition(Vector3(0, 0, 0));
 		pTransform->SetRotation(Vector3(0, 0, 0));
@@ -17,7 +17,7 @@ public:
 		view = tmpView;
 		projection.SetPerpectiveFovLH(fov, aspect, nearPlane, farPlane);
 	}
-	~CameraObject() = default;
+	virtual ~CameraObject() = default;
 
 public:
 	float fov;
@@ -46,7 +46,9 @@ public:
 		return projection;
 	}
 
-private:
+protected:
 	Matrix4x4 view;
 	Matrix4x4 projection;
+
+	float aspect = 1;
 };

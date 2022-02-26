@@ -221,7 +221,7 @@ void InputSystem::SetCursorPosition(const Point& position)
 
 void InputSystem::SetCursorVisiable(bool visiable)
 {
-	ShowCursor(visiable);
+	pMouse->SetVisible(visiable);
 }
 
 Point InputSystem::GetMouseDelta()

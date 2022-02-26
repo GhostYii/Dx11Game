@@ -172,6 +172,7 @@
     <ClCompile Include="SwapChain.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TPCameraObject.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexShader.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -221,6 +222,7 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="timer.h" />
     <ClInclude Include="tiny_obj_loader.h" />
+    <ClInclude Include="TPCameraObject.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="types.h" />
     <ClInclude Include="utility.h" />

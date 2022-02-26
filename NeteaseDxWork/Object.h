@@ -9,11 +9,14 @@ public:
 	{
 		pTransform = std::make_shared<Transform>();
 	};
-	~Object() = default;
+	virtual ~Object() = default;
 
 public:
 	TransformPtr pTransform;
 
+public:
+	virtual void Start() {}
+	virtual void Update(int frameTime) {}
 public:
 	Vector3 Forward()
 	{

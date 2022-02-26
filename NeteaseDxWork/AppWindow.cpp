@@ -6,6 +6,7 @@
 #include "types.h"
 #include "ModelObject.h"
 #include "CameraObject.h"
+#include "TPCameraObject.h"
 #include "DirectionLightObject.h"
 #include "Transform.h"
 
@@ -33,9 +34,18 @@ void AppWindow::OnCreate()
 
 void AppWindow::CreateCamera()
 {
+	camRotation.x = 25.53f;
+	camRotation.y = 102.52f;
+	camRotation.z = 0;
+
 	RECT rect = this->GetClientWindowRect();
-	pCamera = std::make_shared<CameraObject>((rect.right - rect.left) / 1.f / (rect.bottom - rect.top) / 1.f);	
-	pCamera->pTransform->SetPosition(Vector3(0, 0, -60.f));
+	//pCamera = std::make_shared<CameraObject>((rect.right - rect.left) / 1.f / (rect.bottom - rect.top) / 1.f);	
+	//pCamera->pTransform->SetRotation(camRotation);
+	//pCamera->pTransform->SetPosition(Vector3(28.8, 37, 34));
+	//pCamera->Start();
+
+	pTpCamera = std::make_shared<TPCameraObject>((rect.right - rect.left) / 1.f / (rect.bottom - rect.top) / 1.f);	
+	pTpCamera->Start();
 }
 
 void AppWindow::CreateLight()
@@ -47,6 +57,7 @@ void AppWindow::CreateLight()
 	lightcolor.a = 1;
 
 	pLight = std::make_shared<DirectionLightObject>(1.5f, lightcolor);
+	pLight->Start();
 }
 
 void AppWindow::LoadModels()
@@ -78,7 +89,8 @@ void AppWindow::LoadModels()
 	spaceshipMaterial->SetCullMode(D3D11_CULL_BACK);
 
 	ModelObjectPtr skysphere = std::make_shared<ModelObject>();
-	skysphere->pTransform->SetScale(Vector3(pCamera->farPlane, pCamera->farPlane, pCamera->farPlane));
+	//skysphere->pTransform->SetScale(Vector3(pCamera->farPlane, pCamera->farPlane, pCamera->farPlane));
+	skysphere->pTransform->SetScale(Vector3(pTpCamera->farPlane, pTpCamera->farPlane, pTpCamera->farPlane));
 	skysphere->pMesh = pSphereMesh;
 	skysphere->pMaterials.push_back(skyMaterial);
 	modelsMap["skysphere"] = skysphere;
@@ -105,6 +117,11 @@ void AppWindow::LoadModels()
 	spaceship->pMesh = pSpaceshipMesh;
 	spaceship->pMaterials.push_back(spaceshipMaterial);
 	modelsMap["spaceship"] = spaceship;
+
+	pTpCamera->pTarget = spaceship->pTransform;
+
+	for (auto iter = modelsMap.begin(); iter != modelsMap.end(); ++iter)
+		iter->second->Start();
 }
 
 void AppWindow::OnUpdate()
@@ -112,6 +129,12 @@ void AppWindow::OnUpdate()
 	InputSystem::GetInstance()->Update();
 
 	ImGui_ImplWin32_NewFrame();
+	deltaTime = timer.Mark();
+
+	pLight->Update(deltaTime);
+	//pCamera->Update(deltaTime);	
+	for (auto iter = modelsMap.begin(); iter != modelsMap.end(); ++iter)
+		iter->second->Update(deltaTime);
 
 	Render();
 }
@@ -140,8 +163,7 @@ void AppWindow::Render()
 }
 
 void AppWindow::WndUpdate()
-{
-	deltaTime = timer.Mark();
+{	
 	UpdateCamera();
 	UpdateLight();
 	UpdateModel();
@@ -150,18 +172,21 @@ void AppWindow::WndUpdate()
 
 void AppWindow::UpdateCamera()
 {
-	Vector3 euler = { to_deg<float>(camRotX),to_deg<float>(camRotY),0 };
-	pCamera->pTransform->SetRotation(euler);
+	Vector3 euler = { to_deg<float>(camRotation.x), to_deg<float>(camRotation.y), 0 };
+	//pCamera->pTransform->SetRotation(euler);
+	pTpCamera->pTransform->SetRotation(euler);
+	pTpCamera->mouseSensitivity = mouseSensitivity;
+	pTpCamera->Update(deltaTime);
 
-	Vector3 newPos = pCamera->pTransform->GetPosition() + pCamera->pTransform->GetMatrix().GetDirectionZ() * (camForward * deltaTime * fpCamMoveSpeed);
-	newPos = newPos + pCamera->pTransform->GetMatrix().GetDirectionX() * (camRight * deltaTime * fpCamMoveSpeed);
+	//Vector3 newPos = pCamera->pTransform->GetPosition() + pCamera->pTransform->GetMatrix().GetDirectionZ() * (camForward * deltaTime * fpCamMoveSpeed);
+	//newPos = newPos + pCamera->pTransform->GetMatrix().GetDirectionX() * (camRight * deltaTime * fpCamMoveSpeed);
 
-	pCamera->pTransform->SetPosition(newPos);
+	//pCamera->pTransform->SetPosition(newPos);
 
-	LONG width = GetClientWindowRect().right - GetClientWindowRect().left;
-	LONG height = GetClientWindowRect().bottom - GetClientWindowRect().top;
+	//LONG width = GetClientWindowRect().right - GetClientWindowRect().left;
+	//LONG height = GetClientWindowRect().bottom - GetClientWindowRect().top;
 
-	pCamera->UpdateVP(width / 1.f / height);
+	//pCamera->UpdateVP(width / 1.f / height);
 }
 
 void AppWindow::UpdateLight()
@@ -182,9 +207,12 @@ void AppWindow::UpdateModel()
 			iter->second->pTransform->GetEulerAngle()
 		);
 		cBuf.model.SetTranslation(iter->second->pTransform->GetPosition());
-		cBuf.view = pCamera->GetViewMatrix();
-		cBuf.projection = pCamera->GetProjectionMatrix();
-		cBuf.cameraPosition = pCamera->pTransform->GetPosition();
+		//cBuf.view = pCamera->GetViewMatrix();
+		//cBuf.projection = pCamera->GetProjectionMatrix();
+		//cBuf.cameraPosition = pCamera->pTransform->GetPosition();
+		cBuf.view = pTpCamera->GetViewMatrix();
+		cBuf.projection = pTpCamera->GetProjectionMatrix();
+		cBuf.cameraPosition = pTpCamera->pTransform->GetPosition();
 		cBuf.light = pLight->Forward();
 		cBuf.lightIntensity = pLight->intensity;
 		cBuf.lightColor = pLight->color;
@@ -197,7 +225,8 @@ void AppWindow::UpdateModel()
 
 void AppWindow::UpdateSkysphere()
 {
-	modelsMap["skysphere"]->pTransform->SetPosition(pCamera->pTransform->GetPosition());
+	//modelsMap["skysphere"]->pTransform->SetPosition(pCamera->pTransform->GetPosition());
+	modelsMap["skysphere"]->pTransform->SetPosition(pTpCamera->pTransform->GetPosition());
 }
 
 void AppWindow::OnGUI()
@@ -216,8 +245,11 @@ void AppWindow::OnGUI()
 
 		if (ImGui::CollapsingHeader("config"))
 		{
+			ImGui::Checkbox("moveable", &isCamMoveable);
+			ImGui::SameLine(100);
+			ImGui::Checkbox("viewable", &isCamViewable);
 			ImGui::SliderFloat("mouse sensitivity", &mouseSensitivity, 1.f, 100.f);
-			ImGui::SliderFloat("move speed", &fpCamMoveSpeed, 1.f, 100.f);
+			ImGui::SliderFloat("move speed", &fpCamMoveSpeed, 1.f, 100.f);			
 		}
 
 		if (ImGui::CollapsingHeader("light"))
@@ -237,29 +269,70 @@ void AppWindow::OnGUI()
 			pLight->color.b = color[2];
 		}
 
-		if (ImGui::CollapsingHeader("camera"))
+		//if (ImGui::CollapsingHeader("camera"))
+		//{
+		//	float position[3], euler[3];
+		//	position[0] = pCamera->pTransform->GetPosition().x;
+		//	position[1] = pCamera->pTransform->GetPosition().y;
+		//	position[2] = pCamera->pTransform->GetPosition().z;
+		//	ImGui::DragFloat3("position##maincamerapos", position);
+
+		//	euler[0] = to_deg<float>(pCamera->pTransform->GetEulerAngle().x);
+		//	euler[1] = to_deg<float>(pCamera->pTransform->GetEulerAngle().y);
+		//	euler[2] = to_deg<float>(pCamera->pTransform->GetEulerAngle().z);
+		//	ImGui::DragFloat3("rotation##fpc", euler);
+
+		//	euler[0] = to_rad<float>(euler[0]);
+		//	euler[1] = to_rad<float>(euler[1]);
+		//	euler[2] = to_rad<float>(euler[2]);
+		//	pCamera->pTransform->SetRotation(Vector3(euler[0], euler[1], euler[2]));
+
+		//	float deg = to_deg<float>(pCamera->fov);
+		//	ImGui::SliderFloat("pov", &deg, 1, 159);
+
+		//	pCamera->pTransform->SetPosition(Vector3(position[0], position[1], position[2]));
+		//	pCamera->fov = to_rad<float>(deg);
+
+		//	ImGui::PushItemWidth(100);
+		//	ImGui::DragFloat("near", &pCamera->nearPlane);
+		//	ImGui::SameLine();
+		//	ImGui::DragFloat("far", &pCamera->farPlane);
+		//	ImGui::PopItemWidth();
+		//}
+
+		if (ImGui::CollapsingHeader("tps camera"))
 		{
-			float position[3];
-			position[0] = pCamera->pTransform->GetPosition().x;
-			position[1] = pCamera->pTransform->GetPosition().y;
-			position[2] = pCamera->pTransform->GetPosition().z;
+			ImGui::BeginDisabled();
+			float position[3], euler[3];
+			position[0] = pTpCamera->pTransform->GetPosition().x;
+			position[1] = pTpCamera->pTransform->GetPosition().y;
+			position[2] = pTpCamera->pTransform->GetPosition().z;
 			ImGui::DragFloat3("position##maincamerapos", position);
 
-			ImGui::Checkbox("moveable", &isCamMoveable);
-			ImGui::SameLine(100);
-			ImGui::Checkbox("viewable", &isCamViewable);
+			euler[0] = to_deg<float>(pTpCamera->pTransform->GetEulerAngle().x);
+			euler[1] = to_deg<float>(pTpCamera->pTransform->GetEulerAngle().y);
+			euler[2] = to_deg<float>(pTpCamera->pTransform->GetEulerAngle().z);
+			ImGui::DragFloat3("rotation##fpc", euler);
 
-			float deg = to_deg<float>(pCamera->fov);
+			euler[0] = to_rad<float>(euler[0]);
+			euler[1] = to_rad<float>(euler[1]);
+			euler[2] = to_rad<float>(euler[2]);
+			pTpCamera->pTransform->SetRotation(Vector3(euler[0], euler[1], euler[2]));
+			ImGui::EndDisabled();
+
+			float deg = to_deg<float>(pTpCamera->fov);
 			ImGui::SliderFloat("pov", &deg, 1, 159);
-
-			pCamera->pTransform->SetPosition(Vector3(position[0], position[1], position[2]));
-			pCamera->fov = to_rad<float>(deg);
+	
+			pTpCamera->pTransform->SetPosition(Vector3(position[0], position[1], position[2]));
+			pTpCamera->fov = to_rad<float>(deg);			
 
 			ImGui::PushItemWidth(100);
-			ImGui::DragFloat("near", &pCamera->nearPlane);
+			ImGui::DragFloat("near", &pTpCamera->nearPlane);
 			ImGui::SameLine();
-			ImGui::DragFloat("far", &pCamera->farPlane);
+			ImGui::DragFloat("far", &pTpCamera->farPlane);
 			ImGui::PopItemWidth();
+
+			ImGui::SliderFloat("distance", &pTpCamera->distance, -100, 0);
 		}
 
 		int index = 0;
@@ -286,12 +359,10 @@ void AppWindow::OnGUI()
 				scale[1] = iter->second->pTransform->GetScale().y;
 				scale[2] = iter->second->pTransform->GetScale().z;
 
-				//if (iter->first == "spaceship")
-				//	ImGui::BeginDisabled();
 				oss.str("");
 				oss << "position" << "##pos" << index;
 				ImGui::DragFloat3(oss.str().c_str(), position);
-				//ImGui::BeginDisabled();
+
 				oss.str("");
 				oss << "euler angle" << "##euler" << index;
 				ImGui::DragFloat3(oss.str().c_str(), euler);
@@ -323,7 +394,7 @@ void AppWindow::OnGUI()
 void AppWindow::OnSizeChanged()
 {
 	RECT rc = GetClientWindowRect();
-	pSwapChain->Resize(rc.right, rc.bottom);
+	pSwapChain->Resize(rc.right - rc.left, rc.bottom - rc.top);
 	OnUpdate();
 }
 
@@ -354,8 +425,14 @@ void AppWindow::OnMouseMove(const Point& mousePosition)
 	if (!isCamViewable)
 		return;
 
-	camRotX += InputSystem::GetInstance()->GetMouseDelta().y * deltaTime * mouseSensitivity;
-	camRotY += InputSystem::GetInstance()->GetMouseDelta().x * deltaTime * mouseSensitivity;
+	RECT wndSize = GetClientWindowRect();
+	int width = wndSize.right - wndSize.left;
+	int height = wndSize.bottom - wndSize.top;
+
+	camRotation.x += InputSystem::GetInstance()->GetMouseDelta().y * deltaTime * mouseSensitivity;
+	camRotation.y += InputSystem::GetInstance()->GetMouseDelta().x * deltaTime * mouseSensitivity;
+
+	//InputSystem::GetInstance()->SetCursorPosition(Point(wndSize.left + width / 2, wndSize.top + height / 2));
 }
 
 void AppWindow::OnKeyDown(int keycode)

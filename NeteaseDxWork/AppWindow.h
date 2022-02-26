@@ -56,7 +56,8 @@ private:
 	bool isCamViewable = true;
 	bool isUIShow = true;
 
-	CameraObjectPtr pCamera;
+	//CameraObjectPtr pCamera;
+	TPCameraObjectPtr pTpCamera;
 	DirectionLightObjectPtr pLight;
 	std::unordered_map<std::string, ModelObjectPtr> modelsMap;
 
@@ -75,8 +76,7 @@ private:
 	MeshPtr pSpaceshipMesh = nullptr;
 
 private:
-	float camRotX = 0;
-	float camRotY = 0;
+	Vector3 camRotation;
 	float camForward = 0.f;
 	float camRight = 0.f;
 

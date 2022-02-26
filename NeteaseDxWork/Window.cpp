@@ -158,6 +158,8 @@ RECT Window::GetClientWindowRect()
 {
 	RECT rect;
 	GetClientRect(this->hWnd, &rect);
+	ClientToScreen(hWnd, (LPPOINT)&rect.left);
+	ClientToScreen(hWnd, (LPPOINT)&rect.right);
 	return rect;
 }
 

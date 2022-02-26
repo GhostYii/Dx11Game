@@ -143,6 +143,9 @@
     <ClCompile Include="ModelObject.cpp">
       <Filter>GameEngine\Component</Filter>
     </ClCompile>
+    <ClCompile Include="TPCameraObject.cpp">
+      <Filter>GameEngine\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppWindow.h">
@@ -299,6 +302,9 @@
       <Filter>GameEngine\Component</Filter>
     </ClInclude>
     <ClInclude Include="internal_resource.h" />
+    <ClInclude Include="TPCameraObject.h">
+      <Filter>GameEngine\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="VertexShader.hlsl">

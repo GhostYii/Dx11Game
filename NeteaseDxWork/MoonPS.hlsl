@@ -22,7 +22,7 @@ cbuffer MVP : register(b0)
 
 float4 pixel(PS_IUTPUT input) : SV_TARGET
 {
-    float4 texColor = Texture.Sample(TextureSampler, 1.0 - input.texcoord);    
+    float4 texColor = Texture.Sample(TextureSampler, float2(input.texcoord.x, 1.0 - input.texcoord.y));
     
 	//AMBIENT LIGHT
     float ka = lightIntensity;
