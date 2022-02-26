@@ -3,12 +3,12 @@
 
 class InputSystem;
 
-class InputListener
+class IInputListener
 {
 	friend class InputSystem;
 public:
-	InputListener() = default;
-	virtual ~InputListener() = default;
+	IInputListener() = default;
+	virtual ~IInputListener() = default;
 
 protected:
 	virtual void OnKeyDown(int keycode) = 0;

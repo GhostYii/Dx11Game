@@ -5,10 +5,9 @@
 #include "InputSystem.h"
 #include "ComponentClass.h"
 #include "timer.h"
+#include "Vector3.h"
 
-#include "Math.h"
-
-class AppWindow : public Window, public InputListener
+class AppWindow : public Window, public IInputListener
 {
 public:
 	AppWindow() = default;
@@ -32,7 +31,7 @@ protected:
 	virtual void OnDestroy() override;
 	virtual void OnSizeChanged() override;
 
-	// Inherited via InputLisenter
+	// Inherited via IInputLisenter
 	virtual void OnKeyDown(int keycode) override;
 	virtual void OnKey(int keycode) override;
 	virtual void OnKeyUp(int keycode) override;

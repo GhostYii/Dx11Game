@@ -11,9 +11,6 @@
     <Filter Include="GameEngine">
       <UniqueIdentifier>{fb7a81f5-6b57-46df-9e1c-d868427c9500}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameEngine\WindowSys">
-      <UniqueIdentifier>{87489e83-0879-4591-ba3b-f7596847b171}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameEngine\GraphicsEngine">
       <UniqueIdentifier>{4ae50311-57ee-4b02-a5f5-bfb58e79dea5}</UniqueIdentifier>
     </Filter>
@@ -56,13 +53,19 @@
     <Filter Include="GameEngine\Component">
       <UniqueIdentifier>{79ed0e3c-a506-4d9c-a3d9-ab0abd63b226}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{ed7bc4ba-804a-4cfa-aa19-7afe2bb162ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\Window">
+      <UniqueIdentifier>{87489e83-0879-4591-ba3b-f7596847b171}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AppWindow.cpp">
       <Filter>App</Filter>
     </ClCompile>
     <ClCompile Include="Window.cpp">
-      <Filter>GameEngine\WindowSys</Filter>
+      <Filter>GameEngine\Window</Filter>
     </ClCompile>
     <ClCompile Include="InputSystem.cpp">
       <Filter>GameEngine\Input</Filter>
@@ -144,7 +147,16 @@
       <Filter>GameEngine\Component</Filter>
     </ClCompile>
     <ClCompile Include="TPCameraObject.cpp">
-      <Filter>GameEngine\Component</Filter>
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Spaceship.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Moon.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Earth.cpp">
+      <Filter>Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -152,7 +164,7 @@
       <Filter>App</Filter>
     </ClInclude>
     <ClInclude Include="Window.h">
-      <Filter>GameEngine\WindowSys</Filter>
+      <Filter>GameEngine\Window</Filter>
     </ClInclude>
     <ClInclude Include="Vector3.h">
       <Filter>GameEngine\Math</Filter>
@@ -303,7 +315,16 @@
     </ClInclude>
     <ClInclude Include="internal_resource.h" />
     <ClInclude Include="TPCameraObject.h">
-      <Filter>GameEngine\Component</Filter>
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Spaceship.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Moon.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Earth.h">
+      <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

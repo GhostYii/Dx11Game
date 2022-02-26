@@ -31,12 +31,12 @@ void InputSystem::ReleaseInstance()
 	delete InputSystem::instance;
 }
 
-void InputSystem::AddListener(InputListener* listener)
+void InputSystem::AddListener(IInputListener* listener)
 {
 	listenerMap.insert(listener);
 }
 
-void InputSystem::RemoveListener(InputListener* listener)
+void InputSystem::RemoveListener(IInputListener* listener)
 {
 	listenerMap.erase(listener);
 }
@@ -53,7 +53,7 @@ void InputSystem::Update()
 		auto key = (DirectX::Keyboard::Keys)i;
 		if (pKeyboard->GetState().IsKeyDown(key))
 		{
-			std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+			std::unordered_set<IInputListener*>::iterator iter = listenerMap.begin();
 
 			while (iter != listenerMap.end())
 			{
@@ -66,7 +66,7 @@ void InputSystem::Update()
 
 		if (keyboardTracker.IsKeyReleased(key))
 		{
-			std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+			std::unordered_set<IInputListener*>::iterator iter = listenerMap.begin();
 
 			while (iter != listenerMap.end())
 			{
@@ -80,7 +80,7 @@ void InputSystem::Update()
 	{
 	case ButtonState::HELD:
 	{
-		std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+		std::unordered_set<IInputListener*>::iterator iter = listenerMap.begin();
 
 		while (iter != listenerMap.end())
 		{
@@ -91,7 +91,7 @@ void InputSystem::Update()
 	}
 	case ButtonState::RELEASED:
 	{
-		std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+		std::unordered_set<IInputListener*>::iterator iter = listenerMap.begin();
 
 		while (iter != listenerMap.end())
 		{
@@ -102,7 +102,7 @@ void InputSystem::Update()
 	}
 	case ButtonState::PRESSED:
 	{
-		std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+		std::unordered_set<IInputListener*>::iterator iter = listenerMap.begin();
 
 		while (iter != listenerMap.end())
 		{
@@ -118,7 +118,7 @@ void InputSystem::Update()
 	{
 	case ButtonState::HELD:
 	{
-		std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+		std::unordered_set<IInputListener*>::iterator iter = listenerMap.begin();
 
 		while (iter != listenerMap.end())
 		{
@@ -129,7 +129,7 @@ void InputSystem::Update()
 	}
 	case ButtonState::RELEASED:
 	{
-		std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+		std::unordered_set<IInputListener*>::iterator iter = listenerMap.begin();
 
 		while (iter != listenerMap.end())
 		{
@@ -140,7 +140,7 @@ void InputSystem::Update()
 	}
 	case ButtonState::PRESSED:
 	{
-		std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+		std::unordered_set<IInputListener*>::iterator iter = listenerMap.begin();
 
 		while (iter != listenerMap.end())
 		{
@@ -156,7 +156,7 @@ void InputSystem::Update()
 	{
 	case ButtonState::HELD:
 	{
-		std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+		std::unordered_set<IInputListener*>::iterator iter = listenerMap.begin();
 
 		while (iter != listenerMap.end())
 		{
@@ -167,7 +167,7 @@ void InputSystem::Update()
 	}
 	case ButtonState::RELEASED:
 	{
-		std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+		std::unordered_set<IInputListener*>::iterator iter = listenerMap.begin();
 
 		while (iter != listenerMap.end())
 		{
@@ -178,7 +178,7 @@ void InputSystem::Update()
 	}
 	case ButtonState::PRESSED:
 	{
-		std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+		std::unordered_set<IInputListener*>::iterator iter = listenerMap.begin();
 
 		while (iter != listenerMap.end())
 		{
@@ -202,7 +202,7 @@ void InputSystem::Update()
 
 	if (currentMousePosition.x != prevMousePos.x || currentMousePosition.y != prevMousePos.y)
 	{
-		std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+		std::unordered_set<IInputListener*>::iterator iter = listenerMap.begin();
 
 		while (iter != listenerMap.end())
 		{
@@ -215,7 +215,7 @@ void InputSystem::Update()
 
 	if (mouseState.scrollWheelValue != 0)
 	{
-		std::unordered_set<InputListener*>::iterator iter = listenerMap.begin();
+		std::unordered_set<IInputListener*>::iterator iter = listenerMap.begin();
 
 		while (iter != listenerMap.end())
 		{

@@ -1,14 +1,13 @@
 #include "AppWindow.h"
-#include "GraphicsEngine.h"
 #include "DeviceContext.h"
 #include "Mesh.h"
-#include "InputSystem.h"
 #include "types.h"
-#include "ModelObject.h"
 #include "CameraObject.h"
 #include "TPCameraObject.h"
 #include "DirectionLightObject.h"
-#include "Transform.h"
+#include "Earth.h"
+#include "Moon.h"
+#include "Spaceship.h"
 
 #include <sstream>
 #include<Windows.h>
@@ -66,10 +65,10 @@ void AppWindow::LoadModels()
 	pEarthNightTex = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\earth_night.jpg");
 	pSkysphereTex = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\galaxy.jpg");
 	pMoonTex = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\moon.jpg");
-	pSpaceshipTex = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\spaceship.jpg");
+	pSpaceshipTex = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\aircraft.png");
 
 	pSphereMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\sphere.obj");
-	pSpaceshipMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\spaceship.obj");
+	pSpaceshipMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\aircraft.obj");
 
 	auto skyMaterial = GraphicsEngine::GetInstance()->CreateMaterial(L"VertexShader.hlsl", L"DefaultSkyPS.hlsl");
 	skyMaterial->AddTexture(pSkysphereTex);
@@ -97,25 +96,29 @@ void AppWindow::LoadModels()
 	skysphere->pMaterials.push_back(skyMaterial);
 	modelsMap["skysphere"] = skysphere;
 
-	ModelObjectPtr earth = std::make_shared<ModelObject>();
+	EarthPtr earth = std::make_shared<Earth>();
 	earth->SetScale(Vector3(50, 50, 50));
 	earth->SetRotation(Vector3(0, 1.57f, 0));
 	earth->SetPosition(Vector3(0, 0, 0));
 	earth->pMesh = pSphereMesh;
 	earth->pMaterials.push_back(earthMaterial);
+	earth->rotateSpeed = .1f;
 	modelsMap["earth"] = earth;
 
-	ModelObjectPtr moon = std::make_shared<ModelObject>();
+	MoonPtr moon = std::make_shared<Moon>();
 	moon->SetScale(Vector3(5, 5, 5));
 	moon->SetRotation(Vector3(0, 0, 0));
 	moon->SetPosition(Vector3(200, 0, 0));
 	moon->pMesh = pSphereMesh;
 	moon->pMaterials.push_back(moonMaterial);
+	moon->selfRotSpeed = .1f;
+	moon->orbitHeight = 200.f;
+	moon->pTarget = earth->pTransform;
 	modelsMap["moon"] = moon;
 
 	ModelObjectPtr spaceship = std::make_shared<ModelObject>();
 	spaceship->SetPosition(Vector3(50, 20, 20));
-	spaceship->SetScale(Vector3(.2f, .2f, .2f));
+	spaceship->SetScale(Vector3(1.f, 1.f, 1.f));
 	spaceship->pMesh = pSpaceshipMesh;
 	spaceship->pMaterials.push_back(spaceshipMaterial);
 	modelsMap["spaceship"] = spaceship;
@@ -173,7 +176,7 @@ void AppWindow::Render()
 void AppWindow::UpdateCamera()
 {
 	Vector3 euler = { to_deg<float>(camRotation.x), to_deg<float>(camRotation.y), 0 };
-		
+
 	if (isFpsMode)
 	{
 		pCamera->pTransform->SetRotation(euler);
@@ -183,7 +186,7 @@ void AppWindow::UpdateCamera()
 		pCamera->pTransform->SetPosition(newPos);
 
 		LONG width = GetClientWindowRect().right - GetClientWindowRect().left;
-		LONG height = GetClientWindowRect().bottom - GetClientWindowRect().top;		
+		LONG height = GetClientWindowRect().bottom - GetClientWindowRect().top;
 		pCamera->Update(deltaTime);
 	}
 	else
@@ -192,7 +195,7 @@ void AppWindow::UpdateCamera()
 		pTpCamera->mouseSensitivity = mouseSensitivity;
 		pTpCamera->Update(deltaTime);
 	}
-	
+
 }
 
 void AppWindow::UpdateLight()
@@ -253,7 +256,31 @@ void AppWindow::OnGUI()
 {
 	ImGui::Begin("information");
 	{
-		ImGui::Text("fps: %.1f", ImGui::GetIO().Framerate);		
+		ImGui::Text("fps: %.1f", ImGui::GetIO().Framerate);
+
+		//ImGui::BeginDisabled();
+		//float m[3], mm[3], mmm[3];
+		//Moon* mo = dynamic_cast<Moon*>(modelsMap["moon"].get());
+		//m[0] = mo->m.GetTranslation().x;
+		//m[1] = mo->m.GetTranslation().y;
+		//m[2] = mo->m.GetTranslation().z;
+
+		//mm[0] = mo->m.GetEulerAngle().x;
+		//mm[1] = mo->m.GetEulerAngle().y;
+		//mm[2] = mo->m.GetEulerAngle().z;
+
+		//mmm[0] = mo->m.value[0][0];
+		//mmm[1] = mo->m.value[1][1];
+		//mmm[2] = mo->m.value[2][2];
+
+		//ImGui::DragFloat3("pos##a", m);
+		//ImGui::DragFloat3("rot##a", mm);
+		//ImGui::DragFloat3("sca##a", mmm);
+
+		//modelsMap["spaceship"]->pTransform->SetRotation(mo->pTransform->GetEulerAngle());
+		//modelsMap["spaceship"]->pTransform->SetPosition(mo->m.GetTranslation());
+
+		//ImGui::EndDisabled();
 
 		if (ImGui::CollapsingHeader("operator help", &isHelperShow))
 		{
@@ -263,8 +290,8 @@ void AppWindow::OnGUI()
 			ImGui::Text("toggle view: V");
 			ImGui::Text("toggle move & view: Esc");
 			ImGui::Text("camera view: mouse move");
-			ImGui::Text("switch cam: 1 or 2");			
-			ImGui::Text("tps camera zoom: mouse wheel");			
+			ImGui::Text("switch cam: 1 or 2");
+			ImGui::Text("tps camera zoom: mouse wheel");
 			ImGui::Text("fps camera move: wasd");
 		}
 
@@ -302,6 +329,7 @@ void AppWindow::OnGUI()
 			position[2] = pCamera->pTransform->GetPosition().z;
 			ImGui::DragFloat3("position##fppos", position);
 
+			ImGui::BeginDisabled();
 			euler[0] = to_deg<float>(pCamera->pTransform->GetEulerAngle().x);
 			euler[1] = to_deg<float>(pCamera->pTransform->GetEulerAngle().y);
 			euler[2] = to_deg<float>(pCamera->pTransform->GetEulerAngle().z);
@@ -311,6 +339,7 @@ void AppWindow::OnGUI()
 			euler[1] = to_rad<float>(euler[1]);
 			euler[2] = to_rad<float>(euler[2]);
 			pCamera->pTransform->SetRotation(Vector3(euler[0], euler[1], euler[2]));
+			ImGui::EndDisabled();
 
 			float deg = to_deg<float>(pCamera->fov);
 			ImGui::SliderFloat("pov##fppov", &deg, 1, 159);
@@ -407,6 +436,20 @@ void AppWindow::OnGUI()
 
 				//if (iter->first == "spaceship")
 				//	ImGui::EndDisabled();
+
+				if (iter->first == "moon")
+				{
+					Moon* pm = dynamic_cast<Moon*>(iter->second.get());
+					ImGui::DragFloat("distance##moon", &pm->orbitHeight);
+					ImGui::DragFloat("rotation speed##moonsr", &pm->selfRotSpeed);
+					ImGui::SliderFloat("orbit speed##moonrs", &pm->orbitSpeed, -2.f, 2.f);
+				}
+
+				if (iter->first == "earth")
+				{
+					Earth* pe = dynamic_cast<Earth*>(iter->second.get());
+					ImGui::DragFloat("rotation speed##moonsr", &pe->rotateSpeed);					
+				}
 			}
 			index++;
 		}
@@ -462,9 +505,13 @@ void AppWindow::OnMouseMove(const Point& mousePosition)
 
 void AppWindow::OnMouseWheel(int delta)
 {
+	if (isFpsMode)
+		return;
+
 	float dampping = .5f;
 	float newDistance = pTpCamera->distance + delta * dampping;
 	pTpCamera->distance = newDistance > -2 ? -2 : newDistance;
+	pTpCamera->distance = pTpCamera->distance < -100 ? -100 : pTpCamera->distance;
 }
 
 void AppWindow::OnKeyDown(int keycode)

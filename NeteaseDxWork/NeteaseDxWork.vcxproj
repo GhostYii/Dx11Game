@@ -150,6 +150,7 @@
     <ClCompile Include="AppWindow.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="DeviceContext.cpp" />
+    <ClCompile Include="Earth.cpp" />
     <ClCompile Include="GraphicsEngine.cpp" />
     <ClCompile Include="GUIManager.cpp" />
     <ClCompile Include="imgui.cpp" />
@@ -165,10 +166,12 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshManager.cpp" />
     <ClCompile Include="ModelObject.cpp" />
+    <ClCompile Include="Moon.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="Spaceship.cpp" />
     <ClCompile Include="SwapChain.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -185,6 +188,7 @@
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="DeviceContext.h" />
     <ClInclude Include="DirectionLightObject.h" />
+    <ClInclude Include="Earth.h" />
     <ClInclude Include="EulerAngle.h" />
     <ClInclude Include="GraphicsClasses.h" />
     <ClInclude Include="GraphicsEngine.h" />
@@ -207,6 +211,7 @@
     <ClInclude Include="MeshManager.h" />
     <ClInclude Include="MeshVertex.h" />
     <ClInclude Include="ModelObject.h" />
+    <ClInclude Include="Moon.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="PinelineStruct.h" />
     <ClInclude Include="PixelShader.h" />
@@ -217,6 +222,7 @@
     <ClInclude Include="ResourceClasses.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="ResourceStruct.h" />
+    <ClInclude Include="Spaceship.h" />
     <ClInclude Include="SwapChain.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Texture.h" />

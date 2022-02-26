@@ -11,7 +11,7 @@ class ModelObject : public Object
 {
 public:
 	ModelObject();
-	~ModelObject() = default;
+	virtual ~ModelObject() = default;
 
 public:
 	// 绘制模型对象
@@ -23,6 +23,10 @@ public:
 	void SetPosition(const Vector3 position);
 	void SetRotation(const Vector3 euler);
 	void SetScale(const Vector3 scale);
+
+public:
+	virtual void Start() {}
+	virtual void Update(float frameTime) {}
 
 public:
 	MeshPtr pMesh = nullptr;

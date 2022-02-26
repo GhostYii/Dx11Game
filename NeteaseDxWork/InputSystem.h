@@ -17,8 +17,8 @@ public:
 	static void CreateInstance();
 	static void ReleaseInstance();
 
-	void AddListener(InputListener* listener);
-	void RemoveListener(InputListener* listener);
+	void AddListener(IInputListener* listener);
+	void RemoveListener(IInputListener* listener);
 
 	void Update();
 
@@ -28,7 +28,7 @@ public:
 	Point GetMouseDelta();
 
 private:
-	std::unordered_set<InputListener*> listenerMap;
+	std::unordered_set<IInputListener*> listenerMap;
 	Point prevMousePos = {};
 	std::unique_ptr<DirectX::Keyboard> pKeyboard;
 	std::unique_ptr<DirectX::Mouse> pMouse;

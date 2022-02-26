@@ -94,6 +94,12 @@ public:
 		euler.z = Yaw();
 		return euler;
 	}
+
+	Vector3 GetScale()
+	{
+		return Vector3(value[0][0], value[1][1], value[2][2]);
+	}
+
 	float Roll() { return (float)atan2(value[3][2], sqrtf(1.f - powf(value[3][2], 2))); }
 	float Pitch() { return  atan2(-value[3][1], value[3][3]); }
 	float Yaw() { return atan2(-value[1][2], value[2][2]); }
@@ -187,6 +193,10 @@ public:
 	Vector3 GetDirectionX()
 	{
 		return Vector3(value[0][0], value[0][1], value[0][2]);
+	}
+	Vector3 GetDirectionY()
+	{
+		return Vector3(value[1][0], value[1][1], value[1][2]);
 	}
 	Vector3 GetDirectionZ()
 	{
