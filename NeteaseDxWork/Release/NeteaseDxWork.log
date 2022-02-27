@@ -1,0 +1,72 @@
+﻿  GameWindow.cpp
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(184,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(185,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(186,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(187,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\GameWindow.cpp(151,17): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  ConstantBuffer.cpp
+  DeviceContext.cpp
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\DeviceContext.cpp(54,13): warning C4244: '=': conversion from 'UINT' to 'FLOAT', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\DeviceContext.cpp(55,14): warning C4244: '=': conversion from 'UINT' to 'FLOAT', possible loss of data
+  Earth.cpp
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(124,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(184,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(185,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(186,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(187,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  GraphicsEngine.cpp
+  GUIManager.cpp
+  imgui.cpp
+  imgui_demo.cpp
+  imgui_draw.cpp
+  imgui_impl_dx11.cpp
+  imgui_impl_win32.cpp
+  imgui_tables.cpp
+  imgui_widgets.cpp
+  IndexBuffer.cpp
+  InputSystem.cpp
+  Material.cpp
+  Mesh.cpp
+  MeshManager.cpp
+  ModelObject.cpp
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(124,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(184,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(185,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(186,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(187,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Moon.cpp
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(124,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(184,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(185,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(186,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(187,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Compiling...
+  PixelShader.cpp
+  RenderSystem.cpp
+  Resource.cpp
+  ResourceManager.cpp
+  Spaceship.cpp
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(124,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(184,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(185,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(186,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(187,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  SwapChain.cpp
+  TextureManager.cpp
+  Texture.cpp
+  TPCameraObject.cpp
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(124,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(184,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(185,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(186,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Matrix4x4.h(187,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  VertexBuffer.cpp
+  VertexShader.cpp
+  Window.cpp
+  main.cpp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+E:\Visual Studio 2019 Projects\DrectXGame\NeteaseDxWork\Mesh.cpp(109): warning C4172: returning address of local variable or temporary
+  All 4553 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  NeteaseDxWork.vcxproj -> E:\Visual Studio 2019 Projects\DrectXGame\Release\NeteaseDxWork.exe

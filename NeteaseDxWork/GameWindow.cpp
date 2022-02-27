@@ -40,7 +40,7 @@ void GameWindow::CreateCamera()
 	RECT rect = this->GetClientWindowRect();
 	pCamera = std::make_shared<CameraObject>((rect.right - rect.left) / 1.f / (rect.bottom - rect.top) / 1.f);
 	pCamera->pTransform->SetRotation(camRotation);
-	pCamera->pTransform->SetPosition(Vector3(28.8, 37, 34));
+	pCamera->pTransform->SetPosition(Vector3(28.8f, 37.f, 34.f));
 	pCamera->Start();
 
 	pTpCamera = std::make_shared<TPCameraObject>((rect.right - rect.left) / 1.f / (rect.bottom - rect.top) / 1.f);
@@ -121,7 +121,7 @@ void GameWindow::LoadModels()
 
 	SpaceshipPtr spaceship = std::make_shared<Spaceship>();
 	spaceship->SetPosition(Vector3(50, 20, 20));
-	spaceship->SetScale(Vector3(20.f, 20.f, 20.f));
+	spaceship->SetScale(Vector3(2.f, 2.f, 2.f));
 	spaceship->pMesh = pSpaceshipMesh;
 	spaceship->pMaterials.push_back(spaceshipMaterial);
 	spaceship->flySpeed = .5f;
@@ -273,7 +273,11 @@ void GameWindow::OnGUI()
 	ImGui::Begin("information");
 	{
 		ImGui::Text("fps: %.1f", ImGui::GetIO().Framerate);
-
+		Spaceship* ps = dynamic_cast<Spaceship*>(modelsMap["spaceship"].get());
+		const char* items[] = { "EARTH_ORBIT", "MOON_ORIBIT", "BACK_TO_EARTH", "TO_THE_MOON" };
+		int idx = (int)ps->state;
+		ImGui::Text("current state: %s", items[idx]);
+		//ps->state = (Spaceship::SHIP_STATE)idx;
 		if (ImGui::CollapsingHeader("operator help", &isHelperShow))
 		{
 			ImGui::Text("show help: F1");
@@ -285,6 +289,7 @@ void GameWindow::OnGUI()
 			ImGui::Text("switch cam: 1 or 2");
 			ImGui::Text("tps camera zoom: mouse wheel");
 			ImGui::Text("fps camera move: wasd");
+			ImGui::Text("TO THE MOON or BACK TO EARTH: space");
 		}
 
 		if (ImGui::CollapsingHeader("config"))
@@ -386,48 +391,48 @@ void GameWindow::OnGUI()
 		{
 			if (iter->first == "skysphere")
 				continue;
-
 			std::ostringstream oss;
-			oss << "transform [" << iter->first << "]";
+			oss << iter->first << " properties";
 			if (ImGui::CollapsingHeader(oss.str().c_str()))
 			{
-				float position[3], euler[3], scale[3];
+				ImGui::Indent();
+				if (ImGui::CollapsingHeader("transform"))
+				{
+					float position[3], euler[3], scale[3];
 
-				position[0] = iter->second->pTransform->GetPosition().x;
-				position[1] = iter->second->pTransform->GetPosition().y;
-				position[2] = iter->second->pTransform->GetPosition().z;
+					position[0] = iter->second->pTransform->GetPosition().x;
+					position[1] = iter->second->pTransform->GetPosition().y;
+					position[2] = iter->second->pTransform->GetPosition().z;
 
-				euler[0] = to_deg<float>(iter->second->pTransform->GetEulerAngle().x);
-				euler[1] = to_deg<float>(iter->second->pTransform->GetEulerAngle().y);
-				euler[2] = to_deg<float>(iter->second->pTransform->GetEulerAngle().z);
+					euler[0] = to_deg<float>(iter->second->pTransform->GetEulerAngle().x);
+					euler[1] = to_deg<float>(iter->second->pTransform->GetEulerAngle().y);
+					euler[2] = to_deg<float>(iter->second->pTransform->GetEulerAngle().z);
 
-				scale[0] = iter->second->pTransform->GetScale().x;
-				scale[1] = iter->second->pTransform->GetScale().y;
-				scale[2] = iter->second->pTransform->GetScale().z;
+					scale[0] = iter->second->pTransform->GetScale().x;
+					scale[1] = iter->second->pTransform->GetScale().y;
+					scale[2] = iter->second->pTransform->GetScale().z;
 
-				oss.str("");
-				oss << "position" << "##pos" << index;
-				ImGui::DragFloat3(oss.str().c_str(), position);
+					oss.str("");
+					oss << "position" << "##pos" << index;
+					ImGui::DragFloat3(oss.str().c_str(), position);
 
-				oss.str("");
-				oss << "euler angle" << "##euler" << index;
-				ImGui::DragFloat3(oss.str().c_str(), euler);
+					oss.str("");
+					oss << "euler angle" << "##euler" << index;
+					ImGui::DragFloat3(oss.str().c_str(), euler);
 
-				euler[0] = to_rad<float>(euler[0]);
-				euler[1] = to_rad<float>(euler[1]);
-				euler[2] = to_rad<float>(euler[2]);
+					euler[0] = to_rad<float>(euler[0]);
+					euler[1] = to_rad<float>(euler[1]);
+					euler[2] = to_rad<float>(euler[2]);
 
-				oss.str("");
-				oss << "scale" << "##scale" << index;
-				ImGui::DragFloat3(oss.str().c_str(), scale);
+					oss.str("");
+					oss << "scale" << "##scale" << index;
+					ImGui::DragFloat3(oss.str().c_str(), scale);
 
-				iter->second->pTransform->SetScale(Vector3(scale[0], scale[1], scale[2]));
-				iter->second->pTransform->SetRotation(Vector3(euler[0], euler[1], euler[2]));
-				iter->second->pTransform->SetPosition(Vector3(position[0], position[1], position[2]));
-
-				if (iter->first == "spaceship")
-					ImGui::EndDisabled();
-
+					iter->second->pTransform->SetScale(Vector3(scale[0], scale[1], scale[2]));
+					iter->second->pTransform->SetRotation(Vector3(euler[0], euler[1], euler[2]));
+					iter->second->pTransform->SetPosition(Vector3(position[0], position[1], position[2]));
+				}
+				ImGui::Unindent();
 				if (iter->first == "moon")
 				{
 					Moon* pm = dynamic_cast<Moon*>(iter->second.get());
@@ -444,26 +449,19 @@ void GameWindow::OnGUI()
 
 				if (iter->first == "spaceship")
 				{
-					Spaceship* ps = dynamic_cast<Spaceship*>(iter->second.get());
+					ps = dynamic_cast<Spaceship*>(iter->second.get());
 					ImGui::DragFloat("earth oribit##pseo", &ps->earthOribitHeight);
 					ImGui::DragFloat("moon orbit##psmo", &ps->moonOrbitHeight);
 					ImGui::DragFloat("speed##psspeed", &ps->flySpeed);
-					ImGui::DragFloat("orbit radius##psos", &ps->orbitRaduisZ);
-
-					ImGui::BeginDisabled();
-					const char* items[] = { "EARTH_ORBIT", "MOON_ORIBIT", "BACK_EARTH", "TO_THE_MOON" };
-					int idx = (int)ps->state;
-					ImGui::Combo("current state##psst", &idx, items, ARRAYSIZE(items));
-					ps->state = (Spaceship::SHIP_STATE)idx;
-					ImGui::EndDisabled();
+					ImGui::DragFloat("orbit radius##psos", &ps->orbitRaduisZ);					
 				}
 			}
+			
 			index++;
 		}
 
 		ImGui::End();
 	}
-
 }
 
 void GameWindow::OnSizeChanged()
@@ -530,6 +528,22 @@ void GameWindow::OnKeyDown(int keycode)
 
 	if (keycode == VK_F1)
 		isHelperShow = !isHelperShow;
+
+	if (keycode == VK_SPACE)
+	{
+		Spaceship* sp = dynamic_cast<Spaceship*>(modelsMap["spaceship"].get());
+		switch (sp->state)
+		{
+		case Spaceship::SHIP_STATE::SHIP_STATE_EARTH_ORBIT:
+			sp->state = Spaceship::SHIP_STATE::SHIP_STATE_TO_MOON;
+			break;
+		case Spaceship::SHIP_STATE::SHIP_STATE_MOON_ORBIT:
+			sp->state = Spaceship::SHIP_STATE::SHIP_STATE_TO_EARTH;
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 void GameWindow::OnKey(int keycode)

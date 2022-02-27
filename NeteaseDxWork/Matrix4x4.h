@@ -66,24 +66,24 @@ public:
 
 	void SetRotationX(float x)
 	{
-		value[1][1] = cos(x);
-		value[1][2] = sin(x);
-		value[2][1] = -sin(x);
-		value[2][2] = cos(x);
+		value[1][1] = cosf(x);
+		value[1][2] = sinf(x);
+		value[2][1] = -sinf(x);
+		value[2][2] = cosf(x);
 	}
 	void SetRotationY(float y)
 	{
-		value[0][0] = cos(y);
-		value[0][2] = -sin(y);
-		value[2][0] = sin(y);
-		value[2][2] = cos(y);
+		value[0][0] = cosf(y);
+		value[0][2] = -sinf(y);
+		value[2][0] = sinf(y);
+		value[2][2] = cosf(y);
 	}
 	void SetRotationZ(float z)
 	{
-		value[0][0] = cos(z);
-		value[0][1] = sin(z);
-		value[1][0] = -sin(z);
-		value[1][1] = cos(z);
+		value[0][0] = cosf(z);
+		value[0][1] = sinf(z);
+		value[1][0] = -sinf(z);
+		value[1][1] = cosf(z);
 	}
 
 	Vector3 GetEulerAngle()
@@ -100,9 +100,9 @@ public:
 		return Vector3(value[0][0], value[1][1], value[2][2]);
 	}
 
-	float Roll() { return (float)atan2(value[3][2], sqrtf(1.f - powf(value[3][2], 2))); }
-	float Pitch() { return  atan2(-value[3][1], value[3][3]); }
-	float Yaw() { return atan2(-value[1][2], value[2][2]); }
+	float Roll() { return (float)atan2f(value[3][2], sqrtf(1.f - powf(value[3][2], 2))); }
+	float Pitch() { return  atan2f(-value[3][1], value[3][3]); }
+	float Yaw() { return atan2f(-value[1][2], value[2][2]); }
 
 	void operator *=(const Matrix4x4& matrix)
 	{
@@ -181,10 +181,10 @@ public:
 			}
 			v.Cross(vec[0], vec[1], vec[2]);
 
-			out.value[0][i] = pow(-1.0f, i) * v.x / det;
-			out.value[1][i] = pow(-1.0f, i) * v.y / det;
-			out.value[2][i] = pow(-1.0f, i) * v.z / det;
-			out.value[3][i] = pow(-1.0f, i) * v.w / det;
+			out.value[0][i] = powf(-1.0f, i) * v.x / det;
+			out.value[1][i] = powf(-1.0f, i) * v.y / det;
+			out.value[2][i] = powf(-1.0f, i) * v.z / det;
+			out.value[3][i] = powf(-1.0f, i) * v.w / det;
 		}
 
 		this->SetMatrix(out);
