@@ -1,4 +1,4 @@
-#include "AppWindow.h"
+#include "GameWindow.h"
 
 int main()
 {
@@ -14,8 +14,8 @@ int main()
 
 	try
 	{
-		AppWindow app;
-		while (app.IsRun());
+		GameWindow game;
+		while (game.IsRun());
 	}
 	catch (...)
 	{

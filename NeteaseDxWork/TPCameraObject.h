@@ -1,6 +1,7 @@
 #pragma once
 #include "CameraObject.h"
 
+// 第三人称摄像机脚本
 class TPCameraObject : public CameraObject
 {
 public:

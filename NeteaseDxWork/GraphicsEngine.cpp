@@ -60,7 +60,7 @@ void GraphicsEngine::Init()
 
 	void* shaderByteCode = nullptr;
 	size_t sizeShader = 0;
-	pRenderSystem->CompileVertexShader(L"MeshDefaultVS.hlsl", "vert", &shaderByteCode, &sizeShader);
+	pRenderSystem->CompileVertexShader(L"Assets\\Shaders\\MeshDefaultVS.hlsl", "vert", &shaderByteCode, &sizeShader);
 	memcpy(pDefaultVertexShaderByteCode, shaderByteCode, sizeShader);
 	defaultVertexShaderSize = sizeShader;
 	pRenderSystem->ReleaseCompiledShader();

@@ -7,11 +7,11 @@
 #include "timer.h"
 #include "Vector3.h"
 
-class AppWindow : public Window, public IInputListener
+class GameWindow : public Window, public IInputListener
 {
 public:
-	AppWindow() = default;
-	virtual ~AppWindow() = default;
+	GameWindow() = default;
+	virtual ~GameWindow() = default;
 
 public:
 	void WndUpdate();

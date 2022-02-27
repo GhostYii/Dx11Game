@@ -1,6 +1,7 @@
 #pragma once
 #include "ModelObject.h"
 
+// µØÇò½Å±¾
 class Earth : public ModelObject
 {
 public:

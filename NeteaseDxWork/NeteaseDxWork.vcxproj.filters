@@ -5,9 +5,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="App">
-      <UniqueIdentifier>{42806f12-48d2-4f7a-ae91-212f4ef722eb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameEngine">
       <UniqueIdentifier>{fb7a81f5-6b57-46df-9e1c-d868427c9500}</UniqueIdentifier>
     </Filter>
@@ -53,17 +50,17 @@
     <Filter Include="GameEngine\Component">
       <UniqueIdentifier>{79ed0e3c-a506-4d9c-a3d9-ab0abd63b226}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game">
-      <UniqueIdentifier>{ed7bc4ba-804a-4cfa-aa19-7afe2bb162ed}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameEngine\Window">
       <UniqueIdentifier>{87489e83-0879-4591-ba3b-f7596847b171}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameScript">
+      <UniqueIdentifier>{ed7bc4ba-804a-4cfa-aa19-7afe2bb162ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{42806f12-48d2-4f7a-ae91-212f4ef722eb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AppWindow.cpp">
-      <Filter>App</Filter>
-    </ClCompile>
     <ClCompile Include="Window.cpp">
       <Filter>GameEngine\Window</Filter>
     </ClCompile>
@@ -147,22 +144,22 @@
       <Filter>GameEngine\Component</Filter>
     </ClCompile>
     <ClCompile Include="TPCameraObject.cpp">
-      <Filter>Game</Filter>
+      <Filter>GameScript</Filter>
     </ClCompile>
     <ClCompile Include="Spaceship.cpp">
-      <Filter>Game</Filter>
+      <Filter>GameScript</Filter>
     </ClCompile>
     <ClCompile Include="Moon.cpp">
-      <Filter>Game</Filter>
+      <Filter>GameScript</Filter>
     </ClCompile>
     <ClCompile Include="Earth.cpp">
+      <Filter>GameScript</Filter>
+    </ClCompile>
+    <ClCompile Include="GameWindow.cpp">
       <Filter>Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AppWindow.h">
-      <Filter>App</Filter>
-    </ClInclude>
     <ClInclude Include="Window.h">
       <Filter>GameEngine\Window</Filter>
     </ClInclude>
@@ -315,37 +312,20 @@
     </ClInclude>
     <ClInclude Include="internal_resource.h" />
     <ClInclude Include="TPCameraObject.h">
-      <Filter>Game</Filter>
+      <Filter>GameScript</Filter>
     </ClInclude>
     <ClInclude Include="Spaceship.h">
-      <Filter>Game</Filter>
+      <Filter>GameScript</Filter>
     </ClInclude>
     <ClInclude Include="Moon.h">
-      <Filter>Game</Filter>
+      <Filter>GameScript</Filter>
     </ClInclude>
     <ClInclude Include="Earth.h">
+      <Filter>GameScript</Filter>
+    </ClInclude>
+    <ClInclude Include="GameWindow.h">
       <Filter>Game</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="VertexShader.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="PixelShader.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="MeshDefaultVS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="DefaultSkyPS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="MoonVS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="MoonPS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -359,5 +339,28 @@
     <Image Include="icon.ico">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Assets\Shaders\DefaultPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Assets\Shaders\DefaultSkyPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Assets\Shaders\MeshDefaultVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Assets\Shaders\MoonPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Assets\Shaders\MoonVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Assets\Shaders\MultiLayerPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Assets\Shaders\VertexShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

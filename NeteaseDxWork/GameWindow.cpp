@@ -1,4 +1,4 @@
-#include "AppWindow.h"
+#include "GameWindow.h"
 #include "DeviceContext.h"
 #include "Mesh.h"
 #include "types.h"
@@ -14,7 +14,7 @@
 
 #include "imgui_impl_win32.h"
 
-void AppWindow::OnCreate()
+void GameWindow::OnCreate()
 {
 	InputSystem::GetInstance()->AddListener(this);
 
@@ -31,7 +31,7 @@ void AppWindow::OnCreate()
 	deltaTime = timer.Mark();
 }
 
-void AppWindow::CreateCamera()
+void GameWindow::CreateCamera()
 {
 	camRotation.x = 25.53f;
 	camRotation.y = 102.52f;
@@ -47,7 +47,7 @@ void AppWindow::CreateCamera()
 	pTpCamera->Start();
 }
 
-void AppWindow::CreateLight()
+void GameWindow::CreateLight()
 {
 	Color lightcolor = Color();
 	lightcolor.r = 1;
@@ -59,8 +59,9 @@ void AppWindow::CreateLight()
 	pLight->Start();
 }
 
-void AppWindow::LoadModels()
+void GameWindow::LoadModels()
 {
+	// 加载所有需要的贴图
 	pEarthDayTex = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\earth_day.jpg");
 	pEarthNightTex = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\earth_night.jpg");
 	pSkysphereTex = GraphicsEngine::GetInstance()->GetTextureManger()->CreateTextureFromFile(L"Assets\\Textures\\galaxy.jpg");
@@ -70,23 +71,25 @@ void AppWindow::LoadModels()
 	pSphereMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\sphere.obj");
 	pSpaceshipMesh = GraphicsEngine::GetInstance()->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\aircraft.obj");
 
-	auto skyMaterial = GraphicsEngine::GetInstance()->CreateMaterial(L"VertexShader.hlsl", L"DefaultSkyPS.hlsl");
+	// 创建材质
+	auto skyMaterial = GraphicsEngine::GetInstance()->CreateMaterial(L"Assets\\Shaders\\VertexShader.hlsl", L"Assets\\Shaders\\DefaultSkyPS.hlsl");
 	skyMaterial->AddTexture(pSkysphereTex);
 	skyMaterial->SetCullMode(D3D11_CULL_FRONT);
 
-	auto earthMaterial = GraphicsEngine::GetInstance()->CreateMaterial(L"VertexShader.hlsl", L"PixelShader.hlsl");
+	auto earthMaterial = GraphicsEngine::GetInstance()->CreateMaterial(L"Assets\\Shaders\\VertexShader.hlsl", L"Assets\\Shaders\\MultiLayerPS.hlsl");
 	earthMaterial->AddTexture(pEarthDayTex);
 	earthMaterial->AddTexture(pEarthNightTex);
 	earthMaterial->SetCullMode(D3D11_CULL_BACK);
 
-	auto moonMaterial = GraphicsEngine::GetInstance()->CreateMaterial(L"MoonVS.hlsl", L"MoonPS.hlsl");
+	auto moonMaterial = GraphicsEngine::GetInstance()->CreateMaterial(L"Assets\\Shaders\\MoonVS.hlsl", L"Assets\\Shaders\\MoonPS.hlsl");
 	moonMaterial->AddTexture(pMoonTex);
 	moonMaterial->SetCullMode(D3D11_CULL_BACK);
 
-	auto spaceshipMaterial = GraphicsEngine::GetInstance()->CreateMaterial(L"VertexShader.hlsl", L"PixelShader.hlsl");
+	auto spaceshipMaterial = GraphicsEngine::GetInstance()->CreateMaterial(L"Assets\\Shaders\\VertexShader.hlsl", L"Assets\\Shaders\\DefaultPS.hlsl");
 	spaceshipMaterial->AddTexture(pSpaceshipTex);
 	spaceshipMaterial->SetCullMode(D3D11_CULL_BACK);
 
+	// 加载模型，设置参数
 	ModelObjectPtr skysphere = std::make_shared<ModelObject>();
 	if (isFpsMode)
 		skysphere->pTransform->SetScale(Vector3(pCamera->farPlane, pCamera->farPlane, pCamera->farPlane));
@@ -116,11 +119,16 @@ void AppWindow::LoadModels()
 	moon->pTarget = earth->pTransform;
 	modelsMap["moon"] = moon;
 
-	ModelObjectPtr spaceship = std::make_shared<ModelObject>();
+	SpaceshipPtr spaceship = std::make_shared<Spaceship>();
 	spaceship->SetPosition(Vector3(50, 20, 20));
-	spaceship->SetScale(Vector3(1.f, 1.f, 1.f));
+	spaceship->SetScale(Vector3(20.f, 20.f, 20.f));
 	spaceship->pMesh = pSpaceshipMesh;
 	spaceship->pMaterials.push_back(spaceshipMaterial);
+	spaceship->flySpeed = .5f;
+	spaceship->earthOribitHeight = 80.f;
+	spaceship->moonOrbitHeight = 20.f;
+	spaceship->pMoon = moon->pTransform;
+	spaceship->pEarth = earth->pTransform;
 	modelsMap["spaceship"] = spaceship;
 
 	pTpCamera->pTarget = spaceship->pTransform;
@@ -129,10 +137,14 @@ void AppWindow::LoadModels()
 		iter->second->Start();
 }
 
-void AppWindow::OnUpdate()
+void GameWindow::OnUpdate()
 {
-	InputSystem::GetInstance()->Update();
+	/*
+	* 调用顺序：
+	* 输入 ->(gui初始化)-> 逻辑更新 -> 渲染 -> gui
+	*/
 
+	InputSystem::GetInstance()->Update();
 	ImGui_ImplWin32_NewFrame();
 	deltaTime = timer.Mark();
 
@@ -142,28 +154,32 @@ void AppWindow::OnUpdate()
 
 	WndUpdate();
 	Render();
+
+
 }
 
-void AppWindow::WndUpdate()
-{
+void GameWindow::WndUpdate()
+{	
 	UpdateCamera();
 	UpdateLight();
 	UpdateModel();
 	UpdateSkysphere();
 }
 
-void AppWindow::Render()
+void GameWindow::Render()
 {
 	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->ClearRenderTargetColor(this->pSwapChain, 0, 0, 0, 1);
 
 	RECT rect = GetClientWindowRect();
 	GraphicsEngine::GetInstance()->GetRenderSystem()->GetDeviceContext()->SetViewportSize(rect.right - rect.left, rect.bottom - rect.top);
 
+	// 对所有继承于ModelObject的类进行DrawCall
 	for (auto iter = modelsMap.begin(); iter != modelsMap.end(); iter++)
 	{
 		iter->second->Draw();
 	}
 
+	// 渲染GUI
 	GraphicsEngine::GetInstance()->GetGuiManager()->Update();
 
 	this->OnGUI();
@@ -173,7 +189,7 @@ void AppWindow::Render()
 	pSwapChain->Present(false);
 }
 
-void AppWindow::UpdateCamera()
+void GameWindow::UpdateCamera()
 {
 	Vector3 euler = { to_deg<float>(camRotation.x), to_deg<float>(camRotation.y), 0 };
 
@@ -198,12 +214,12 @@ void AppWindow::UpdateCamera()
 
 }
 
-void AppWindow::UpdateLight()
+void GameWindow::UpdateLight()
 {
 	pLight->pTransform->SetRotation(sunDir);
 }
 
-void AppWindow::UpdateModel()
+void GameWindow::UpdateModel()
 {
 	// Scale - Rotation - Translate
 	for (auto iter = modelsMap.begin(); iter != modelsMap.end(); iter++)
@@ -238,7 +254,7 @@ void AppWindow::UpdateModel()
 
 }
 
-void AppWindow::UpdateSkysphere()
+void GameWindow::UpdateSkysphere()
 {
 	if (isFpsMode)
 	{
@@ -252,35 +268,11 @@ void AppWindow::UpdateSkysphere()
 	}
 }
 
-void AppWindow::OnGUI()
+void GameWindow::OnGUI()
 {
 	ImGui::Begin("information");
 	{
 		ImGui::Text("fps: %.1f", ImGui::GetIO().Framerate);
-
-		//ImGui::BeginDisabled();
-		//float m[3], mm[3], mmm[3];
-		//Moon* mo = dynamic_cast<Moon*>(modelsMap["moon"].get());
-		//m[0] = mo->m.GetTranslation().x;
-		//m[1] = mo->m.GetTranslation().y;
-		//m[2] = mo->m.GetTranslation().z;
-
-		//mm[0] = mo->m.GetEulerAngle().x;
-		//mm[1] = mo->m.GetEulerAngle().y;
-		//mm[2] = mo->m.GetEulerAngle().z;
-
-		//mmm[0] = mo->m.value[0][0];
-		//mmm[1] = mo->m.value[1][1];
-		//mmm[2] = mo->m.value[2][2];
-
-		//ImGui::DragFloat3("pos##a", m);
-		//ImGui::DragFloat3("rot##a", mm);
-		//ImGui::DragFloat3("sca##a", mmm);
-
-		//modelsMap["spaceship"]->pTransform->SetRotation(mo->pTransform->GetEulerAngle());
-		//modelsMap["spaceship"]->pTransform->SetPosition(mo->m.GetTranslation());
-
-		//ImGui::EndDisabled();
 
 		if (ImGui::CollapsingHeader("operator help", &isHelperShow))
 		{
@@ -396,7 +388,7 @@ void AppWindow::OnGUI()
 				continue;
 
 			std::ostringstream oss;
-			oss << iter->first << " transform";
+			oss << "transform [" << iter->first << "]";
 			if (ImGui::CollapsingHeader(oss.str().c_str()))
 			{
 				float position[3], euler[3], scale[3];
@@ -425,7 +417,6 @@ void AppWindow::OnGUI()
 				euler[1] = to_rad<float>(euler[1]);
 				euler[2] = to_rad<float>(euler[2]);
 
-				//ImGui::EndDisabled();
 				oss.str("");
 				oss << "scale" << "##scale" << index;
 				ImGui::DragFloat3(oss.str().c_str(), scale);
@@ -434,8 +425,8 @@ void AppWindow::OnGUI()
 				iter->second->pTransform->SetRotation(Vector3(euler[0], euler[1], euler[2]));
 				iter->second->pTransform->SetPosition(Vector3(position[0], position[1], position[2]));
 
-				//if (iter->first == "spaceship")
-				//	ImGui::EndDisabled();
+				if (iter->first == "spaceship")
+					ImGui::EndDisabled();
 
 				if (iter->first == "moon")
 				{
@@ -448,7 +439,23 @@ void AppWindow::OnGUI()
 				if (iter->first == "earth")
 				{
 					Earth* pe = dynamic_cast<Earth*>(iter->second.get());
-					ImGui::DragFloat("rotation speed##moonsr", &pe->rotateSpeed);					
+					ImGui::DragFloat("rotation speed##earthsr", &pe->rotateSpeed);
+				}
+
+				if (iter->first == "spaceship")
+				{
+					Spaceship* ps = dynamic_cast<Spaceship*>(iter->second.get());
+					ImGui::DragFloat("earth oribit##pseo", &ps->earthOribitHeight);
+					ImGui::DragFloat("moon orbit##psmo", &ps->moonOrbitHeight);
+					ImGui::DragFloat("speed##psspeed", &ps->flySpeed);
+					ImGui::DragFloat("orbit radius##psos", &ps->orbitRaduisZ);
+
+					ImGui::BeginDisabled();
+					const char* items[] = { "EARTH_ORBIT", "MOON_ORIBIT", "BACK_EARTH", "TO_THE_MOON" };
+					int idx = (int)ps->state;
+					ImGui::Combo("current state##psst", &idx, items, ARRAYSIZE(items));
+					ps->state = (Spaceship::SHIP_STATE)idx;
+					ImGui::EndDisabled();
 				}
 			}
 			index++;
@@ -459,14 +466,14 @@ void AppWindow::OnGUI()
 
 }
 
-void AppWindow::OnSizeChanged()
+void GameWindow::OnSizeChanged()
 {
 	RECT rc = GetClientWindowRect();
 	pSwapChain->Resize(rc.right - rc.left, rc.bottom - rc.top);
 	OnUpdate();
 }
 
-void AppWindow::OnDestroy()
+void GameWindow::OnDestroy()
 {
 	InputSystem::GetInstance()->SetCursorVisiable(true);
 	ImGui_ImplWin32_Shutdown();
@@ -475,20 +482,20 @@ void AppWindow::OnDestroy()
 
 #pragma region Input Callback
 
-void AppWindow::OnMouseKeyDown(int mouseKey)
+void GameWindow::OnMouseKeyDown(int mouseKey)
 {
 }
 
-void AppWindow::OnMouseKey(int mouseKey)
+void GameWindow::OnMouseKey(int mouseKey)
 {
 
 }
 
-void AppWindow::OnMouseKeyUp(int mouseKey)
+void GameWindow::OnMouseKeyUp(int mouseKey)
 {
 }
 
-void AppWindow::OnMouseMove(const Point& mousePosition)
+void GameWindow::OnMouseMove(const Point& mousePosition)
 {
 	if (!isCamViewable)
 		return;
@@ -503,7 +510,7 @@ void AppWindow::OnMouseMove(const Point& mousePosition)
 	//InputSystem::GetInstance()->SetCursorPosition(Point(wndSize.left + width / 2, wndSize.top + height / 2));
 }
 
-void AppWindow::OnMouseWheel(int delta)
+void GameWindow::OnMouseWheel(int delta)
 {
 	if (isFpsMode)
 		return;
@@ -514,7 +521,7 @@ void AppWindow::OnMouseWheel(int delta)
 	pTpCamera->distance = pTpCamera->distance < -100 ? -100 : pTpCamera->distance;
 }
 
-void AppWindow::OnKeyDown(int keycode)
+void GameWindow::OnKeyDown(int keycode)
 {
 	if (keycode == '1')
 		isFpsMode = true;
@@ -525,7 +532,7 @@ void AppWindow::OnKeyDown(int keycode)
 		isHelperShow = !isHelperShow;
 }
 
-void AppWindow::OnKey(int keycode)
+void GameWindow::OnKey(int keycode)
 {
 	if (!isCamMoveable)
 		return;
@@ -548,7 +555,7 @@ void AppWindow::OnKey(int keycode)
 	}
 }
 
-void AppWindow::OnKeyUp(int keycode)
+void GameWindow::OnKeyUp(int keycode)
 {
 	camForward = 0;
 	camRight = 0;

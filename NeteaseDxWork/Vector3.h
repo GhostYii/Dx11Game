@@ -18,7 +18,10 @@ public:
 		normal.z = z / sum;
 		return normal;
 	}
-
+	float Magnitude() 
+	{
+		return sqrtf(powf(x, 2) + powf(y, 2) + powf(z, 2));
+	}
 public:
 	Vector3 operator+(const Vector3& other)
 	{
@@ -31,6 +34,10 @@ public:
 	Vector3 operator*(float num)
 	{
 		return Vector3(x * num, y * num, z * num);
+	}
+	Vector3 operator/(float num)
+	{
+		return Vector3(x / num, y / num, z / num);
 	}
 
 public:
