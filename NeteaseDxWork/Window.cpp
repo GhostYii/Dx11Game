@@ -9,7 +9,7 @@
 const int QUIT_CODE = 0;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{		
+{
 	ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam);
 	switch (msg)
 	{
@@ -40,7 +40,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_MOUSEHOVER:
 	{
 		DirectX::Mouse::ProcessMessage(msg, wParam, lParam);
-		break; 
+		break;
 	}
 	case WM_MOUSEACTIVATE:
 	{
@@ -53,7 +53,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		//window->SetHWND(hWnd);
 		//window->OnCreate();
 		break;
-	}		
+	}
 	case WM_SIZE:
 	{
 		Window* pWindow = (Window*)GetWindowLongPtr(hWnd, GWL_USERDATA);
@@ -108,7 +108,7 @@ void Window::Init()
 	if (!RegisterClassEx(&wc))
 		throw std::exception("Register window class failed!");
 
-	hWnd = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, "Window", "To the Moon", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 1024, 768, NULL, NULL, NULL, NULL);
+	hWnd = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, "Window", "To the Moon", (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MAXIMIZEBOX), CW_USEDEFAULT, CW_USEDEFAULT, 1024, 768, NULL, NULL, NULL, NULL);
 
 	if (!hWnd)
 		throw std::exception("Create window failed!");
@@ -141,7 +141,7 @@ bool Window::Update()
 		DispatchMessage(&msg);
 	}
 
-	
+
 
 	//Sleep(1);
 
